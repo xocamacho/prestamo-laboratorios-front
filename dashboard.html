@@ -8,244 +8,65 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     :root {
-      --upb-purple:     #6B1F7C;
-      --upb-purple-dark:#4A1258;
-      --upb-pink:       #C0186A;
-      --upb-pink-light: #D91E7A;
-      --sidebar-bg:     #FFFFFF;
-      --bg-page:        #F0F0F5;
-      --text-dark:      #1A1A2E;
-      --text-medium:    #666680;
-      --text-light:     #AAAABC;
-      --border:         #E8E8F0;
-      --font:           'Nunito', sans-serif;
+      --upb-purple:#6B1F7C; --upb-purple-dark:#4A1258; --upb-pink:#C0186A;
+      --upb-pink-light:#D91E7A; --sidebar-bg:#FFFFFF; --bg-page:#F0F0F5;
+      --text-dark:#1A1A2E; --text-medium:#666680; --text-light:#AAAABC;
+      --border:#E8E8F0; --font:'Nunito',sans-serif;
     }
-
-    body {
-      font-family: var(--font);
-      background: var(--bg-page);
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .navbar {
-      background: var(--upb-purple);
-      height: 52px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 16px 0 0;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.25);
-      flex-shrink: 0;
-      z-index: 100;
-    }
-
-    .navbar-left { display: flex; align-items: center; gap: 0; }
-
-    .btn-menu-toggle {
-      background: none;
-      border: none;
-      color: #fff;
-      font-size: 18px;
-      cursor: pointer;
-      padding: 0 16px;
-      height: 52px;
-      display: flex;
-      align-items: center;
-      transition: background 0.2s;
-    }
-    .btn-menu-toggle:hover { background: rgba(255,255,255,0.1); }
-
-    .navbar-logo { display: flex; align-items: center; gap: 8px; padding: 0 12px; }
-    .navbar-logo img { height: 32px; width: auto; object-fit: contain; border-radius: 3px; }
-
-    .btn-acciones {
-      background: rgba(255,255,255,0.15);
-      border: none;
-      color: #fff;
-      font-family: var(--font);
-      font-size: 13px;
-      font-weight: 600;
-      padding: 6px 14px;
-      border-radius: 6px;
-      cursor: pointer;
-      margin-left: 12px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      transition: background 0.2s;
-    }
-    .btn-acciones:hover { background: rgba(255,255,255,0.25); }
-
-    .navbar-right { display: flex; align-items: center; gap: 10px; }
-    .nav-user-info { text-align: right; }
-    .nav-user-name { color: #fff; font-size: 13px; font-weight: 700; display: block; }
-    .nav-user-lab { color: rgba(255,255,255,0.7); font-size: 11px; display: block; }
-
-    .nav-avatar {
-      width: 34px; height: 34px;
-      border-radius: 50%;
-      overflow: hidden;
-      border: 2px solid rgba(255,255,255,0.4);
-      flex-shrink: 0;
-    }
-    .nav-avatar img { width: 100%; height: 100%; object-fit: cover; }
-
-    .btn-salir {
-      background: rgba(255,255,255,0.15);
-      border: none;
-      color: #fff;
-      font-family: var(--font);
-      font-size: 11px;
-      font-weight: 700;
-      padding: 5px 10px;
-      border-radius: 5px;
-      cursor: pointer;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 1px;
-      transition: background 0.2s;
-    }
-    .btn-salir:hover { background: rgba(255,255,255,0.25); }
-    .btn-salir i { font-size: 14px; }
-
-    .layout { display: flex; flex: 1; overflow: hidden; }
-
-    .sidebar {
-      width: 200px;
-      background: var(--sidebar-bg);
-      border-right: 1px solid var(--border);
-      display: flex;
-      flex-direction: column;
-      flex-shrink: 0;
-      transition: width 0.25s ease;
-      overflow: hidden;
-    }
-    .sidebar.collapsed { width: 0; }
-    .sidebar-nav { padding: 12px 0; flex: 1; }
-    .nav-item { position: relative; }
-
-    .nav-link {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 10px 18px;
-      color: var(--text-medium);
-      font-size: 13px;
-      font-weight: 600;
-      text-decoration: none;
-      cursor: pointer;
-      transition: background 0.15s, color 0.15s;
-      user-select: none;
-      white-space: nowrap;
-    }
-    .nav-link:hover, .nav-link.active { color: var(--upb-pink); background: #FDF0F7; }
-    .nav-link .nav-icon { margin-right: 8px; font-size: 14px; width: 16px; text-align: center; flex-shrink: 0; }
-    .nav-link .nav-label { flex: 1; }
-    .nav-link .nav-arrow { font-size: 11px; transition: transform 0.2s; color: var(--text-light); }
-    .nav-item.open > .nav-link .nav-arrow { transform: rotate(90deg); }
-    .nav-link.home { color: var(--upb-purple); font-weight: 700; }
-    .nav-link.home:hover { background: #F5EEF8; }
-
-    .submenu {
-      display: none;
-      background: #FAFAFA;
-      border-left: 3px solid var(--upb-pink);
-      margin-left: 18px;
-    }
-    .nav-item.open > .submenu { display: block; }
-
-    .submenu-link {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 8px 16px;
-      color: var(--text-medium);
-      font-size: 12px;
-      font-weight: 500;
-      text-decoration: none;
-      transition: color 0.15s, background 0.15s;
-      white-space: nowrap;
-    }
-    .submenu-link:hover, .submenu-link.active { color: var(--upb-purple); background: #F5EEF8; }
-    .submenu-link i { width: 14px; text-align: center; font-size: 12px; }
-
-    .main-content { flex: 1; overflow-y: auto; padding: 0; }
-
-    .page-header {
-      background: var(--bg-page);
-      padding: 14px 24px 0;
-      display: flex;
-      align-items: baseline;
-      gap: 10px;
-    }
-    .page-title { font-size: 18px; font-weight: 800; color: var(--text-dark); text-transform: uppercase; letter-spacing: 0.03em; }
-    .page-breadcrumb { font-size: 12px; color: var(--text-light); font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em; }
-    .page-body { padding: 16px 24px 24px; }
-
-    /* Bienvenida */
-    .welcome-card {
-      background: linear-gradient(135deg, #6B1F7C, #C0186A);
-      border-radius: 12px;
-      padding: 20px 24px;
-      margin-bottom: 20px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      box-shadow: 0 4px 16px rgba(107,31,124,0.25);
-    }
-    .welcome-card .welcome-text p {
-      color: rgba(255,255,255,0.8);
-      font-size: 13px;
-      font-weight: 600;
-      margin-bottom: 4px;
-    }
-    .welcome-card .welcome-text h2 {
-      color: #fff;
-      font-size: 20px;
-      font-weight: 800;
-      margin: 0;
-    }
-    .welcome-card .welcome-text span {
-      color: rgba(255,255,255,0.7);
-      font-size: 12px;
-      margin-top: 4px;
-      display: block;
-    }
-    .welcome-card .welcome-icon {
-      font-size: 42px;
-      color: rgba(255,255,255,0.2);
-    }
-
-    .section-card {
-      background: #fff;
-      border-radius: 10px;
-      border: 1px solid var(--border);
-      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-      overflow: hidden;
-      max-width: 520px;
-    }
-    .section-card-header {
-      background: var(--upb-purple);
-      color: #fff;
-      padding: 10px 18px;
-      font-size: 13px;
-      font-weight: 700;
-      letter-spacing: 0.03em;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .section-card-body { padding: 18px; color: var(--text-medium); font-size: 13px; }
+    body { font-family:var(--font); background:var(--bg-page); min-height:100vh; display:flex; flex-direction:column; }
+    .navbar { background:var(--upb-purple); height:52px; display:flex; align-items:center; justify-content:space-between; padding:0 16px 0 0; box-shadow:0 2px 8px rgba(0,0,0,0.25); flex-shrink:0; z-index:100; }
+    .navbar-left { display:flex; align-items:center; gap:0; }
+    .btn-menu-toggle { background:none; border:none; color:#fff; font-size:18px; cursor:pointer; padding:0 16px; height:52px; display:flex; align-items:center; transition:background 0.2s; }
+    .btn-menu-toggle:hover { background:rgba(255,255,255,0.1); }
+    .navbar-logo { display:flex; align-items:center; gap:8px; padding:0 12px; }
+    .navbar-logo img { height:32px; width:auto; object-fit:contain; border-radius:3px; }
+    .btn-acciones { background:rgba(255,255,255,0.15); border:none; color:#fff; font-family:var(--font); font-size:13px; font-weight:600; padding:6px 14px; border-radius:6px; cursor:pointer; margin-left:12px; display:flex; align-items:center; gap:6px; transition:background 0.2s; }
+    .btn-acciones:hover { background:rgba(255,255,255,0.25); }
+    .navbar-right { display:flex; align-items:center; gap:10px; }
+    .nav-user-info { text-align:right; }
+    .nav-user-name { color:#fff; font-size:13px; font-weight:700; display:block; }
+    .nav-user-lab { color:rgba(255,255,255,0.7); font-size:11px; display:block; }
+    .nav-avatar { width:34px; height:34px; border-radius:50%; overflow:hidden; border:2px solid rgba(255,255,255,0.4); flex-shrink:0; }
+    .nav-avatar img { width:100%; height:100%; object-fit:cover; }
+    .btn-salir { background:rgba(255,255,255,0.15); border:none; color:#fff; font-family:var(--font); font-size:11px; font-weight:700; padding:5px 10px; border-radius:5px; cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:1px; transition:background 0.2s; }
+    .btn-salir:hover { background:rgba(255,255,255,0.25); }
+    .btn-salir i { font-size:14px; }
+    .layout { display:flex; flex:1; overflow:hidden; }
+    .sidebar { width:200px; background:var(--sidebar-bg); border-right:1px solid var(--border); display:flex; flex-direction:column; flex-shrink:0; transition:width 0.25s ease; overflow:hidden; }
+    .sidebar.collapsed { width:0; }
+    .sidebar-nav { padding:12px 0; flex:1; }
+    .nav-item { position:relative; }
+    .nav-link { display:flex; align-items:center; justify-content:space-between; padding:10px 18px; color:var(--text-medium); font-size:13px; font-weight:600; text-decoration:none; cursor:pointer; transition:background 0.15s,color 0.15s; user-select:none; white-space:nowrap; }
+    .nav-link:hover, .nav-link.active { color:var(--upb-pink); background:#FDF0F7; }
+    .nav-link .nav-icon { margin-right:8px; font-size:14px; width:16px; text-align:center; flex-shrink:0; }
+    .nav-link .nav-label { flex:1; }
+    .nav-link .nav-arrow { font-size:11px; transition:transform 0.2s; color:var(--text-light); }
+    .nav-item.open > .nav-link .nav-arrow { transform:rotate(90deg); }
+    .nav-link.home { color:var(--upb-purple); font-weight:700; }
+    .nav-link.home:hover { background:#F5EEF8; }
+    .submenu { display:none; background:#FAFAFA; border-left:3px solid var(--upb-pink); margin-left:18px; }
+    .nav-item.open > .submenu { display:block; }
+    .submenu-link { display:flex; align-items:center; gap:8px; padding:8px 16px; color:var(--text-medium); font-size:12px; font-weight:500; text-decoration:none; transition:color 0.15s,background 0.15s; white-space:nowrap; }
+    .submenu-link:hover, .submenu-link.active { color:var(--upb-purple); background:#F5EEF8; }
+    .submenu-link i { width:14px; text-align:center; font-size:12px; }
+    .main-content { flex:1; overflow-y:auto; padding:0; }
+    .page-header { background:var(--bg-page); padding:14px 24px 0; display:flex; align-items:baseline; gap:10px; }
+    .page-title { font-size:18px; font-weight:800; color:var(--text-dark); text-transform:uppercase; letter-spacing:0.03em; }
+    .page-breadcrumb { font-size:12px; color:var(--text-light); font-weight:500; text-transform:uppercase; letter-spacing:0.05em; }
+    .page-body { padding:16px 24px 24px; }
+    .welcome-card { background:linear-gradient(135deg,#6B1F7C,#C0186A); border-radius:12px; padding:20px 24px; margin-bottom:20px; display:flex; align-items:center; justify-content:space-between; box-shadow:0 4px 16px rgba(107,31,124,0.25); }
+    .welcome-card .welcome-text p { color:rgba(255,255,255,0.8); font-size:13px; font-weight:600; margin-bottom:4px; }
+    .welcome-card .welcome-text h2 { color:#fff; font-size:20px; font-weight:800; margin:0; }
+    .welcome-card .welcome-text span { color:rgba(255,255,255,0.7); font-size:12px; margin-top:4px; display:block; }
+    .welcome-card .welcome-icon { font-size:42px; color:rgba(255,255,255,0.2); }
+    .section-card { background:#fff; border-radius:10px; border:1px solid var(--border); box-shadow:0 2px 8px rgba(0,0,0,0.05); overflow:hidden; margin-bottom:20px; }
+    .section-card-header { background:var(--upb-purple); color:#fff; padding:10px 18px; font-size:13px; font-weight:700; letter-spacing:0.03em; display:flex; align-items:center; gap:8px; }
+    .section-card-body { padding:18px; color:var(--text-medium); font-size:13px; }
   </style>
 </head>
 <body>
 
-  <!-- NAVBAR -->
   <header class="navbar">
     <div class="navbar-left">
       <button class="btn-menu-toggle" onclick="toggleSidebar()" title="Menú">
@@ -264,7 +85,7 @@
         <span class="nav-user-lab" id="nav-lab"></span>
       </div>
       <div class="nav-avatar">
-        <img src="https://i.pravatar.cc/48?img=12" alt="Avatar" />
+        <img id="nav-avatar-img" src="" alt="Avatar" />
       </div>
       <button class="btn-salir" id="btn-salir">
         <i class="fa-solid fa-right-from-bracket"></i>
@@ -273,9 +94,7 @@
     </div>
   </header>
 
-  <!-- LAYOUT -->
   <div class="layout">
-
     <aside class="sidebar" id="sidebar">
       <nav class="sidebar-nav">
 
@@ -365,7 +184,6 @@
       </div>
       <div class="page-body">
 
-        <!-- Bienvenida -->
         <div class="welcome-card">
           <div class="welcome-text">
             <p>¡Bienvenido de nuevo!</p>
@@ -375,7 +193,6 @@
           <i class="fa-solid fa-flask welcome-icon"></i>
         </div>
 
-        <!-- Info importante -->
         <div class="section-card">
           <div class="section-card-header">
             <i class="fa-solid fa-bullhorn"></i>
@@ -388,34 +205,34 @@
 
       </div>
     </main>
-
   </div>
 
   <script>
-    // Cargar usuario
     const usuarioGuardado = sessionStorage.getItem('usuario');
-    if (!usuarioGuardado) {
-      window.location.href = 'index.html';
-    } else {
-      const usuario = JSON.parse(usuarioGuardado);
-      document.getElementById('nav-nombre').textContent = usuario.nombre.toUpperCase();
-      document.getElementById('nav-lab').textContent = usuario.lab;
-      document.getElementById('bienvenida-nombre').textContent = usuario.nombre;
-      document.getElementById('bienvenida-lab').textContent = usuario.lab;
-    }
+    if (!usuarioGuardado) { window.location.href = 'index.html'; }
 
-    // Botón salir
+    const usuario = JSON.parse(usuarioGuardado);
+    document.getElementById('nav-nombre').textContent = usuario.nombre.toUpperCase();
+    document.getElementById('nav-lab').textContent = usuario.lab;
+    document.getElementById('bienvenida-nombre').textContent = usuario.nombre;
+    document.getElementById('bienvenida-lab').textContent = usuario.lab;
+
+    const avatares = {
+      admin:    'assets/images/AVATARADMINISTRADOR.jpg',
+      profesor: 'assets/images/AVATARPROFESOR.jpg',
+      usuario:  'assets/images/AVATARPROFESOR.jpg'
+    };
+    document.getElementById('nav-avatar-img').src = avatares[usuario.rol] || 'assets/images/AVATARADMINISTRADOR.jpg';
+
     document.getElementById('btn-salir').addEventListener('click', function() {
       sessionStorage.removeItem('usuario');
       window.location.href = 'index.html';
     });
 
-    // Toggle sidebar
     function toggleSidebar() {
       document.getElementById('sidebar').classList.toggle('collapsed');
     }
 
-    // Toggle submenús
     function toggleMenu(item) {
       const isOpen = item.classList.contains('open');
       document.querySelectorAll('.nav-item.open').forEach(el => el.classList.remove('open'));

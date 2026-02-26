@@ -96,7 +96,6 @@
         </form>
       </div>
 
-     
     </div>
   </main>
 
@@ -200,10 +199,29 @@
   </div>
 
   <script>
-    // Usuarios de prueba
+    // Usuarios de prueba con roles
     const usuarios = [
-      { email: 'admin@upb.edu.co', password: '1234', nombre: 'Jairo Peña Fuentes', lab: 'Lab de Física No 1' },
-      { email: 'oscar@upb.edu.co', password: '1234', nombre: 'Oscar Santoya',       lab: 'Lab Automatización' }
+      {
+        email: 'admin@upb.edu.co',
+        password: '1234',
+        nombre: 'Jairo Peña Fuentes',
+        rol: 'admin',
+        modulo: null
+      },
+      {
+        email: 'profesor@upb.edu.co',
+        password: '1234',
+        nombre: 'Oscar Santoya',
+        rol: 'profesor',
+        modulo: null
+      },
+      {
+        email: 'usuario@upb.edu.co',
+        password: '1234',
+        nombre: 'María García',
+        rol: 'usuario',
+        modulo: null
+      }
     ];
 
     function handleLogin(e) {
@@ -223,7 +241,7 @@
 
       if (usuario) {
         sessionStorage.setItem('usuario', JSON.stringify(usuario));
-        window.location.href = 'dashboard.html';
+        window.location.href = 'seleccion-modulo.html';
       } else {
         mostrarError('Correo o contraseña incorrectos.');
       }
