@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Administración - Elementos | Sistema de Préstamo de Laboratorio</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --upb-purple:     #6B1F7C;
+      --upb-purple-dark:#4A1258;
+      --upb-pink:       #C0186A;
+      --upb-pink-light: #D91E7A;
+      --sidebar-bg:     #FFFFFF;
+      --bg-page:        #F0F0F5;
+      --text-dark:      #1A1A2E;
+      --text-medium:    #666680;
+      --text-light:     #AAAABC;
+      --border:         #E8E8F0;
+      --font:           'Nunito', sans-serif;
+      --success:        #16A34A;
+      --success-bg:     #F0FDF4;
+      --warning:        #D97706;
+      --warning-bg:     #FFFBEB;
+      --danger:         #DC2626;
+      --danger-bg:      #FEF2F2;
+    }
+
+    body { font-family: var(--font); background: var(--bg-page); min-height: 100vh; display: flex; flex-direction: column; }
+
+    .navbar { background: var(--upb-purple); height: 52px; display: flex; align-items: center; justify-content: space-between; padding: 0 16px 0 0; box-shadow: 0 2px 8px rgba(0,0,0,0.25); flex-shrink: 0; z-index: 100; }
+    .navbar-left { display: flex; align-items: center; }
+    .btn-menu-toggle { background: none; border: none; color: #fff; font-size: 18px; cursor: pointer; padding: 0 16px; height: 52px; display: flex; align-items: center; transition: background 0.2s; }
+    .btn-menu-toggle:hover { background: rgba(255,255,255,0.1); }
+    .navbar-logo { display: flex; align-items: center; padding: 0 12px; }
+    .navbar-logo img { height: 32px; width: auto; object-fit: contain; border-radius: 3px; }
+    .btn-acciones { background: rgba(255,255,255,0.15); border: none; color: #fff; font-family: var(--font); font-size: 13px; font-weight: 600; padding: 6px 14px; border-radius: 6px; cursor: pointer; margin-left: 12px; display: flex; align-items: center; gap: 6px; transition: background 0.2s; }
+    .btn-acciones:hover { background: rgba(255,255,255,0.25); }
+    .navbar-right { display: flex; align-items: center; gap: 10px; }
+    .nav-user-info { text-align: right; }
+    .nav-user-name { color: #fff; font-size: 13px; font-weight: 700; display: block; }
+    .nav-user-lab { color: rgba(255,255,255,0.7); font-size: 11px; display: block; }
+    .nav-avatar { width: 34px; height: 34px; border-radius: 50%; overflow: hidden; border: 2px solid rgba(255,255,255,0.4); }
+    .nav-avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .btn-salir { background: rgba(255,255,255,0.15); border: none; color: #fff; font-family: var(--font); font-size: 11px; font-weight: 700; padding: 5px 10px; border-radius: 5px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 1px; transition: background 0.2s; }
+    .btn-salir:hover { background: rgba(255,255,255,0.25); }
+    .btn-salir i { font-size: 14px; }
+
+    .layout { display: flex; flex: 1; overflow: hidden; }
+    .sidebar { width: 200px; background: var(--sidebar-bg); border-right: 1px solid var(--border); display: flex; flex-direction: column; flex-shrink: 0; transition: width 0.25s ease; overflow: hidden; }
+    .sidebar.collapsed { width: 0; }
+    .sidebar-nav { padding: 12px 0; flex: 1; }
+    .nav-item { position: relative; }
+    .nav-link { display: flex; align-items: center; justify-content: space-between; padding: 10px 18px; color: var(--text-medium); font-size: 13px; font-weight: 600; text-decoration: none; cursor: pointer; transition: background 0.15s, color 0.15s; user-select: none; white-space: nowrap; }
+    .nav-link:hover, .nav-link.active { color: var(--upb-pink); background: #FDF0F7; }
+    .nav-link .nav-icon { margin-right: 8px; font-size: 14px; width: 16px; text-align: center; flex-shrink: 0; }
+    .nav-link .nav-label { flex: 1; }
+    .nav-link .nav-arrow { font-size: 11px; transition: transform 0.2s; color: var(--text-light); }
+    .nav-item.open > .nav-link .nav-arrow { transform: rotate(90deg); }
+    .nav-link.home { color: var(--upb-purple); font-weight: 700; }
+    .nav-link.home:hover { background: #F5EEF8; }
+    .submenu { display: none; background: #FAFAFA; border-left: 3px solid var(--upb-pink); margin-left: 18px; }
+    .nav-item.open > .submenu { display: block; }
+    .submenu-link { display: flex; align-items: center; gap: 8px; padding: 8px 16px; color: var(--text-medium); font-size: 12px; font-weight: 500; text-decoration: none; transition: color 0.15s, background 0.15s; white-space: nowrap; }
+    .submenu-link:hover { color: var(--upb-purple); background: #F5EEF8; }
+    .submenu-link.active { color: var(--upb-purple); background: #F5EEF8; font-weight: 700; }
+    .submenu-link i { width: 14px; text-align: center; font-size: 12px; }
+
+    .main-content { flex: 1; overflow-y: auto; }
+    .page-header { background: var(--bg-page); padding: 14px 24px 0; display: flex; align-items: baseline; gap: 10px; }
+    .page-title { font-size: 18px; font-weight: 800; color: var(--text-dark); text-transform: uppercase; letter-spacing: 0.03em; }
+    .page-breadcrumb { font-size: 12px; color: var(--text-light); font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em; }
+    .page-body { padding: 16px 24px 24px; }
+
+    .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 20px; }
+    .stat-card { background: #fff; border-radius: 10px; border: 1px solid var(--border); padding: 14px 16px; display: flex; align-items: center; gap: 14px; box-shadow: 0 2px 6px rgba(0,0,0,0.04); }
+    .stat-icon { width: 42px; height: 42px; border-radius: 10px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+    .stat-icon.purple { background: #F3E8FF; color: var(--upb-purple); }
+    .stat-icon.green  { background: var(--success-bg); color: var(--success); }
+    .stat-icon.orange { background: var(--warning-bg); color: var(--warning); }
+    .stat-icon.gray   { background: #F3F4F6; color: #6B7280; }
+    .stat-value { font-size: 22px; font-weight: 800; color: var(--text-dark); line-height: 1; }
+    .stat-label { font-size: 11px; color: var(--text-light); font-weight: 600; margin-top: 2px; }
+
+    .tabs-bar { display: flex; gap: 4px; margin-bottom: 20px; background: #fff; border-radius: 10px; padding: 6px; border: 1px solid var(--border); width: fit-content; box-shadow: 0 2px 6px rgba(0,0,0,0.05); }
+    .tab-btn { padding: 7px 16px; border: none; border-radius: 7px; font-family: var(--font); font-size: 13px; font-weight: 600; cursor: pointer; color: var(--text-medium); background: transparent; display: flex; align-items: center; gap: 7px; transition: all 0.2s; }
+    .tab-btn:hover { color: var(--upb-purple); background: #F5EEF8; }
+    .tab-btn.active { background: var(--upb-purple); color: #fff; box-shadow: 0 2px 8px rgba(107,31,124,0.3); }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    .toolbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; gap: 12px; flex-wrap: wrap; }
+    .toolbar-left { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .search-box { position: relative; display: flex; align-items: center; }
+    .search-box i { position: absolute; left: 11px; color: var(--text-light); font-size: 13px; pointer-events: none; }
+    .search-box input { height: 36px; border: 1.5px solid var(--border); border-radius: 8px; padding: 0 12px 0 34px; font-family: var(--font); font-size: 13px; color: var(--text-dark); background: #fff; outline: none; width: 220px; transition: border-color 0.2s; }
+    .search-box input:focus { border-color: var(--upb-purple); box-shadow: 0 0 0 3px rgba(107,31,124,0.08); }
+    .filter-select { height: 36px; border: 1.5px solid var(--border); border-radius: 8px; padding: 0 10px; font-family: var(--font); font-size: 13px; color: var(--text-dark); background: #fff; outline: none; cursor: pointer; }
+    .btn-primary { height: 36px; padding: 0 16px; border: none; border-radius: 8px; background: linear-gradient(135deg, var(--upb-purple), var(--upb-pink-light)); color: #fff; font-family: var(--font); font-size: 13px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 7px; box-shadow: 0 2px 10px rgba(192,24,106,0.3); transition: opacity 0.2s, transform 0.15s; }
+    .btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
+    .btn-secondary { height: 36px; padding: 0 14px; border: 1.5px solid var(--border); border-radius: 8px; background: #fff; color: var(--text-medium); font-family: var(--font); font-size: 13px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 7px; transition: border-color 0.2s, color 0.2s; }
+    .btn-secondary:hover { border-color: var(--upb-purple); color: var(--upb-purple); }
+
+    .table-card { background: #fff; border-radius: 10px; border: 1px solid var(--border); box-shadow: 0 2px 8px rgba(0,0,0,0.05); overflow: hidden; }
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; }
+    thead { background: #FAFAFA; border-bottom: 2px solid var(--border); }
+    th { padding: 11px 14px; text-align: left; font-size: 11px; font-weight: 700; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.07em; white-space: nowrap; }
+    td { padding: 11px 14px; font-size: 13px; color: var(--text-dark); border-bottom: 1px solid #F4F4F8; }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: #FDFAFF; }
+    .elemento-name { font-weight: 700; }
+    .elemento-inv { font-size: 11px; color: var(--text-light); font-weight: 500; margin-top: 2px; }
+    .badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 9px; border-radius: 20px; font-size: 11px; font-weight: 700; }
+    .badge-active { background: var(--success-bg); color: var(--success); }
+    .badge-inactive { background: #F3F4F6; color: #6B7280; }
+    .badge-maintenance { background: var(--warning-bg); color: var(--warning); }
+    .badge-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+    .action-btns { display: flex; gap: 6px; }
+    .btn-icon { width: 30px; height: 30px; border-radius: 7px; border: 1px solid var(--border); background: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 13px; transition: all 0.15s; color: var(--text-medium); }
+    .btn-icon:hover { border-color: var(--upb-purple); color: var(--upb-purple); background: #F5EEF8; }
+    .btn-icon.danger:hover { border-color: var(--danger); color: var(--danger); background: var(--danger-bg); }
+    .table-footer { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border-top: 1px solid var(--border); font-size: 12px; color: var(--text-light); font-weight: 600; }
+    .empty-state { text-align: center; padding: 48px 24px; color: var(--text-light); }
+    .empty-state i { font-size: 40px; margin-bottom: 12px; opacity: 0.4; display: block; }
+    .empty-state p { font-size: 14px; font-weight: 600; }
+    .chip { display: inline-block; padding: 2px 8px; border-radius: 5px; font-size: 11px; font-weight: 700; background: #F3E8FF; color: var(--upb-purple); }
+
+    .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 1000; align-items: center; justify-content: center; padding: 16px; }
+    .modal-overlay.open { display: flex; }
+    .modal { background: #fff; border-radius: 16px; width: 100%; max-width: 560px; max-height: 90vh; overflow-y: auto; box-shadow: 0 24px 60px rgba(0,0,0,0.25); animation: modalIn 0.2s ease; }
+    @keyframes modalIn { from { opacity: 0; transform: scale(0.96) translateY(10px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+    .modal-header { display: flex; align-items: center; justify-content: space-between; padding: 18px 22px 16px; border-bottom: 1px solid var(--border); }
+    .modal-title { font-size: 16px; font-weight: 800; color: var(--text-dark); display: flex; align-items: center; gap: 10px; }
+    .modal-title-icon { width: 34px; height: 34px; border-radius: 9px; background: linear-gradient(135deg, var(--upb-purple), var(--upb-pink-light)); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 15px; }
+    .modal-close { width: 30px; height: 30px; border-radius: 8px; border: 1.5px solid var(--border); background: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--text-light); font-size: 14px; transition: all 0.15s; }
+    .modal-close:hover { border-color: var(--danger); color: var(--danger); }
+    .modal-body { padding: 20px 22px; }
+    .modal-footer { padding: 14px 22px; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 10px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+    .form-row.full { grid-template-columns: 1fr; }
+    .form-group { display: flex; flex-direction: column; gap: 5px; }
+    .form-label { font-size: 12px; font-weight: 700; color: var(--text-dark); }
+    .form-label .req { color: var(--upb-pink); }
+    .form-control { height: 38px; border: 1.5px solid var(--border); border-radius: 8px; padding: 0 12px; font-family: var(--font); font-size: 13px; color: var(--text-dark); background: #F9F9FC; outline: none; transition: border-color 0.2s, box-shadow 0.2s; }
+    .form-control:focus { border-color: var(--upb-purple); background: #fff; box-shadow: 0 0 0 3px rgba(107,31,124,0.08); }
+    textarea.form-control { height: 80px; padding: 10px 12px; resize: vertical; }
+    .confirm-icon { text-align: center; margin-bottom: 16px; }
+    .confirm-icon i { font-size: 48px; }
+    .confirm-title { text-align: center; font-size: 18px; font-weight: 800; color: var(--text-dark); margin-bottom: 8px; }
+    .confirm-text { text-align: center; font-size: 13px; color: var(--text-medium); line-height: 1.5; }
+    .btn-danger { height: 36px; padding: 0 16px; border: none; border-radius: 8px; background: var(--danger); color: #fff; font-family: var(--font); font-size: 13px; font-weight: 700; cursor: pointer; transition: opacity 0.2s; }
+    .btn-danger:hover { opacity: 0.85; }
+
+    .toast-container { position: fixed; bottom: 24px; right: 24px; z-index: 2000; display: flex; flex-direction: column; gap: 8px; }
+    .toast { background: #fff; border-radius: 10px; padding: 12px 16px; box-shadow: 0 8px 24px rgba(0,0,0,0.15); border-left: 4px solid; display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 600; min-width: 260px; animation: toastIn 0.25s ease; }
+    @keyframes toastIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
+    .toast.success { border-color: var(--success); color: var(--success); }
+    .toast.error   { border-color: var(--danger);  color: var(--danger); }
+    .toast.warning { border-color: var(--warning); color: var(--warning); }
+    .toast i { font-size: 16px; }
+    .toast span { color: var(--text-dark); }
+  </style>
+</head>
+<body>
+
+  <header class="navbar">
+    <div class="navbar-left">
+      <button class="btn-menu-toggle" onclick="toggleSidebar()"><i class="fa-solid fa-bars"></i></button>
+      <div class="navbar-logo"><img src="assets/images/LOGOUPB.jpg" alt="UPB" /></div>
+      <button class="btn-acciones">Acciones Rápidas <i class="fa-solid fa-chevron-down" style="font-size:10px"></i></button>
+    </div>
+    <div class="navbar-right">
+      <div class="nav-user-info">
+        <span class="nav-user-name" id="nav-nombre">...</span>
+        <span class="nav-user-lab" id="nav-lab"></span>
+      </div>
+      <div class="nav-avatar"><img id="nav-avatar-img" src="" alt="Avatar" /></div>
+      <button class="btn-salir" id="btn-salir"><i class="fa-solid fa-right-from-bracket"></i> Salir</button>
+    </div>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <nav class="sidebar-nav">
+        <div class="nav-item">
+          <a class="nav-link home" href="dashboard.html">
+            <i class="nav-icon fa-solid fa-house"></i>
+            <span class="nav-label">Menú Principal</span>
+          </a>
+        </div>
+        <div class="nav-item" onclick="toggleMenu(this)">
+          <div class="nav-link">
+            <i class="nav-icon fa-solid fa-box-open"></i>
+            <span class="nav-label">Entregas</span>
+            <i class="nav-arrow fa-solid fa-chevron-right"></i>
+          </div>
+          <div class="submenu">
+            <a class="submenu-link" href="#"><i class="fa-solid fa-list"></i> Ver Entregas</a>
+            <a class="submenu-link" href="#"><i class="fa-solid fa-plus"></i> Nueva Entrega</a>
+          </div>
+        </div>
+        <div class="nav-item" onclick="toggleMenu(this)">
+          <div class="nav-link">
+            <i class="nav-icon fa-solid fa-users"></i>
+            <span class="nav-label">Usuarios</span>
+            <i class="nav-arrow fa-solid fa-chevron-right"></i>
+          </div>
+          <div class="submenu">
+            <a class="submenu-link" href="#"><i class="fa-solid fa-list"></i> Ver Usuarios</a>
+            <a class="submenu-link" href="#"><i class="fa-solid fa-user-plus"></i> Crear Usuario</a>
+          </div>
+        </div>
+        <div class="nav-item" onclick="toggleMenu(this)">
+          <div class="nav-link">
+            <i class="nav-icon fa-solid fa-cart-shopping"></i>
+            <span class="nav-label">Solicitudes</span>
+            <i class="nav-arrow fa-solid fa-chevron-right"></i>
+          </div>
+          <div class="submenu">
+            <a class="submenu-link" href="#"><i class="fa-solid fa-clipboard-list"></i> Solicitud de Elementos</a>
+            <a class="submenu-link" href="#"><i class="fa-solid fa-file-alt"></i> Solicitud Detalle</a>
+            <a class="submenu-link" href="#"><i class="fa-solid fa-search"></i> Seleccionar</a>
+            <a class="submenu-link" href="#"><i class="fa-solid fa-ban"></i> Cancelados</a>
+            <a class="submenu-link" href="#"><i class="fa-solid fa-star"></i> Solicitud Especial Admin</a>
+            <a class="submenu-link" href="#"><i class="fa-solid fa-star-half"></i> Solicitud Especial Persona</a>
+          </div>
+        </div>
+        <div class="nav-item open" onclick="toggleMenu(this)">
+          <div class="nav-link active">
+            <i class="nav-icon fa-solid fa-gear"></i>
+            <span class="nav-label">Administración</span>
+            <i class="nav-arrow fa-solid fa-chevron-right"></i>
+          </div>
+          <div class="submenu">
+            <a class="submenu-link active" href="Admin-Equipos.html"><i class="fa-solid fa-desktop"></i> Elementos</a>
+            <a class="submenu-link" href="Admin_Calendario.html"><i class="fa-solid fa-calendar"></i> Calendario</a>
+            <a class="submenu-link" href="Admin-Informacion-Importante.html"><i class="fa-solid fa-bullhorn"></i> Información Importante</a>
+            <a class="submenu-link" href="Admin-Foto-Perfil.html"><i class="fa-solid fa-camera"></i> Foto Perfil</a>
+          </div>
+        </div>
+        <div class="nav-item" onclick="toggleMenu(this)">
+          <div class="nav-link">
+            <i class="nav-icon fa-solid fa-file-lines"></i>
+            <span class="nav-label">Reportes</span>
+            <i class="nav-arrow fa-solid fa-chevron-right"></i>
+          </div>
+          <div class="submenu">
+            <a class="submenu-link" href="#"><i class="fa-solid fa-file"></i> Resumen Préstamos</a>
+            <a class="submenu-link" href="#"><i class="fa-solid fa-file"></i> Detalle Préstamos</a>
+            <a class="submenu-link" href="#"><i class="fa-solid fa-file"></i> Préstamos x Elemento</a>
+            <a class="submenu-link" href="#"><i class="fa-solid fa-file"></i> Elementos prestados</a>
+            <a class="submenu-link" href="#"><i class="fa-solid fa-file"></i> Inventario General</a>
+          </div>
+        </div>
+      </nav>
+    </aside>
+
+    <main class="main-content">
+      <div class="page-header">
+        <span class="page-title">ADMINISTRACIÓN</span>
+        <span class="page-breadcrumb">ADMINISTRACIÓN › ELEMENTOS</span>
+      </div>
+      <div class="page-body">
+
+        <div class="stats-row">
+          <div class="stat-card">
+            <div class="stat-icon purple"><i class="fa-solid fa-desktop"></i></div>
+            <div><div class="stat-value" id="stat-total">0</div><div class="stat-label">Total Elementos</div></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon green"><i class="fa-solid fa-circle-check"></i></div>
+            <div><div class="stat-value" id="stat-activos">0</div><div class="stat-label">Activos</div></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon orange"><i class="fa-solid fa-wrench"></i></div>
+            <div><div class="stat-value" id="stat-mant">0</div><div class="stat-label">En Mantenimiento</div></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon gray"><i class="fa-solid fa-ban"></i></div>
+            <div><div class="stat-value" id="stat-inactivos">0</div><div class="stat-label">Inactivos</div></div>
+          </div>
+        </div>
+
+        <div class="tabs-bar">
+          <button class="tab-btn active" onclick="switchTab('laboratorios', this)"><i class="fa-solid fa-flask"></i> Laboratorios</button>
+          <button class="tab-btn" onclick="switchTab('tipos', this)"><i class="fa-solid fa-tags"></i> Tipos de Elemento</button>
+          <button class="tab-btn" onclick="switchTab('elementos', this)"><i class="fa-solid fa-desktop"></i> Elementos</button>
+        </div>
+
+        <!-- TAB LABORATORIOS -->
+        <div class="tab-panel active" id="tab-laboratorios">
+          <div class="toolbar">
+            <div class="toolbar-left">
+              <div class="search-box">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" placeholder="Buscar laboratorio..." id="searchLab" oninput="renderLabs()" />
+              </div>
+            </div>
+            <button class="btn-primary" onclick="abrirModalLab()"><i class="fa-solid fa-plus"></i> Nuevo Laboratorio</button>
+          </div>
+          <div class="table-card">
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Nombre del Laboratorio</th><th>Descripción</th><th>Elementos Asociados</th><th>Acciones</th></tr></thead>
+                <tbody id="tbodyLabs"></tbody>
+              </table>
+            </div>
+            <div class="table-footer"><span id="labs-count">Mostrando 0 laboratorios</span></div>
+          </div>
+        </div>
+
+        <!-- TAB TIPOS -->
+        <div class="tab-panel" id="tab-tipos">
+          <div class="toolbar">
+            <div class="toolbar-left">
+              <div class="search-box">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" placeholder="Buscar tipo..." id="searchTipo" oninput="renderTipos()" />
+              </div>
+            </div>
+            <button class="btn-primary" onclick="abrirModalTipo()"><i class="fa-solid fa-plus"></i> Nuevo Tipo</button>
+          </div>
+          <div class="table-card">
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Nombre del Tipo</th><th>Descripción</th><th>Elementos Asociados</th><th>Acciones</th></tr></thead>
+                <tbody id="tbodyTipos"></tbody>
+              </table>
+            </div>
+            <div class="table-footer"><span id="tipos-count">Mostrando 0 tipos</span></div>
+          </div>
+        </div>
+
+        <!-- TAB ELEMENTOS -->
+        <div class="tab-panel" id="tab-elementos">
+          <div class="toolbar">
+            <div class="toolbar-left">
+              <div class="search-box">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" placeholder="Buscar elemento..." id="searchElemento" oninput="renderElementos()" />
+              </div>
+              <select class="filter-select" id="filterLab" onchange="renderElementos()"><option value="">Todos los laboratorios</option></select>
+              <select class="filter-select" id="filterEstado" onchange="renderElementos()">
+                <option value="">Todos los estados</option>
+                <option value="Activo">Activo</option>
+                <option value="Mantenimiento">Mantenimiento</option>
+                <option value="Inactivo">Inactivo</option>
+              </select>
+            </div>
+            <button class="btn-primary" onclick="abrirModalElemento()"><i class="fa-solid fa-plus"></i> Nuevo Elemento</button>
+          </div>
+          <div class="table-card">
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Elemento</th><th>N° Inventario</th><th>Tipo</th><th>Laboratorio</th><th>Estado</th><th>Acciones</th></tr></thead>
+                <tbody id="tbodyElementos"></tbody>
+              </table>
+            </div>
+            <div class="table-footer"><span id="elementos-count">Mostrando 0 elementos</span></div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- MODAL ELEMENTO -->
+  <div class="modal-overlay" id="modalElemento">
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-title"><div class="modal-title-icon"><i class="fa-solid fa-desktop"></i></div><span id="modalElementoTitle">Registrar Elemento</span></div>
+        <button class="modal-close" onclick="cerrarModal('modalElemento')"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Nombre <span class="req">*</span></label><input class="form-control" type="text" id="eq-nombre" placeholder="Ej: Osciloscopio Digital" /></div>
+          <div class="form-group"><label class="form-label">N° Inventario <span class="req">*</span></label><input class="form-control" type="text" id="eq-inventario" placeholder="Ej: INV-2024-001" /></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Tipo <span class="req">*</span></label><select class="form-control" id="eq-tipo"></select></div>
+          <div class="form-group"><label class="form-label">Laboratorio <span class="req">*</span></label><select class="form-control" id="eq-lab"></select></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Estado <span class="req">*</span></label><select class="form-control" id="eq-estado"><option value="Activo">Activo</option><option value="Mantenimiento">En Mantenimiento</option><option value="Inactivo">Inactivo</option></select></div>
+          <div class="form-group"><label class="form-label">Marca / Modelo</label><input class="form-control" type="text" id="eq-marca" placeholder="Ej: Tektronix TBS1052B" /></div>
+        </div>
+        <div class="form-row full"><div class="form-group"><label class="form-label">Características Técnicas</label><textarea class="form-control" id="eq-caracteristicas" placeholder="Descripción técnica del elemento..."></textarea></div></div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" onclick="cerrarModal('modalElemento')">Cancelar</button>
+        <button class="btn-primary" onclick="guardarElemento()"><i class="fa-solid fa-floppy-disk"></i> Guardar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL LABORATORIO -->
+  <div class="modal-overlay" id="modalLab">
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-title"><div class="modal-title-icon"><i class="fa-solid fa-flask"></i></div><span id="modalLabTitle">Registrar Laboratorio</span></div>
+        <button class="modal-close" onclick="cerrarModal('modalLab')"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <div class="form-row full"><div class="form-group"><label class="form-label">Nombre <span class="req">*</span></label><input class="form-control" type="text" id="lab-nombre" placeholder="Ej: Laboratorio de Automatización" /></div></div>
+        <div class="form-row full"><div class="form-group"><label class="form-label">Descripción</label><textarea class="form-control" id="lab-descripcion" placeholder="Descripción del laboratorio..."></textarea></div></div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" onclick="cerrarModal('modalLab')">Cancelar</button>
+        <button class="btn-primary" onclick="guardarLab()"><i class="fa-solid fa-floppy-disk"></i> Guardar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL TIPO -->
+  <div class="modal-overlay" id="modalTipo">
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-title"><div class="modal-title-icon"><i class="fa-solid fa-tags"></i></div><span id="modalTipoTitle">Registrar Tipo de Elemento</span></div>
+        <button class="modal-close" onclick="cerrarModal('modalTipo')"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <div class="form-row full"><div class="form-group"><label class="form-label">Nombre <span class="req">*</span></label><input class="form-control" type="text" id="tipo-nombre" placeholder="Ej: Instrumento de Medición" /></div></div>
+        <div class="form-row full"><div class="form-group"><label class="form-label">Descripción</label><textarea class="form-control" id="tipo-descripcion" placeholder="Descripción del tipo..."></textarea></div></div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" onclick="cerrarModal('modalTipo')">Cancelar</button>
+        <button class="btn-primary" onclick="guardarTipo()"><i class="fa-solid fa-floppy-disk"></i> Guardar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL CONFIRMAR -->
+  <div class="modal-overlay" id="modalConfirm">
+    <div class="modal" style="max-width:400px">
+      <div class="modal-body" style="padding:28px 24px 20px">
+        <div class="confirm-icon"><i class="fa-solid fa-triangle-exclamation" style="color:#D97706"></i></div>
+        <div class="confirm-title">¿Inactivar elemento?</div>
+        <div class="confirm-text" id="confirm-text">El elemento será marcado como inactivo.</div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" onclick="cerrarModal('modalConfirm')">Cancelar</button>
+        <button class="btn-danger" id="btn-confirm-action">Inactivar</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast-container" id="toastContainer"></div>
+
+  <script>
+    const u = sessionStorage.getItem('usuario');
+if (u) {
+  const usr = JSON.parse(u);
+  document.getElementById('nav-nombre').textContent = usr.nombre.toUpperCase();
+  document.getElementById('nav-lab').textContent = usr.lab;
+  const avatares = {
+    admin:    'assets/images/AVATARADMINISTRADOR.jpg',
+    profesor: 'assets/images/AVATARPROFESOR.jpg',
+    usuario:  'assets/images/AVATARPROFESOR.jpg'
+  };
+  document.getElementById('nav-avatar-img').src = avatares[usr.rol] || 'assets/images/AVATARADMINISTRADOR.jpg';
+}
+    document.getElementById('btn-salir').addEventListener('click', () => {
+      sessionStorage.removeItem('usuario');
+      window.location.href = 'index.html';
+    });
+
+    function toggleSidebar() { document.getElementById('sidebar').classList.toggle('collapsed'); }
+   function toggleMenu(item) {
+  const isOpen = item.classList.contains('open');
+  document.querySelectorAll('.nav-item.open').forEach(el => el.classList.remove('open'));
+  if (!isOpen) item.classList.add('open');
+}
+
+document.querySelectorAll('.submenu-link').forEach(link => {
+  link.addEventListener('click', function(e) {
+    e.stopPropagation();
+  });
+});
+    function switchTab(name, btn) {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('tab-' + name).classList.add('active');
+    }
+
+    // DATOS VACÍOS — se llenan desde la interfaz
+    let laboratorios = [];
+    let tiposElemento = [];
+    let elementos = [];
+
+    let editingElementoId = null, editingLabId = null, editingTipoId = null;
+    let nextIdElemento = 1, nextIdLab = 1, nextIdTipo = 1;
+
+    function updateStats() {
+      document.getElementById('stat-total').textContent = elementos.length;
+      document.getElementById('stat-activos').textContent = elementos.filter(e => e.estado === 'Activo').length;
+      document.getElementById('stat-mant').textContent = elementos.filter(e => e.estado === 'Mantenimiento').length;
+      document.getElementById('stat-inactivos').textContent = elementos.filter(e => e.estado === 'Inactivo').length;
+    }
+
+    function badgeEstado(estado) {
+      if (estado === 'Activo') return `<span class="badge badge-active"><span class="badge-dot"></span>Activo</span>`;
+      if (estado === 'Mantenimiento') return `<span class="badge badge-maintenance"><span class="badge-dot"></span>Mantenimiento</span>`;
+      return `<span class="badge badge-inactive"><span class="badge-dot"></span>Inactivo</span>`;
+    }
+
+    function renderElementos() {
+      const search = document.getElementById('searchElemento').value.toLowerCase();
+      const labFilter = document.getElementById('filterLab').value;
+      const estFilter = document.getElementById('filterEstado').value;
+      const filtered = elementos.filter(e => {
+        const labName = laboratorios.find(l => l.id === e.lab)?.nombre || '';
+        const tipoName = tiposElemento.find(t => t.id === e.tipo)?.nombre || '';
+        return (e.nombre.toLowerCase().includes(search) || e.inventario.toLowerCase().includes(search) || tipoName.toLowerCase().includes(search))
+          && (!labFilter || labName === labFilter) && (!estFilter || e.estado === estFilter);
+      });
+      document.getElementById('tbodyElementos').innerHTML = filtered.length === 0
+        ? `<tr><td colspan="6"><div class="empty-state"><i class="fa-solid fa-desktop"></i><p>No hay elementos registrados</p></div></td></tr>`
+        : filtered.map(e => {
+            const lab = laboratorios.find(l => l.id === e.lab)?.nombre || '-';
+            const tipo = tiposElemento.find(t => t.id === e.tipo)?.nombre || '-';
+            return `<tr>
+              <td><div class="elemento-name">${e.nombre}</div><div class="elemento-inv">${e.marca || ''}</div></td>
+              <td>${e.inventario}</td>
+              <td><span class="chip">${tipo}</span></td>
+              <td>${lab}</td>
+              <td>${badgeEstado(e.estado)}</td>
+              <td><div class="action-btns">
+                <button class="btn-icon" onclick="editarElemento(${e.id})"><i class="fa-solid fa-pen"></i></button>
+                ${e.estado !== 'Inactivo'
+                  ? `<button class="btn-icon danger" onclick="confirmarInactivar(${e.id})"><i class="fa-solid fa-ban"></i></button>`
+                  : `<button class="btn-icon" onclick="activarElemento(${e.id})" style="color:#16A34A"><i class="fa-solid fa-circle-check"></i></button>`}
+              </div></td>
+            </tr>`;
+          }).join('');
+      document.getElementById('elementos-count').textContent = `Mostrando ${filtered.length} elemento${filtered.length !== 1 ? 's' : ''}`;
+    }
+
+    function renderLabs() {
+      const search = document.getElementById('searchLab').value.toLowerCase();
+      const filtered = laboratorios.filter(l => l.nombre.toLowerCase().includes(search));
+      document.getElementById('tbodyLabs').innerHTML = filtered.length === 0
+        ? `<tr><td colspan="4"><div class="empty-state"><i class="fa-solid fa-flask"></i><p>No hay laboratorios registrados</p></div></td></tr>`
+        : filtered.map(l => {
+            const count = elementos.filter(e => e.lab === l.id).length;
+            return `<tr>
+              <td><strong>${l.nombre}</strong></td>
+              <td style="color:var(--text-medium)">${l.descripcion || '-'}</td>
+              <td><span class="chip">${count} elemento${count !== 1 ? 's' : ''}</span></td>
+              <td><div class="action-btns"><button class="btn-icon" onclick="editarLab(${l.id})"><i class="fa-solid fa-pen"></i></button></div></td>
+            </tr>`;
+          }).join('');
+      document.getElementById('labs-count').textContent = `Mostrando ${filtered.length} laboratorio${filtered.length !== 1 ? 's' : ''}`;
+    }
+
+    function renderTipos() {
+      const search = document.getElementById('searchTipo').value.toLowerCase();
+      const filtered = tiposElemento.filter(t => t.nombre.toLowerCase().includes(search));
+      document.getElementById('tbodyTipos').innerHTML = filtered.length === 0
+        ? `<tr><td colspan="4"><div class="empty-state"><i class="fa-solid fa-tags"></i><p>No hay tipos registrados</p></div></td></tr>`
+        : filtered.map(t => {
+            const count = elementos.filter(e => e.tipo === t.id).length;
+            return `<tr>
+              <td><strong>${t.nombre}</strong></td>
+              <td style="color:var(--text-medium)">${t.descripcion || '-'}</td>
+              <td><span class="chip">${count} elemento${count !== 1 ? 's' : ''}</span></td>
+              <td><div class="action-btns"><button class="btn-icon" onclick="editarTipo(${t.id})"><i class="fa-solid fa-pen"></i></button></div></td>
+            </tr>`;
+          }).join('');
+      document.getElementById('tipos-count').textContent = `Mostrando ${filtered.length} tipo${filtered.length !== 1 ? 's' : ''}`;
+    }
+
+    function poblarSelects() {
+      document.getElementById('eq-lab').innerHTML = laboratorios.length
+        ? laboratorios.map(l => `<option value="${l.id}">${l.nombre}</option>`).join('')
+        : `<option value="">-- Sin laboratorios --</option>`;
+      document.getElementById('eq-tipo').innerHTML = tiposElemento.length
+        ? tiposElemento.map(t => `<option value="${t.id}">${t.nombre}</option>`).join('')
+        : `<option value="">-- Sin tipos --</option>`;
+      document.getElementById('filterLab').innerHTML = `<option value="">Todos los laboratorios</option>`
+        + laboratorios.map(l => `<option value="${l.nombre}">${l.nombre}</option>`).join('');
+    }
+
+    function abrirModal(id) { document.getElementById(id).classList.add('open'); }
+    function cerrarModal(id) { document.getElementById(id).classList.remove('open'); }
+    document.querySelectorAll('.modal-overlay').forEach(o => {
+      o.addEventListener('click', function(e) { if (e.target === this) this.classList.remove('open'); });
+    });
+
+    function abrirModalElemento() {
+      editingElementoId = null;
+      document.getElementById('modalElementoTitle').textContent = 'Registrar Elemento';
+      ['eq-nombre','eq-inventario','eq-marca','eq-caracteristicas'].forEach(id => document.getElementById(id).value = '');
+      document.getElementById('eq-estado').value = 'Activo';
+      poblarSelects(); abrirModal('modalElemento');
+    }
+    function editarElemento(id) {
+      const e = elementos.find(x => x.id === id); if (!e) return;
+      editingElementoId = id; poblarSelects();
+      document.getElementById('modalElementoTitle').textContent = 'Editar Elemento';
+      document.getElementById('eq-nombre').value = e.nombre;
+      document.getElementById('eq-inventario').value = e.inventario;
+      document.getElementById('eq-marca').value = e.marca || '';
+      document.getElementById('eq-caracteristicas').value = e.caracteristicas || '';
+      document.getElementById('eq-estado').value = e.estado;
+      document.getElementById('eq-lab').value = e.lab;
+      document.getElementById('eq-tipo').value = e.tipo;
+      abrirModal('modalElemento');
+    }
+    function guardarElemento() {
+      const nombre = document.getElementById('eq-nombre').value.trim();
+      const inventario = document.getElementById('eq-inventario').value.trim();
+      if (!nombre || !inventario) { showToast('Completa los campos obligatorios.', 'error'); return; }
+      const obj = {
+        nombre, inventario,
+        tipo: parseInt(document.getElementById('eq-tipo').value),
+        lab: parseInt(document.getElementById('eq-lab').value),
+        estado: document.getElementById('eq-estado').value,
+        marca: document.getElementById('eq-marca').value.trim(),
+        caracteristicas: document.getElementById('eq-caracteristicas').value.trim()
+      };
+      if (editingElementoId) {
+        const idx = elementos.findIndex(e => e.id === editingElementoId);
+        elementos[idx] = { ...elementos[idx], ...obj };
+        showToast('Elemento actualizado correctamente.', 'success');
+      } else {
+        elementos.push({ id: nextIdElemento++, ...obj });
+        showToast('Elemento registrado correctamente.', 'success');
+      }
+      cerrarModal('modalElemento'); renderElementos(); updateStats();
+    }
+    function confirmarInactivar(id) {
+      const e = elementos.find(x => x.id === id);
+      document.getElementById('confirm-text').textContent = `"${e.nombre}" será inactivo. El historial se conservará.`;
+      document.getElementById('btn-confirm-action').onclick = () => {
+        elementos.find(x => x.id === id).estado = 'Inactivo';
+        showToast('Elemento inactivado. Historial conservado.', 'warning');
+        cerrarModal('modalConfirm'); renderElementos(); updateStats();
+      };
+      abrirModal('modalConfirm');
+    }
+    function activarElemento(id) {
+      elementos.find(e => e.id === id).estado = 'Activo';
+      showToast('Elemento activado correctamente.', 'success');
+      renderElementos(); updateStats();
+    }
+
+    function abrirModalLab() {
+      editingLabId = null;
+      document.getElementById('modalLabTitle').textContent = 'Registrar Laboratorio';
+      document.getElementById('lab-nombre').value = '';
+      document.getElementById('lab-descripcion').value = '';
+      abrirModal('modalLab');
+    }
+    function editarLab(id) {
+      const l = laboratorios.find(x => x.id === id); if (!l) return;
+      editingLabId = id;
+      document.getElementById('modalLabTitle').textContent = 'Editar Laboratorio';
+      document.getElementById('lab-nombre').value = l.nombre;
+      document.getElementById('lab-descripcion').value = l.descripcion || '';
+      abrirModal('modalLab');
+    }
+    function guardarLab() {
+      const nombre = document.getElementById('lab-nombre').value.trim();
+      if (!nombre) { showToast('El nombre es obligatorio.', 'error'); return; }
+      const descripcion = document.getElementById('lab-descripcion').value.trim();
+      if (editingLabId) {
+        const idx = laboratorios.findIndex(l => l.id === editingLabId);
+        laboratorios[idx] = { ...laboratorios[idx], nombre, descripcion };
+        showToast('Laboratorio actualizado.', 'success');
+      } else {
+        laboratorios.push({ id: nextIdLab++, nombre, descripcion });
+        showToast('Laboratorio registrado.', 'success');
+      }
+      cerrarModal('modalLab'); renderLabs(); poblarSelects();
+    }
+
+    function abrirModalTipo() {
+      editingTipoId = null;
+      document.getElementById('modalTipoTitle').textContent = 'Registrar Tipo de Elemento';
+      document.getElementById('tipo-nombre').value = '';
+      document.getElementById('tipo-descripcion').value = '';
+      abrirModal('modalTipo');
+    }
+    function editarTipo(id) {
+      const t = tiposElemento.find(x => x.id === id); if (!t) return;
+      editingTipoId = id;
+      document.getElementById('modalTipoTitle').textContent = 'Editar Tipo de Elemento';
+      document.getElementById('tipo-nombre').value = t.nombre;
+      document.getElementById('tipo-descripcion').value = t.descripcion || '';
+      abrirModal('modalTipo');
+    }
+    function guardarTipo() {
+      const nombre = document.getElementById('tipo-nombre').value.trim();
+      if (!nombre) { showToast('El nombre es obligatorio.', 'error'); return; }
+      const descripcion = document.getElementById('tipo-descripcion').value.trim();
+      if (editingTipoId) {
+        const idx = tiposElemento.findIndex(t => t.id === editingTipoId);
+        tiposElemento[idx] = { ...tiposElemento[idx], nombre, descripcion };
+        showToast('Tipo actualizado.', 'success');
+      } else {
+        tiposElemento.push({ id: nextIdTipo++, nombre, descripcion });
+        showToast('Tipo registrado.', 'success');
+      }
+      cerrarModal('modalTipo'); renderTipos(); poblarSelects();
+    }
+
+    function showToast(msg, type = 'success') {
+      const icons = { success: 'fa-circle-check', error: 'fa-circle-exclamation', warning: 'fa-triangle-exclamation' };
+      const t = document.createElement('div');
+      t.className = `toast ${type}`;
+      t.innerHTML = `<i class="fa-solid ${icons[type]}"></i><span>${msg}</span>`;
+      document.getElementById('toastContainer').appendChild(t);
+      setTimeout(() => { t.style.opacity = '0'; t.style.transition = 'opacity 0.3s'; setTimeout(() => t.remove(), 300); }, 3000);
+    }
+
+    poblarSelects();
+    renderElementos();
+    renderLabs();
+    renderTipos();
+    updateStats();
+  </script>
+</body>
+</html>
