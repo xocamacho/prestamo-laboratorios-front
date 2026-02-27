@@ -152,10 +152,10 @@
             <i class="nav-arrow fa-solid fa-chevron-right"></i>
           </div>
           <div class="submenu">
-            <a class="submenu-link" href="#"><i class="fa-solid fa-desktop"></i> Equipos</a>
-            <a class="submenu-link" href="#"><i class="fa-solid fa-calendar"></i> Calendario</a>
-            <a class="submenu-link" href="#"><i class="fa-solid fa-bullhorn"></i> Información Importante</a>
-            <a class="submenu-link" href="#"><i class="fa-solid fa-camera"></i> Foto Perfil</a>
+           <a class="submenu-link" href="Admin-Equipos.html"><i class="fa-solid fa-desktop"></i> Equipos</a>
+          <a class="submenu-link" href="Admin_Calendario.html"><i class="fa-solid fa-calendar"></i> Calendario</a>
+            <a class="submenu-link" href="Admin-Informacion-Importante.html"><i class="fa-solid fa-bullhorn"></i> Información Importante</a>
+           <a class="submenu-link" href="Admin-Foto-Perfil.html"><i class="fa-solid fa-camera"></i> Foto Perfil</a>
           </div>
         </div>
 
@@ -233,11 +233,17 @@
       document.getElementById('sidebar').classList.toggle('collapsed');
     }
 
-    function toggleMenu(item) {
-      const isOpen = item.classList.contains('open');
-      document.querySelectorAll('.nav-item.open').forEach(el => el.classList.remove('open'));
-      if (!isOpen) item.classList.add('open');
-    }
+   function toggleMenu(item) {
+  const isOpen = item.classList.contains('open');
+  document.querySelectorAll('.nav-item.open').forEach(el => el.classList.remove('open'));
+  if (!isOpen) item.classList.add('open');
+}
+
+document.querySelectorAll('.submenu-link').forEach(link => {
+  link.addEventListener('click', function(e) {
+    e.stopPropagation();
+  });
+});
   </script>
 
 </body>
