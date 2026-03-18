@@ -9,642 +9,417 @@
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      --upb-purple:     #6B1F7C;
-      --upb-purple-dark:#4A1258;
-      --upb-pink:       #C0186A;
-      --upb-pink-light: #D91E7A;
-      --sidebar-bg:     #FFFFFF;
-      --bg-page:        #F0F0F5;
-      --text-dark:      #1A1A2E;
-      --text-medium:    #666680;
-      --text-light:     #AAAABC;
-      --border:         #E8E8F0;
-      --font:           'Nunito', sans-serif;
-      --success:        #16A34A;
-      --success-bg:     #F0FDF4;
-      --warning:        #D97706;
-      --warning-bg:     #FFFBEB;
-      --danger:         #DC2626;
-      --danger-bg:      #FEF2F2;
+      --upb-purple:#6B1F7C; --upb-purple-dark:#4A1258; --upb-pink:#C0186A;
+      --sidebar-bg:#FFFFFF; --bg-page:#F0F0F5;
+      --text-dark:#1A1A2E; --text-medium:#666680; --text-light:#AAAABC;
+      --border:#E8E8F0; --font:'Nunito',sans-serif;
+      --success:#16A34A; --success-bg:#DCFCE7;
+      --danger:#B91C1C; --danger-bg:#FEE2E2;
     }
-    body { font-family: var(--font); background: var(--bg-page); min-height: 100vh; display: flex; flex-direction: column; }
-
-    .navbar { background: var(--upb-purple); height: 52px; display: flex; align-items: center; justify-content: space-between; padding: 0 16px 0 0; box-shadow: 0 2px 8px rgba(0,0,0,0.25); flex-shrink: 0; z-index: 100; }
-    .navbar-left { display: flex; align-items: center; }
-    .btn-menu-toggle { background: none; border: none; color: #fff; font-size: 18px; cursor: pointer; padding: 0 16px; height: 52px; display: flex; align-items: center; transition: background 0.2s; }
-    .btn-menu-toggle:hover { background: rgba(255,255,255,0.1); }
-    .navbar-logo { display: flex; align-items: center; padding: 0 12px; }
-    .navbar-logo img { height: 32px; width: auto; object-fit: contain; border-radius: 3px; }
-    .btn-acciones { background: rgba(255,255,255,0.15); border: none; color: #fff; font-family: var(--font); font-size: 13px; font-weight: 600; padding: 6px 14px; border-radius: 6px; cursor: pointer; margin-left: 12px; display: flex; align-items: center; gap: 6px; transition: background 0.2s; }
-    .btn-acciones:hover { background: rgba(255,255,255,0.25); }
-    .navbar-right { display: flex; align-items: center; gap: 10px; }
-    .nav-user-info { text-align: right; }
-    .nav-user-name { color: #fff; font-size: 13px; font-weight: 700; display: block; }
-    .nav-user-lab { color: rgba(255,255,255,0.7); font-size: 11px; display: block; }
-    .nav-avatar { width: 34px; height: 34px; border-radius: 50%; overflow: hidden; border: 2px solid rgba(255,255,255,0.4); }
-    .nav-avatar img { width: 100%; height: 100%; object-fit: cover; }
-    .btn-salir { background: rgba(255,255,255,0.15); border: none; color: #fff; font-family: var(--font); font-size: 11px; font-weight: 700; padding: 5px 10px; border-radius: 5px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 1px; transition: background 0.2s; }
-    .btn-salir:hover { background: rgba(255,255,255,0.25); }
-    .btn-salir i { font-size: 14px; }
-
-    .layout { display: flex; flex: 1; overflow: hidden; }
-    .sidebar { width: 200px; background: var(--sidebar-bg); border-right: 1px solid var(--border); display: flex; flex-direction: column; flex-shrink: 0; transition: width 0.25s ease; overflow: hidden; }
-    .sidebar.collapsed { width: 0; }
-    .sidebar-nav { padding: 12px 0; flex: 1; }
-    .nav-item { position: relative; }
-    .nav-link { display: flex; align-items: center; justify-content: space-between; padding: 10px 18px; color: var(--text-medium); font-size: 13px; font-weight: 600; text-decoration: none; cursor: pointer; transition: background 0.15s, color 0.15s; user-select: none; white-space: nowrap; }
-    .nav-link:hover, .nav-link.active { color: var(--upb-pink); background: #FDF0F7; }
-    .nav-link .nav-icon { margin-right: 8px; font-size: 14px; width: 16px; text-align: center; flex-shrink: 0; }
-    .nav-link .nav-label { flex: 1; }
-    .nav-link .nav-arrow { font-size: 11px; transition: transform 0.2s; color: var(--text-light); }
-    .nav-item.open > .nav-link .nav-arrow { transform: rotate(90deg); }
-    .nav-link.home { color: var(--upb-purple); font-weight: 700; }
-    .nav-link.home:hover { background: #F5EEF8; }
-    .submenu { display: none; background: #FAFAFA; border-left: 3px solid var(--upb-pink); margin-left: 18px; }
-    .nav-item.open > .submenu { display: block; }
-    .submenu-link { display: flex; align-items: center; gap: 8px; padding: 8px 16px; color: var(--text-medium); font-size: 12px; font-weight: 500; text-decoration: none; transition: color 0.15s, background 0.15s; white-space: nowrap; }
-    .submenu-link:hover { color: var(--upb-purple); background: #F5EEF8; }
-    .submenu-link.active { color: var(--upb-purple); background: #F5EEF8; font-weight: 700; }
-    .submenu-link i { width: 14px; text-align: center; font-size: 12px; }
-
-    .main-content { flex: 1; overflow-y: auto; }
-    .page-header { background: var(--bg-page); padding: 14px 24px 0; display: flex; align-items: baseline; gap: 10px; }
-    .page-title { font-size: 18px; font-weight: 800; color: var(--text-dark); text-transform: uppercase; letter-spacing: 0.03em; }
-    .page-breadcrumb { font-size: 12px; color: var(--text-light); font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em; }
-    .page-body { padding: 16px 24px 24px; }
-
-    .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 20px; }
-    .stat-card { background: #fff; border-radius: 10px; border: 1px solid var(--border); padding: 14px 16px; display: flex; align-items: center; gap: 14px; box-shadow: 0 2px 6px rgba(0,0,0,0.04); }
-    .stat-icon { width: 42px; height: 42px; border-radius: 10px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 18px; }
-    .stat-icon.purple { background: #F3E8FF; color: var(--upb-purple); }
-    .stat-icon.green  { background: var(--success-bg); color: var(--success); }
-    .stat-icon.orange { background: var(--warning-bg); color: var(--warning); }
-    .stat-icon.gray   { background: #F3F4F6; color: #6B7280; }
-    .stat-value { font-size: 22px; font-weight: 800; color: var(--text-dark); line-height: 1; }
-    .stat-label { font-size: 11px; color: var(--text-light); font-weight: 600; margin-top: 2px; }
-
-    .tabs-bar { display: flex; gap: 4px; margin-bottom: 20px; background: #fff; border-radius: 10px; padding: 6px; border: 1px solid var(--border); width: fit-content; box-shadow: 0 2px 6px rgba(0,0,0,0.05); }
-    .tab-btn { padding: 7px 16px; border: none; border-radius: 7px; font-family: var(--font); font-size: 13px; font-weight: 600; cursor: pointer; color: var(--text-medium); background: transparent; display: flex; align-items: center; gap: 7px; transition: all 0.2s; }
-    .tab-btn:hover { color: var(--upb-purple); background: #F5EEF8; }
-    .tab-btn.active { background: var(--upb-purple); color: #fff; box-shadow: 0 2px 8px rgba(107,31,124,0.3); }
-    .tab-panel { display: none; }
-    .tab-panel.active { display: block; }
-
-    .btn-primary { height: 36px; padding: 0 16px; border: none; border-radius: 8px; background: linear-gradient(135deg, var(--upb-purple), var(--upb-pink-light)); color: #fff; font-family: var(--font); font-size: 13px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 7px; box-shadow: 0 2px 10px rgba(192,24,106,0.3); transition: opacity 0.2s, transform 0.15s; }
-    .btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
-    .btn-secondary { height: 36px; padding: 0 14px; border: 1.5px solid var(--border); border-radius: 8px; background: #fff; color: var(--text-medium); font-family: var(--font); font-size: 13px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 7px; transition: border-color 0.2s, color 0.2s; }
-    .btn-secondary:hover { border-color: var(--upb-purple); color: var(--upb-purple); }
-    .btn-danger { height: 36px; padding: 0 16px; border: none; border-radius: 8px; background: var(--danger); color: #fff; font-family: var(--font); font-size: 13px; font-weight: 700; cursor: pointer; transition: opacity 0.2s; }
-    .btn-danger:hover { opacity: 0.85; }
-
-    .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 1000; align-items: center; justify-content: center; padding: 16px; }
-    .modal-overlay.open { display: flex; }
-    .modal { background: #fff; border-radius: 16px; width: 100%; max-width: 480px; max-height: 90vh; overflow-y: auto; box-shadow: 0 24px 60px rgba(0,0,0,0.25); animation: modalIn 0.2s ease; }
-    @keyframes modalIn { from { opacity: 0; transform: scale(0.96) translateY(10px); } to { opacity: 1; transform: scale(1) translateY(0); } }
-    .modal-header { display: flex; align-items: center; justify-content: space-between; padding: 18px 22px 16px; border-bottom: 1px solid var(--border); }
-    .modal-title { font-size: 16px; font-weight: 800; color: var(--text-dark); display: flex; align-items: center; gap: 10px; }
-    .modal-title-icon { width: 34px; height: 34px; border-radius: 9px; background: linear-gradient(135deg, var(--upb-purple), var(--upb-pink-light)); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 15px; }
-    .modal-close { width: 30px; height: 30px; border-radius: 8px; border: 1.5px solid var(--border); background: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--text-light); font-size: 14px; transition: all 0.15s; }
-    .modal-close:hover { border-color: var(--danger); color: var(--danger); }
-    .modal-body { padding: 20px 22px; }
-    .modal-footer { padding: 14px 22px; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 10px; }
-    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
-    .form-row.full { grid-template-columns: 1fr; }
-    .form-group { display: flex; flex-direction: column; gap: 5px; }
-    .form-label { font-size: 12px; font-weight: 700; color: var(--text-dark); }
-    .form-label .req { color: var(--upb-pink); }
-    .form-control { height: 38px; border: 1.5px solid var(--border); border-radius: 8px; padding: 0 12px; font-family: var(--font); font-size: 13px; color: var(--text-dark); background: #F9F9FC; outline: none; transition: border-color 0.2s, box-shadow 0.2s; }
-    .form-control:focus { border-color: var(--upb-purple); background: #fff; box-shadow: 0 0 0 3px rgba(107,31,124,0.08); }
-    textarea.form-control { height: 80px; padding: 10px 12px; resize: vertical; }
-
-    .toast-container { position: fixed; bottom: 24px; right: 24px; z-index: 2000; display: flex; flex-direction: column; gap: 8px; }
-    .toast { background: #fff; border-radius: 10px; padding: 12px 16px; box-shadow: 0 8px 24px rgba(0,0,0,0.15); border-left: 4px solid; display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 600; min-width: 260px; animation: toastIn 0.25s ease; }
-    @keyframes toastIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
-    .toast.success { border-color: var(--success); color: var(--success); }
-    .toast.error   { border-color: var(--danger);  color: var(--danger); }
-    .toast.warning { border-color: var(--warning); color: var(--warning); }
-    .toast i { font-size: 16px; }
-    .toast span { color: var(--text-dark); }
-
-    /* ── CALENDARIO ── */
-    .cal-layout { display: grid; grid-template-columns: 1fr 300px; gap: 16px; align-items: start; }
-    .table-card { background: #fff; border-radius: 10px; border: 1px solid var(--border); box-shadow: 0 2px 8px rgba(0,0,0,0.05); overflow: hidden; padding: 20px; }
-    .cal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; flex-wrap: wrap; gap: 10px; }
-    .cal-header-title { font-size: 14px; font-weight: 800; color: var(--text-dark); }
-    .cal-nav { display: flex; align-items: center; gap: 8px; }
-    .cal-nav-btn { width: 30px; height: 30px; border-radius: 7px; border: 1.5px solid var(--border); background: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--text-medium); font-size: 13px; transition: all 0.15s; }
-    .cal-nav-btn:hover { background: var(--upb-purple); color: #fff; border-color: var(--upb-purple); }
-    .cal-month-label { font-size: 14px; font-weight: 700; min-width: 150px; text-align: center; color: var(--text-dark); }
-    .cal-legend { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 14px; }
-    .legend-item { display: flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 600; color: var(--text-light); }
-    .legend-dot { width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0; }
-    .legend-dot.ltoday    { background: var(--upb-purple); }
-    .legend-dot.available { background: var(--success-bg); border: 1px solid var(--success); }
-    .legend-dot.occupied  { background: var(--warning-bg); border: 1px solid var(--warning); }
-    .legend-dot.holiday   { background: var(--danger-bg);  border: 1px solid var(--danger); }
-    .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; }
-    .cal-day-name { text-align: center; font-size: 11px; font-weight: 700; color: var(--text-light); padding: 6px 0; text-transform: uppercase; }
-    .cal-day { aspect-ratio: 1; border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; cursor: pointer; border: 1.5px solid transparent; transition: all 0.15s; gap: 2px; }
-    .cal-day:hover:not(.empty):not(.holiday) { border-color: var(--upb-purple); background: #F5EEF8; }
-    .cal-day.empty { cursor: default; }
-    .cal-day.today    { background: var(--upb-purple); color: #fff; font-weight: 800; }
-    .cal-day.today:hover { background: var(--upb-purple-dark); }
-    .cal-day.selected { background: var(--upb-pink); color: #fff; }
-    .cal-day.holiday  { background: var(--danger-bg); color: var(--danger); cursor: not-allowed; }
-    .cal-day.occupied { background: var(--warning-bg); color: var(--warning); }
-    .cal-day.available{ background: var(--success-bg); color: var(--success); }
-    .cal-day .dot { width: 4px; height: 4px; border-radius: 50%; background: currentColor; }
-    .panel-section-title { font-size: 12px; font-weight: 800; color: var(--text-dark); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
-    .panel-section-title i { color: var(--upb-purple); }
-    .holiday-list { display: flex; flex-direction: column; gap: 6px; }
-    .holiday-item { display: flex; align-items: center; justify-content: space-between; padding: 8px 10px; background: var(--danger-bg); border-radius: 8px; border-left: 3px solid var(--danger); }
-    .holiday-item-info .hdate { font-size: 12px; font-weight: 700; color: var(--danger); }
-    .holiday-item-info .hdesc { font-size: 11px; color: var(--text-light); font-weight: 500; margin-top: 1px; }
-    .btn-icon-sm { width: 26px; height: 26px; border-radius: 6px; border: 1px solid var(--border); background: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 12px; color: var(--text-medium); transition: all 0.15s; }
-    .btn-icon-sm:hover { border-color: var(--danger); color: var(--danger); background: var(--danger-bg); }
-    .empty-state { text-align: center; padding: 20px; color: var(--text-light); }
-    .empty-state i { font-size: 28px; margin-bottom: 8px; opacity: 0.4; display: block; }
-    .empty-state p { font-size: 12px; font-weight: 600; }
-    .list-item { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; border-radius: 8px; border: 1px solid var(--border); background: #fff; }
-    .list-item:hover { background: #FDFAFF; }
-    .list-item .li-date { font-size: 13px; font-weight: 700; color: var(--danger); }
-    .list-item .li-type { font-size: 12px; color: var(--text-medium); font-weight: 500; margin-top: 2px; }
-    .list-item .li-desc { font-size: 11px; color: var(--text-light); margin-top: 1px; }
+    body{font-family:var(--font);background:var(--bg-page);min-height:100vh;display:flex;flex-direction:column}
+    .navbar{background:var(--upb-purple);height:52px;display:flex;align-items:center;justify-content:space-between;padding:0 16px 0 0;box-shadow:0 2px 8px rgba(0,0,0,.25);flex-shrink:0;z-index:100}
+    .navbar-left{display:flex;align-items:center}
+    .btn-menu-toggle{background:none;border:none;color:#fff;font-size:18px;cursor:pointer;padding:0 16px;height:52px;display:flex;align-items:center;transition:background .2s}
+    .btn-menu-toggle:hover{background:rgba(255,255,255,.1)}
+    .navbar-logo{display:flex;align-items:center;padding:0 12px}
+    .navbar-logo img{height:32px;width:auto;object-fit:contain;border-radius:3px}
+    .acciones-wrap{position:relative;margin-left:12px}
+    .btn-acciones{background:rgba(255,255,255,.15);border:none;color:#fff;font-family:var(--font);font-size:13px;font-weight:600;padding:6px 14px;border-radius:6px;cursor:pointer;display:flex;align-items:center;gap:6px;transition:background .2s}
+    .btn-acciones:hover{background:rgba(255,255,255,.25)}
+    .dropdown-acciones{display:none;position:absolute;top:calc(100% + 8px);left:0;background:#fff;border-radius:10px;box-shadow:0 8px 32px rgba(0,0,0,.15);border:1px solid var(--border);min-width:210px;z-index:999;overflow:hidden}
+    .dropdown-acciones.open{display:block}
+    .dropdown-item{display:flex;align-items:center;gap:10px;padding:10px 16px;font-size:13px;font-weight:600;color:var(--text-dark);transition:background .15s;cursor:pointer;width:100%;border:none;background:none;font-family:var(--font);text-align:left;text-decoration:none}
+    .dropdown-item:hover{background:#F5EEF8;color:var(--upb-purple)}
+    .dropdown-item i{width:16px;text-align:center;color:var(--upb-pink)}
+    .navbar-right{display:flex;align-items:center;gap:10px}
+    .nav-user-info{text-align:right}
+    .nav-user-name{color:#fff;font-size:13px;font-weight:700;display:block}
+    .nav-user-lab{color:rgba(255,255,255,.7);font-size:11px;display:block}
+    .nav-avatar{width:34px;height:34px;border-radius:50%;overflow:hidden;border:2px solid rgba(255,255,255,.4)}
+    .nav-avatar img{width:100%;height:100%;object-fit:cover}
+    .btn-salir{background:rgba(255,255,255,.15);border:none;color:#fff;font-family:var(--font);font-size:11px;font-weight:700;padding:5px 10px;border-radius:5px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:1px;transition:background .2s}
+    .btn-salir:hover{background:rgba(255,255,255,.25)}
+    .btn-salir i{font-size:14px}
+    .layout{display:flex;flex:1;overflow:hidden}
+    .sidebar{width:200px;background:var(--sidebar-bg);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;transition:width .25s ease;overflow:hidden}
+    .sidebar.collapsed{width:0}
+    .sidebar-nav{padding:12px 0;flex:1;overflow-y:auto}
+    .nav-item{position:relative}
+    .nav-link{display:flex;align-items:center;justify-content:space-between;padding:10px 18px;color:var(--text-medium);font-size:13px;font-weight:600;text-decoration:none;cursor:pointer;transition:background .15s,color .15s;user-select:none;white-space:nowrap}
+    .nav-link:hover,.nav-link.active{color:var(--upb-pink);background:#FDF0F7}
+    .nav-link .nav-icon{margin-right:8px;font-size:14px;width:16px;text-align:center;flex-shrink:0}
+    .nav-link .nav-label{flex:1}
+    .nav-link .nav-arrow{font-size:11px;transition:transform .2s;color:var(--text-light)}
+    .nav-item.open>.nav-link .nav-arrow{transform:rotate(90deg)}
+    .nav-link.home{color:var(--upb-purple);font-weight:700}
+    .nav-link.home:hover{background:#F5EEF8}
+    .submenu{display:none;background:#FAFAFA;border-left:3px solid var(--upb-pink);margin-left:18px}
+    .nav-item.open>.submenu{display:block}
+    .submenu-link{display:flex;align-items:center;gap:8px;padding:8px 16px;color:var(--text-medium);font-size:12px;font-weight:500;text-decoration:none;transition:color .15s,background .15s;white-space:nowrap}
+    .submenu-link:hover,.submenu-link.active{color:var(--upb-purple);background:#F5EEF8;font-weight:700}
+    .submenu-link i{width:14px;text-align:center;font-size:12px}
+    .main-content{flex:1;overflow-y:auto}
+    .page-header{background:var(--bg-page);padding:14px 24px 0;display:flex;align-items:baseline;gap:10px}
+    .page-title{font-size:18px;font-weight:800;color:var(--text-dark);text-transform:uppercase;letter-spacing:.03em}
+    .page-breadcrumb{font-size:12px;color:var(--text-light);font-weight:500;text-transform:uppercase;letter-spacing:.05em}
+    .page-body{padding:16px 24px 24px}
+    .stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px}
+    .stat-card{background:#fff;border-radius:10px;border:1px solid var(--border);padding:14px 16px;display:flex;align-items:center;gap:14px;box-shadow:0 2px 6px rgba(0,0,0,.04)}
+    .stat-icon{width:42px;height:42px;border-radius:10px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:18px}
+    .stat-icon.purple{background:#F3E8FF;color:var(--upb-purple)}
+    .stat-icon.green{background:var(--success-bg);color:var(--success)}
+    .stat-icon.gray{background:#F3F4F6;color:#6B7280}
+    .stat-value{font-size:22px;font-weight:800;color:var(--text-dark);line-height:1}
+    .stat-label{font-size:11px;color:var(--text-light);font-weight:600;margin-top:2px}
+    .tabs-bar{display:flex;gap:4px;margin-bottom:20px;background:#fff;border-radius:10px;padding:6px;border:1px solid var(--border);width:fit-content;box-shadow:0 2px 6px rgba(0,0,0,.05)}
+    .tab-btn{padding:7px 16px;border:none;border-radius:7px;font-family:var(--font);font-size:13px;font-weight:600;cursor:pointer;color:var(--text-medium);background:transparent;display:flex;align-items:center;gap:7px;transition:all .2s}
+    .tab-btn:hover{color:var(--upb-purple);background:#F5EEF8}
+    .tab-btn.active{background:var(--upb-purple);color:#fff;box-shadow:0 2px 8px rgba(107,31,124,.3)}
+    .tab-panel{display:none}
+    .tab-panel.active{display:block}
+    .toast-container{position:fixed;bottom:24px;right:24px;z-index:2000;display:flex;flex-direction:column;gap:8px}
+    .toast{background:#fff;border-radius:10px;padding:12px 16px;box-shadow:0 8px 24px rgba(0,0,0,.15);border-left:4px solid;display:flex;align-items:center;gap:10px;font-size:13px;font-weight:600;min-width:260px;animation:toastIn .25s ease}
+    @keyframes toastIn{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
+    .toast.success{border-color:var(--success);color:var(--success)}
+    .toast.error{border-color:#DC2626;color:#DC2626}
+    .toast.warning{border-color:#D97706;color:#D97706}
+    .toast i{font-size:16px}
+    .toast span{color:var(--text-dark)}
+    .cal-layout{display:grid;grid-template-columns:1fr 260px;gap:16px;align-items:start}
+    .table-card{background:#fff;border-radius:10px;border:1px solid var(--border);box-shadow:0 2px 8px rgba(0,0,0,.05);overflow:hidden;padding:20px}
+    .cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:10px}
+    .cal-header-title{font-size:14px;font-weight:800;color:var(--text-dark)}
+    .cal-nav{display:flex;align-items:center;gap:8px}
+    .cal-nav-btn{width:30px;height:30px;border-radius:7px;border:1.5px solid var(--border);background:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-medium);font-size:13px;transition:all .15s}
+    .cal-nav-btn:hover{background:var(--upb-purple);color:#fff;border-color:var(--upb-purple)}
+    .cal-month-label{font-size:14px;font-weight:700;min-width:150px;text-align:center;color:var(--text-dark)}
+    .cal-legend{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:10px}
+    .legend-item{display:flex;align-items:center;gap:5px;font-size:11px;font-weight:600;color:var(--text-light)}
+    .legend-dot{width:10px;height:10px;border-radius:3px;flex-shrink:0}
+    .legend-dot.available{background:var(--success-bg);border:1px solid var(--success)}
+    .legend-dot.holiday{background:var(--danger)}
+    .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;width:100%}
+    .cal-day-name{text-align:center;font-size:10px;font-weight:700;color:var(--text-light);padding:3px 0;text-transform:uppercase}
+    .cal-day{width:100%;height:36px;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;cursor:pointer;border:1.5px solid transparent;transition:all .15s;user-select:none}
+    .cal-day:hover:not(.empty){filter:brightness(.88)}
+    .cal-day.empty{cursor:default;background:none;pointer-events:none}
+    .cal-day.available{background:var(--success-bg);color:#15803D}
+    .cal-day.holiday{background:var(--danger);color:#fff;border-color:#991B1B;font-weight:800}
+    .panel-section-title{font-size:12px;font-weight:800;color:var(--text-dark);text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+    .panel-section-title i{color:var(--upb-purple)}
+    .holiday-list{display:flex;flex-direction:column;gap:6px}
+    .holiday-item{display:flex;align-items:center;justify-content:space-between;padding:8px 10px;background:var(--danger-bg);border-radius:8px;border-left:3px solid var(--danger)}
+    .holiday-item-info .hdate{font-size:12px;font-weight:700;color:var(--danger)}
+    .holiday-item-info .hdesc{font-size:11px;color:var(--text-light);font-weight:500;margin-top:1px}
+    .btn-icon-sm{width:26px;height:26px;border-radius:6px;border:1px solid var(--border);background:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--text-medium);transition:all .15s;flex-shrink:0}
+    .btn-icon-sm:hover{border-color:var(--danger);color:var(--danger);background:var(--danger-bg)}
+    .empty-state{text-align:center;padding:20px;color:var(--text-light)}
+    .empty-state i{font-size:28px;margin-bottom:8px;opacity:.4;display:block}
+    .empty-state p{font-size:12px;font-weight:600}
+    .list-item{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-radius:8px;border:1px solid var(--border);background:#fff}
+    .list-item:hover{background:#FDFAFF}
+    .list-item .li-date{font-size:13px;font-weight:700;color:var(--danger)}
+    .list-item .li-type{font-size:12px;color:var(--text-medium);font-weight:500;margin-top:2px}
+    .list-item .li-desc{font-size:11px;color:var(--text-light);margin-top:1px}
   </style>
 </head>
 <body>
 
-  <header class="navbar">
-    <div class="navbar-left">
-      <button class="btn-menu-toggle" onclick="toggleSidebar()"><i class="fa-solid fa-bars"></i></button>
-      <div class="navbar-logo"><img src="assets/images/LOGOUPB.jpg" alt="UPB" /></div>
-      <button class="btn-acciones">Acciones Rápidas <i class="fa-solid fa-chevron-down" style="font-size:10px"></i></button>
-    </div>
-    <div class="navbar-right">
-      <div class="nav-user-info">
-        <span class="nav-user-name" id="nav-nombre">...</span>
-        <span class="nav-user-lab" id="nav-lab"></span>
+<header class="navbar">
+  <div class="navbar-left">
+    <button class="btn-menu-toggle" onclick="toggleSidebar()"><i class="fa-solid fa-bars"></i></button>
+    <div class="navbar-logo"><img src="assets/images/LOGOUPB.jpg" alt="UPB"/></div>
+    <div class="acciones-wrap">
+      <button class="btn-acciones" onclick="toggleDropdown()">Acciones Rápidas <i class="fa-solid fa-chevron-down" style="font-size:10px"></i></button>
+      <div class="dropdown-acciones" id="dropdown-acciones">
+        <a class="dropdown-item" href="dashboard.html"><i class="fa-solid fa-house"></i> Menú Principal</a>
+        <a class="dropdown-item" href="Admin-Usuarios.html"><i class="fa-solid fa-users"></i> Usuarios</a>
+        <a class="dropdown-item" href="reporte-resumen.html"><i class="fa-solid fa-file-lines"></i> Resumen Préstamos</a>
+        <a class="dropdown-item" href="Admin-Equipos.html"><i class="fa-solid fa-desktop"></i> Elementos</a>
       </div>
-      <div class="nav-avatar"><img id="nav-avatar-img" src="" alt="Avatar" /></div>
-      <button class="btn-salir" id="btn-salir"><i class="fa-solid fa-right-from-bracket"></i> Salir</button>
     </div>
-  </header>
+  </div>
+  <div class="navbar-right">
+    <div class="nav-user-info">
+      <span class="nav-user-name" id="nav-nombre">...</span>
+      <span class="nav-user-lab" id="nav-lab"></span>
+    </div>
+    <div class="nav-avatar"><img id="nav-avatar-img" src="" alt="Avatar"/></div>
+    <button class="btn-salir" id="btn-salir"><i class="fa-solid fa-right-from-bracket"></i> Salir</button>
+  </div>
+</header>
 
-  <div class="layout">
-    <aside class="sidebar" id="sidebar">
-      <nav class="sidebar-nav">
-        <div class="nav-item">
-          <a class="nav-link home" href="dashboard.html">
-            <i class="nav-icon fa-solid fa-house"></i>
-            <span class="nav-label">Menú Principal</span>
-          </a>
-        </div>
-        <div class="nav-item" onclick="toggleMenu(this)">
-          <div class="nav-link">
-            <i class="nav-icon fa-solid fa-box-open"></i>
-            <span class="nav-label">Entregas</span>
-            <i class="nav-arrow fa-solid fa-chevron-right"></i>
-          </div>
-          <div class="submenu">
-            <a class="submenu-link" href="#"><i class="fa-solid fa-list"></i> Ver Entregas</a>
-            <a class="submenu-link" href="#"><i class="fa-solid fa-plus"></i> Nueva Entrega</a>
-          </div>
-        </div>
-        <div class="nav-item" onclick="toggleMenu(this)">
-          <div class="nav-link">
-            <i class="nav-icon fa-solid fa-users"></i>
-            <span class="nav-label">Usuarios</span>
-            <i class="nav-arrow fa-solid fa-chevron-right"></i>
-          </div>
-          <div class="submenu">
-            <a class="submenu-link" href="#"><i class="fa-solid fa-list"></i> Ver Usuarios</a>
-            <a class="submenu-link" href="#"><i class="fa-solid fa-user-plus"></i> Crear Usuario</a>
-          </div>
-        </div>
-        <div class="nav-item" onclick="toggleMenu(this)">
-          <div class="nav-link">
-            <i class="nav-icon fa-solid fa-cart-shopping"></i>
-            <span class="nav-label">Solicitudes</span>
-            <i class="nav-arrow fa-solid fa-chevron-right"></i>
-          </div>
-          <div class="submenu">
-            <a class="submenu-link" href="#"><i class="fa-solid fa-clipboard-list"></i> Solicitud de Elementos</a>
-            <a class="submenu-link" href="#"><i class="fa-solid fa-file-alt"></i> Solicitud Detalle</a>
-            <a class="submenu-link" href="#"><i class="fa-solid fa-search"></i> Seleccionar</a>
-            <a class="submenu-link" href="#"><i class="fa-solid fa-ban"></i> Cancelados</a>
-            <a class="submenu-link" href="#"><i class="fa-solid fa-star"></i> Solicitud Especial Admin</a>
-            <a class="submenu-link" href="#"><i class="fa-solid fa-star-half"></i> Solicitud Especial Persona</a>
-          </div>
-        </div>
-        <div class="nav-item open" onclick="toggleMenu(this)">
-          <div class="nav-link active">
-            <i class="nav-icon fa-solid fa-gear"></i>
-            <span class="nav-label">Administración</span>
-            <i class="nav-arrow fa-solid fa-chevron-right"></i>
-          </div>
-          <div class="submenu">
-            <a class="submenu-link" href="Admin-Equipos.html"><i class="fa-solid fa-desktop"></i> Elementos</a>
-            <a class="submenu-link active" href="Admin_Calendario.html"><i class="fa-solid fa-calendar"></i> Calendario</a>
-            <a class="submenu-link" href="Admin-Informacion-Importante.html"><i class="fa-solid fa-bullhorn"></i> Información Importante</a>
-            <a class="submenu-link" href="Admin-Foto-Perfil.html"><i class="fa-solid fa-camera"></i> Foto Perfil</a>
-          </div>
-        </div>
-        <div class="nav-item" onclick="toggleMenu(this)">
-          <div class="nav-link">
-            <i class="nav-icon fa-solid fa-file-lines"></i>
-            <span class="nav-label">Reportes</span>
-            <i class="nav-arrow fa-solid fa-chevron-right"></i>
-          </div>
-          <div class="submenu">
-            <a class="submenu-link" href="#"><i class="fa-solid fa-file"></i> Resumen Préstamos</a>
-            <a class="submenu-link" href="#"><i class="fa-solid fa-file"></i> Detalle Préstamos</a>
-            <a class="submenu-link" href="#"><i class="fa-solid fa-file"></i> Préstamos x Elemento</a>
-            <a class="submenu-link" href="#"><i class="fa-solid fa-file"></i> Elementos prestados</a>
-            <a class="submenu-link" href="#"><i class="fa-solid fa-file"></i> Inventario General</a>
-          </div>
-        </div>
-      </nav>
-    </aside>
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <nav class="sidebar-nav">
 
-    <main class="main-content">
-      <div class="page-header">
-        <span class="page-title">ADMINISTRACIÓN</span>
-        <span class="page-breadcrumb">ADMINISTRACIÓN › CALENDARIO</span>
+      <!-- MENÚ PRINCIPAL -->
+      <div class="nav-item">
+        <a class="nav-link home" href="dashboard.html">
+          <i class="nav-icon fa-solid fa-house"></i>
+          <span class="nav-label">Menú Principal</span>
+        </a>
       </div>
-      <div class="page-body">
 
-        <div class="stats-row">
-          <div class="stat-card">
-            <div class="stat-icon purple"><i class="fa-solid fa-calendar-days"></i></div>
-            <div><div class="stat-value" id="stat-total">0</div><div class="stat-label">Total días en mes</div></div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-icon green"><i class="fa-solid fa-circle-check"></i></div>
-            <div><div class="stat-value" id="stat-disponibles">0</div><div class="stat-label">Días disponibles</div></div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-icon orange"><i class="fa-solid fa-clock"></i></div>
-            <div><div class="stat-value" id="stat-ocupados">0</div><div class="stat-label">Días con préstamos</div></div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-icon gray"><i class="fa-solid fa-ban"></i></div>
-            <div><div class="stat-value" id="stat-nohabiles">0</div><div class="stat-label">Días no hábiles</div></div>
-          </div>
+      <!-- ENTREGAS -->
+      <div class="nav-item" onclick="toggleMenu(this)">
+        <div class="nav-link"><i class="nav-icon fa-solid fa-box-open"></i><span class="nav-label">Entregas</span><i class="nav-arrow fa-solid fa-chevron-right"></i></div>
+        <div class="submenu">
+          <a class="submenu-link" href="#"><i class="fa-solid fa-list"></i> Ver Entregas</a>
+          <a class="submenu-link" href="#"><i class="fa-solid fa-plus"></i> Nueva Entrega</a>
         </div>
+      </div>
 
-        <div class="tabs-bar">
-          <button class="tab-btn active" onclick="switchTab('calendario', this)"><i class="fa-solid fa-calendar-alt"></i> Calendario</button>
-          <button class="tab-btn" onclick="switchTab('lista', this)"><i class="fa-solid fa-list"></i> Lista No Hábiles</button>
+      <!-- USUARIOS -->
+      <div class="nav-item" onclick="toggleMenu(this)">
+        <div class="nav-link"><i class="nav-icon fa-solid fa-users"></i><span class="nav-label">Usuarios</span><i class="nav-arrow fa-solid fa-chevron-right"></i></div>
+        <div class="submenu">
+          <a class="submenu-link" href="Admin-Usuarios.html"><i class="fa-solid fa-list"></i> Ver Usuarios</a>
+          <a class="submenu-link" href="Admin-Crear-Usuario.html"><i class="fa-solid fa-user-plus"></i> Crear Usuario</a>
         </div>
+      </div>
 
-        <!-- TAB CALENDARIO -->
-        <div class="tab-panel active" id="tab-calendario">
-          <div class="cal-layout">
-            <div class="table-card">
-              <div class="cal-header">
-                <span class="cal-header-title">Calendario de Disponibilidad</span>
-                <div class="cal-nav">
-                  <button class="cal-nav-btn" onclick="changeMonth(-1)"><i class="fa-solid fa-chevron-left"></i></button>
-                  <span class="cal-month-label" id="monthLabel"></span>
-                  <button class="cal-nav-btn" onclick="changeMonth(1)"><i class="fa-solid fa-chevron-right"></i></button>
-                </div>
-              </div>
-              <div class="cal-legend">
-                <div class="legend-item"><div class="legend-dot ltoday"></div> Hoy</div>
-                <div class="legend-item"><div class="legend-dot available"></div> Disponible</div>
-                <div class="legend-item"><div class="legend-dot occupied"></div> Con préstamos</div>
-                <div class="legend-item"><div class="legend-dot holiday"></div> No hábil</div>
-              </div>
-              <div class="cal-grid" id="calGrid"></div>
-            </div>
-
-            <div>
-              <div class="table-card" style="margin-bottom:14px">
-                <div class="panel-section-title"><i class="fa-solid fa-ban"></i> Marcar Día No Hábil</div>
-                <div class="form-row full" style="margin-bottom:10px">
-                  <div class="form-group">
-                    <label class="form-label">Fecha <span class="req">*</span></label>
-                    <input type="date" class="form-control" id="hFecha" />
-                  </div>
-                </div>
-                <div class="form-row full" style="margin-bottom:10px">
-                  <div class="form-group">
-                    <label class="form-label">Motivo <span class="req">*</span></label>
-                    <select class="form-control" id="hMotivo">
-                      <option value="">Seleccionar motivo...</option>
-                      <option>Festivo nacional</option>
-                      <option>Receso académico</option>
-                      <option>Mantenimiento</option>
-                      <option>Evento institucional</option>
-                      <option>Otro</option>
-                    </select>
-                  </div>
-                </div>
-                <div class="form-row full" style="margin-bottom:14px">
-                  <div class="form-group">
-                    <label class="form-label">Descripción</label>
-                    <textarea class="form-control" id="hDesc" placeholder="Descripción opcional..."></textarea>
-                  </div>
-                </div>
-                <button class="btn-primary" style="width:100%;justify-content:center" onclick="agregarNoHabil()">
-                  <i class="fa-solid fa-plus"></i> Agregar Día No Hábil
-                </button>
-              </div>
-
-              <div class="table-card">
-                <div class="panel-section-title"><i class="fa-solid fa-calendar-xmark"></i> No Hábiles Este Mes</div>
-                <div class="holiday-list" id="holidayListSide"></div>
-              </div>
-            </div>
-          </div>
+      <!-- SOLICITUDES -->
+      <div class="nav-item" onclick="toggleMenu(this)">
+        <div class="nav-link"><i class="nav-icon fa-solid fa-cart-shopping"></i><span class="nav-label">Solicitudes</span><i class="nav-arrow fa-solid fa-chevron-right"></i></div>
+        <div class="submenu">
+          <a class="submenu-link" href="#"><i class="fa-solid fa-clipboard-list"></i> Solicitud de Elementos</a>
+          <a class="submenu-link" href="#"><i class="fa-solid fa-file-alt"></i> Solicitud Detalle</a>
+          <a class="submenu-link" href="#"><i class="fa-solid fa-search"></i> Seleccionar</a>
+          <a class="submenu-link" href="#"><i class="fa-solid fa-ban"></i> Cancelados</a>
+          <a class="submenu-link" href="#"><i class="fa-solid fa-star"></i> Solicitud Especial Admin</a>
+          <a class="submenu-link" href="#"><i class="fa-solid fa-star-half"></i> Solicitud Especial Persona</a>
         </div>
+      </div>
 
-        <!-- TAB LISTA -->
-        <div class="tab-panel" id="tab-lista">
+      <!-- ADMINISTRACIÓN — activo aquí -->
+      <div class="nav-item open" onclick="toggleMenu(this)">
+        <div class="nav-link active"><i class="nav-icon fa-solid fa-gear"></i><span class="nav-label">Administración</span><i class="nav-arrow fa-solid fa-chevron-right"></i></div>
+        <div class="submenu">
+          <a class="submenu-link" href="Admin-Equipos.html"><i class="fa-solid fa-desktop"></i> Elementos</a>
+          <a class="submenu-link active" href="Admin_Calendario.html"><i class="fa-solid fa-calendar"></i> Calendario</a>
+          <a class="submenu-link" href="Admin-Informacion-Importante.html"><i class="fa-solid fa-bullhorn"></i> Información Importante</a>
+          <a class="submenu-link" href="Admin-Foto-Perfil.html"><i class="fa-solid fa-camera"></i> Foto Perfil</a>
+        </div>
+      </div>
+
+      <!-- REPORTES — completo y con hrefs reales -->
+      <div class="nav-item" onclick="toggleMenu(this)">
+        <div class="nav-link"><i class="nav-icon fa-solid fa-file-lines"></i><span class="nav-label">Reportes</span><i class="nav-arrow fa-solid fa-chevron-right"></i></div>
+        <div class="submenu">
+          <a class="submenu-link" href="reporte-resumen.html"><i class="fa-solid fa-table"></i> Resumen Préstamos</a>
+          <a class="submenu-link" href="reporte-prestamos-activos.html"><i class="fa-solid fa-rotate"></i> Préstamos Activos</a>
+          <a class="submenu-link" href="reporte-inventario.html"><i class="fa-solid fa-boxes-stacked"></i> Inventario</a>
+          <a class="submenu-link" href="reporte-por-equipo.html"><i class="fa-solid fa-desktop"></i> Por Elemento</a>
+          <a class="submenu-link" href="reporte-por-usuario.html"><i class="fa-solid fa-user-clock"></i> Por Usuario</a>
+          <a class="submenu-link" href="reporte-cancelados.html"><i class="fa-solid fa-ban"></i> Cancelados</a>
+          <a class="submenu-link" href="reporte-equipos-dañados.html"><i class="fa-solid fa-triangle-exclamation"></i> Daños/Obs.</a>
+          <a class="submenu-link" href="reporte-comparativo.html"><i class="fa-solid fa-chart-bar"></i> Comparativo</a>
+          <a class="submenu-link" href="reporte-solicitudes-pendientes.html"><i class="fa-solid fa-clock"></i> Pendientes</a>
+          <a class="submenu-link" href="reporte-formato-salida.html"><i class="fa-solid fa-file-invoice"></i> Formato Salida</a>
+        </div>
+      </div>
+
+    </nav>
+  </aside>
+
+  <main class="main-content">
+    <div class="page-header">
+      <span class="page-title">ADMINISTRACIÓN</span>
+      <span class="page-breadcrumb">ADMINISTRACIÓN › CALENDARIO</span>
+    </div>
+    <div class="page-body">
+
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-icon purple"><i class="fa-solid fa-calendar-days"></i></div>
+          <div><div class="stat-value" id="stat-total">0</div><div class="stat-label">Total días en mes</div></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon green"><i class="fa-solid fa-circle-check"></i></div>
+          <div><div class="stat-value" id="stat-disponibles">0</div><div class="stat-label">Días disponibles</div></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon gray"><i class="fa-solid fa-ban"></i></div>
+          <div><div class="stat-value" id="stat-nohabiles">0</div><div class="stat-label">Días no hábiles</div></div>
+        </div>
+      </div>
+
+      <div class="tabs-bar">
+        <button class="tab-btn active" onclick="switchTab('calendario',this)"><i class="fa-solid fa-calendar-alt"></i> Calendario</button>
+        <button class="tab-btn" onclick="switchTab('lista',this)"><i class="fa-solid fa-list"></i> Lista No Hábiles</button>
+      </div>
+
+      <div class="tab-panel active" id="tab-calendario">
+        <div class="cal-layout">
           <div class="table-card">
-            <div class="panel-section-title" style="margin-bottom:14px"><i class="fa-solid fa-calendar-xmark"></i> Todos los Días No Hábiles</div>
-            <div id="fullHolidayList" style="display:flex;flex-direction:column;gap:8px"></div>
+            <div class="cal-header">
+              <span class="cal-header-title">Calendario de Disponibilidad</span>
+              <div class="cal-nav">
+                <button class="cal-nav-btn" onclick="changeMonth(-1)"><i class="fa-solid fa-chevron-left"></i></button>
+                <span class="cal-month-label" id="monthLabel"></span>
+                <button class="cal-nav-btn" onclick="changeMonth(1)"><i class="fa-solid fa-chevron-right"></i></button>
+              </div>
+            </div>
+            <div class="cal-legend">
+              <div class="legend-item"><div class="legend-dot available"></div> Disponible (clic = no hábil)</div>
+              <div class="legend-item"><div class="legend-dot holiday"></div> No hábil (clic = habilitar)</div>
+            </div>
+            <div class="cal-grid" id="calGrid"></div>
+          </div>
+          <div class="table-card">
+            <div class="panel-section-title"><i class="fa-solid fa-calendar-xmark"></i> No Hábiles Este Mes</div>
+            <div class="holiday-list" id="holidayListSide"></div>
           </div>
         </div>
-
       </div>
-    </main>
-  </div>
 
-  <!-- MODAL DETALLE DÍA -->
-  <div class="modal-overlay" id="modalDia">
-    <div class="modal">
-      <div class="modal-header">
-        <div class="modal-title">
-          <div class="modal-title-icon"><i class="fa-solid fa-calendar-day"></i></div>
-          <span>Detalle del Día</span>
+      <div class="tab-panel" id="tab-lista">
+        <div class="table-card">
+          <div class="panel-section-title" style="margin-bottom:14px"><i class="fa-solid fa-calendar-xmark"></i> Todos los Días No Hábiles</div>
+          <div id="fullHolidayList" style="display:flex;flex-direction:column;gap:8px"></div>
         </div>
-        <button class="modal-close" onclick="cerrarModal('modalDia')"><i class="fa-solid fa-xmark"></i></button>
       </div>
-      <div class="modal-body" id="modalDiaBody"></div>
-      <div class="modal-footer" id="modalDiaFooter"></div>
+
     </div>
-  </div>
+  </main>
+</div>
 
-  <div class="toast-container" id="toastContainer"></div>
+<div class="toast-container" id="toastContainer"></div>
 
-  <script>
-    // Sesión
-    const u = sessionStorage.getItem('usuario');
-    if (u) {
-      const usr = JSON.parse(u);
-      document.getElementById('nav-nombre').textContent = usr.nombre.toUpperCase();
-      document.getElementById('nav-lab').textContent = usr.lab;
-      const avatares = {
-        admin:    'assets/images/AVATARADMINISTRADOR.jpg',
-        profesor: 'assets/images/AVATARPROFESOR.jpg',
-        usuario:  'assets/images/AVATARPROFESOR.jpg'
-      };
-      document.getElementById('nav-avatar-img').src = avatares[usr.rol] || 'assets/images/AVATARADMINISTRADOR.jpg';
-    }
-    document.getElementById('btn-salir').addEventListener('click', () => {
-      sessionStorage.removeItem('usuario');
-      window.location.href = 'index.html';
-    });
-
-    function toggleSidebar() { document.getElementById('sidebar').classList.toggle('collapsed'); }
-   function toggleMenu(item) {
-  const isOpen = item.classList.contains('open');
-  document.querySelectorAll('.nav-item.open').forEach(el => el.classList.remove('open'));
-  if (!isOpen) item.classList.add('open');
-}
-
-document.querySelectorAll('.submenu-link').forEach(link => {
-  link.addEventListener('click', function(e) {
-    e.stopPropagation();
+<script>
+  // AUTH
+  const u = sessionStorage.getItem('usuario');
+  if (!u) { window.location.href = 'index.html'; }
+  const usr = JSON.parse(u);
+  document.getElementById('nav-nombre').textContent = usr.nombre.toUpperCase();
+  document.getElementById('nav-lab').textContent    = usr.lab;
+  const avatares = {
+    admin:    'assets/images/AVATARADMINISTRADOR.jpg',
+    profesor: 'assets/images/AVATARPROFESOR.jpg',
+    usuario:  'assets/images/AVATARPROFESOR.jpg'
+  };
+  document.getElementById('nav-avatar-img').src = avatares[usr.rol] || 'assets/images/AVATARADMINISTRADOR.jpg';
+  document.getElementById('btn-salir').addEventListener('click', () => {
+    sessionStorage.removeItem('usuario');
+    window.location.href = 'index.html';
   });
-});
-    function switchTab(name, btn) {
-      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-      document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-      btn.classList.add('active');
-      document.getElementById('tab-' + name).classList.add('active');
-    }
-    function cerrarModal(id) { document.getElementById(id).classList.remove('open'); }
-    document.querySelectorAll('.modal-overlay').forEach(o => {
-      o.addEventListener('click', function(e) { if (e.target === this) this.classList.remove('open'); });
-    });
 
-    // Estado
-    const today = new Date();
-    let viewYear  = today.getFullYear();
-    let viewMonth = today.getMonth();
-    let selectedDay = null;
+  function toggleSidebar()  { document.getElementById('sidebar').classList.toggle('collapsed'); }
+  function toggleDropdown() { document.getElementById('dropdown-acciones').classList.toggle('open'); }
+  function toggleMenu(item) {
+    const isOpen = item.classList.contains('open');
+    document.querySelectorAll('.nav-item.open').forEach(el => el.classList.remove('open'));
+    if (!isOpen) item.classList.add('open');
+  }
+  document.addEventListener('click', e => {
+    if (!e.target.closest('.acciones-wrap'))
+      document.getElementById('dropdown-acciones').classList.remove('open');
+  });
+  document.querySelectorAll('.submenu-link').forEach(l => l.addEventListener('click', e => e.stopPropagation()));
 
-    const holidays = {};
+  function switchTab(name, btn) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('tab-' + name).classList.add('active');
+  }
 
-    // Días con préstamos — reemplazar con datos reales del backend
-    const occupied = {
-      [`${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-05`]: 3,
-      [`${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-12`]: 1,
-      [`${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-18`]: 2,
-    };
+  // CALENDARIO
+  const today   = new Date();
+  let viewYear  = today.getFullYear();
+  let viewMonth = today.getMonth();
+  const holidays = {};
+  const MESES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+  const DIAS  = ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
 
-    const MESES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
-    const DIAS  = ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
+  function dateKey(y,m,d){ return `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`; }
 
-    function dateKey(y, m, d) {
-      return `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-    }
-
-    function renderCalendar() {
-      document.getElementById('monthLabel').textContent = `${MESES[viewMonth]} ${viewYear}`;
-      const grid = document.getElementById('calGrid');
-      grid.innerHTML = '';
-
-      DIAS.forEach(d => {
-        const el = document.createElement('div');
-        el.className = 'cal-day-name';
-        el.textContent = d;
-        grid.appendChild(el);
-      });
-
-      const firstDay    = new Date(viewYear, viewMonth, 1).getDay();
-      const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
-
-      for (let i = 0; i < firstDay; i++) {
-        const el = document.createElement('div');
-        el.className = 'cal-day empty';
-        grid.appendChild(el);
-      }
-
-      let cntDisp = 0, cntOcup = 0;
-
-      for (let d = 1; d <= daysInMonth; d++) {
-        const key = dateKey(viewYear, viewMonth, d);
-        const el  = document.createElement('div');
-        el.className = 'cal-day';
-        el.innerHTML = `<span>${d}</span>`;
-
-        const isToday    = d === today.getDate() && viewMonth === today.getMonth() && viewYear === today.getFullYear();
-        const isHoliday  = !!holidays[key];
-        const isOccupied = !!occupied[key];
-
-        if (isToday)         { el.classList.add('today'); }
-        else if (isHoliday)  { el.classList.add('holiday'); }
-        else if (isOccupied) { el.classList.add('occupied'); el.innerHTML += `<div class="dot"></div>`; cntOcup++; }
-        else                 { el.classList.add('available'); cntDisp++; }
-
-        if (selectedDay === d) el.classList.add('selected');
-        el.addEventListener('click', () => openDayModal(d, key, isToday, isHoliday, isOccupied));
-        grid.appendChild(el);
-      }
-
-      const prefix = `${viewYear}-${String(viewMonth+1).padStart(2,'0')}`;
-      const cntHolidays = Object.keys(holidays).filter(k => k.startsWith(prefix)).length;
-
-      document.getElementById('stat-total').textContent       = daysInMonth;
-      document.getElementById('stat-disponibles').textContent = cntDisp;
-      document.getElementById('stat-ocupados').textContent    = cntOcup;
-      document.getElementById('stat-nohabiles').textContent   = cntHolidays;
-
-      renderSideList();
-      renderFullList();
-    }
-
-    function changeMonth(dir) {
-      viewMonth += dir;
-      if (viewMonth > 11) { viewMonth = 0; viewYear++; }
-      if (viewMonth < 0)  { viewMonth = 11; viewYear--; }
-      selectedDay = null;
-      renderCalendar();
-    }
-
-    function openDayModal(d, key, isToday, isHoliday, isOccupied) {
-      selectedDay = d;
-      renderCalendar();
-      const fechaStr = `${d} de ${MESES[viewMonth]} de ${viewYear}`;
-      let bodyHTML = `<p style="font-size:20px;font-weight:800;color:var(--upb-purple);margin-bottom:12px">${fechaStr}</p>`;
-      let footerHTML = '';
-
-      if (isHoliday) {
-        bodyHTML += `
-          <div style="display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:20px;background:var(--danger-bg);color:var(--danger);font-size:12px;font-weight:700;margin-bottom:12px">
-            <i class="fa-solid fa-ban"></i> Día No Hábil
-          </div>
-          <p style="font-size:13px;color:var(--text-medium)"><strong>Motivo:</strong> ${holidays[key].motivo}</p>
-          <p style="font-size:13px;color:var(--text-medium);margin-top:6px"><strong>Descripción:</strong> ${holidays[key].desc || '—'}</p>`;
-        footerHTML = `
-          <button class="btn-secondary" onclick="cerrarModal('modalDia')">Cerrar</button>
-          <button class="btn-danger" onclick="eliminarDesdeModal('${key}')"><i class="fa-solid fa-trash"></i> Eliminar</button>`;
-      } else if (isOccupied) {
-        bodyHTML += `
-          <div style="display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:20px;background:var(--warning-bg);color:var(--warning);font-size:12px;font-weight:700;margin-bottom:12px">
-            <i class="fa-solid fa-clock"></i> Con Préstamos
-          </div>
-          <p style="font-size:13px;color:var(--text-medium)">Este día tiene <strong>${occupied[key]} préstamo(s)</strong> activo(s). No se puede marcar como no hábil.</p>`;
-        footerHTML = `<button class="btn-secondary" onclick="cerrarModal('modalDia')">Cerrar</button>`;
-      } else {
-        bodyHTML += `
-          <div style="display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:20px;background:var(--success-bg);color:var(--success);font-size:12px;font-weight:700;margin-bottom:12px">
-            <i class="fa-solid fa-circle-check"></i> Disponible
-          </div>
-          <p style="font-size:13px;color:var(--text-medium)">Este día está disponible para solicitudes de préstamo.</p>`;
-        footerHTML = `
-          <button class="btn-secondary" onclick="cerrarModal('modalDia')">Cerrar</button>
-          <button class="btn-primary" onclick="marcarDesdeModal('${key}')"><i class="fa-solid fa-ban"></i> Marcar No Hábil</button>`;
-      }
-
-      document.getElementById('modalDiaBody').innerHTML   = bodyHTML;
-      document.getElementById('modalDiaFooter').innerHTML = footerHTML;
-      document.getElementById('modalDia').classList.add('open');
-    }
-
-    function eliminarDesdeModal(key) {
-      delete holidays[key];
-      cerrarModal('modalDia');
-      selectedDay = null;
-      showToast('Día no hábil eliminado.', 'warning');
-      renderCalendar();
-    }
-
-    function marcarDesdeModal(key) {
-      holidays[key] = { motivo: 'Otro', desc: 'Marcado desde calendario' };
-      cerrarModal('modalDia');
-      selectedDay = null;
-      showToast('Día marcado como no hábil.', 'success');
-      renderCalendar();
-    }
-
-    function agregarNoHabil() {
-      const fecha  = document.getElementById('hFecha').value;
-      const motivo = document.getElementById('hMotivo').value;
-      const desc   = document.getElementById('hDesc').value.trim();
-      if (!fecha)  { showToast('Selecciona una fecha.', 'error'); return; }
-      if (!motivo) { showToast('Selecciona un motivo.', 'error'); return; }
-      if (holidays[fecha]) { showToast('Esa fecha ya está marcada como no hábil.', 'error'); return; }
-      holidays[fecha] = { motivo, desc };
-      document.getElementById('hFecha').value  = todayStr;
-      document.getElementById('hMotivo').value = '';
-      document.getElementById('hDesc').value   = '';
-      showToast('Día no hábil registrado correctamente.', 'success');
-      renderCalendar();
-    }
-
-    function renderSideList() {
-      const prefix = `${viewYear}-${String(viewMonth+1).padStart(2,'0')}`;
-      const keys   = Object.keys(holidays).filter(k => k.startsWith(prefix)).sort();
-      const cont   = document.getElementById('holidayListSide');
-      if (!keys.length) {
-        cont.innerHTML = `<div class="empty-state"><i class="fa-solid fa-circle-check"></i><p>Sin días no hábiles este mes</p></div>`;
-        return;
-      }
-      cont.innerHTML = keys.map(k => {
-        const [y, m, d] = k.split('-');
-        return `<div class="holiday-item">
-          <div class="holiday-item-info">
-            <div class="hdate">${d} de ${MESES[parseInt(m)-1]}</div>
-            <div class="hdesc">${holidays[k].motivo}</div>
-          </div>
-          <button class="btn-icon-sm" onclick="eliminarHoliday('${k}')"><i class="fa-solid fa-xmark"></i></button>
-        </div>`;
-      }).join('');
-    }
-
-    function renderFullList() {
-      const keys = Object.keys(holidays).sort();
-      const cont = document.getElementById('fullHolidayList');
-      if (!keys.length) {
-        cont.innerHTML = `<div class="empty-state"><i class="fa-solid fa-calendar-xmark"></i><p>No hay días no hábiles registrados</p></div>`;
-        return;
-      }
-      cont.innerHTML = keys.map(k => {
-        const [y, m, d] = k.split('-');
-        return `<div class="list-item">
-          <div>
-            <div class="li-date">${d} de ${MESES[parseInt(m)-1]} ${y}</div>
-            <div class="li-type">${holidays[k].motivo}</div>
-            ${holidays[k].desc ? `<div class="li-desc">${holidays[k].desc}</div>` : ''}
-          </div>
-          <button class="btn-icon-sm" onclick="eliminarHoliday('${k}')"><i class="fa-solid fa-trash"></i></button>
-        </div>`;
-      }).join('');
-    }
-
-    function eliminarHoliday(key) {
-      delete holidays[key];
-      showToast('Día no hábil eliminado.', 'warning');
-      renderCalendar();
-    }
-
-    function showToast(msg, type = 'success') {
-      const icons = { success: 'fa-circle-check', error: 'fa-circle-exclamation', warning: 'fa-triangle-exclamation' };
-      const t = document.createElement('div');
-      t.className = `toast ${type}`;
-      t.innerHTML = `<i class="fa-solid ${icons[type]}"></i><span>${msg}</span>`;
-      document.getElementById('toastContainer').appendChild(t);
-      setTimeout(() => { t.style.opacity = '0'; t.style.transition = 'opacity 0.3s'; setTimeout(() => t.remove(), 300); }, 3000);
-    }
-
-    const todayStr = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
-    document.getElementById('hFecha').value = todayStr;
+  function toggleHoliday(key){
+    if(holidays[key]){ delete holidays[key]; showToast('Día habilitado nuevamente.','warning'); }
+    else { holidays[key]={motivo:'Marcado manual',desc:''}; showToast('Día marcado como no hábil.','success'); }
     renderCalendar();
-  </script>
+  }
 
+  function renderCalendar(){
+    document.getElementById('monthLabel').textContent=`${MESES[viewMonth]} ${viewYear}`;
+    const grid=document.getElementById('calGrid');
+    grid.innerHTML='';
+    DIAS.forEach(d=>{ const el=document.createElement('div'); el.className='cal-day-name'; el.textContent=d; grid.appendChild(el); });
+    const firstDay=new Date(viewYear,viewMonth,1).getDay();
+    const daysInMonth=new Date(viewYear,viewMonth+1,0).getDate();
+    for(let i=0;i<firstDay;i++){ const el=document.createElement('div'); el.className='cal-day empty'; grid.appendChild(el); }
+    let cntDisp=0;
+    for(let d=1;d<=daysInMonth;d++){
+      const key=dateKey(viewYear,viewMonth,d);
+      const el=document.createElement('div');
+      el.className='cal-day';
+      el.textContent=d;
+      if(holidays[key]){ el.classList.add('holiday'); } else { el.classList.add('available'); cntDisp++; }
+      el.addEventListener('click',()=>toggleHoliday(key));
+      grid.appendChild(el);
+    }
+    const prefix=`${viewYear}-${String(viewMonth+1).padStart(2,'0')}`;
+    const cntHolidays=Object.keys(holidays).filter(k=>k.startsWith(prefix)).length;
+    document.getElementById('stat-total').textContent       = daysInMonth;
+    document.getElementById('stat-disponibles').textContent = cntDisp;
+    document.getElementById('stat-nohabiles').textContent   = cntHolidays;
+    renderSideList(); renderFullList();
+  }
+
+  function changeMonth(dir){
+    viewMonth+=dir;
+    if(viewMonth>11){viewMonth=0;viewYear++;}
+    if(viewMonth<0){viewMonth=11;viewYear--;}
+    renderCalendar();
+  }
+
+  function renderSideList(){
+    const prefix=`${viewYear}-${String(viewMonth+1).padStart(2,'0')}`;
+    const keys=Object.keys(holidays).filter(k=>k.startsWith(prefix)).sort();
+    const cont=document.getElementById('holidayListSide');
+    if(!keys.length){ cont.innerHTML=`<div class="empty-state"><i class="fa-solid fa-circle-check"></i><p>Sin días no hábiles este mes</p></div>`; return; }
+    cont.innerHTML=keys.map(k=>{
+      const[y,m,d]=k.split('-');
+      return `<div class="holiday-item">
+        <div class="holiday-item-info">
+          <div class="hdate">${d} de ${MESES[parseInt(m)-1]}</div>
+          <div class="hdesc">${holidays[k].motivo}</div>
+        </div>
+        <button class="btn-icon-sm" onclick="eliminarHoliday('${k}')"><i class="fa-solid fa-xmark"></i></button>
+      </div>`;
+    }).join('');
+  }
+
+  function renderFullList(){
+    const keys=Object.keys(holidays).sort();
+    const cont=document.getElementById('fullHolidayList');
+    if(!keys.length){ cont.innerHTML=`<div class="empty-state"><i class="fa-solid fa-calendar-xmark"></i><p>No hay días no hábiles registrados</p></div>`; return; }
+    cont.innerHTML=keys.map(k=>{
+      const[y,m,d]=k.split('-');
+      return `<div class="list-item">
+        <div>
+          <div class="li-date">${d} de ${MESES[parseInt(m)-1]} ${y}</div>
+          <div class="li-type">${holidays[k].motivo}</div>
+          ${holidays[k].desc?`<div class="li-desc">${holidays[k].desc}</div>`:''}
+        </div>
+        <button class="btn-icon-sm" onclick="eliminarHoliday('${k}')"><i class="fa-solid fa-trash"></i></button>
+      </div>`;
+    }).join('');
+  }
+
+  function eliminarHoliday(key){ delete holidays[key]; showToast('Día no hábil eliminado.','warning'); renderCalendar(); }
+
+  function showToast(msg,type='success'){
+    const icons={success:'fa-circle-check',error:'fa-circle-exclamation',warning:'fa-triangle-exclamation'};
+    const t=document.createElement('div');
+    t.className=`toast ${type}`;
+    t.innerHTML=`<i class="fa-solid ${icons[type]}"></i><span>${msg}</span>`;
+    document.getElementById('toastContainer').appendChild(t);
+    setTimeout(()=>{t.style.opacity='0';t.style.transition='opacity 0.3s';setTimeout(()=>t.remove(),300);},3000);
+  }
+
+  renderCalendar();
+</script>
 </body>
 </html>

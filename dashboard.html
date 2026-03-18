@@ -1,250 +1,261 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Dashboard - Sistema de Préstamo de Laboratorio</title>
+  <title>Dashboard - Préstamo de Laboratorio UPB</title>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    :root {
-      --upb-purple:#6B1F7C; --upb-purple-dark:#4A1258; --upb-pink:#C0186A;
-      --upb-pink-light:#D91E7A; --sidebar-bg:#FFFFFF; --bg-page:#F0F0F5;
-      --text-dark:#1A1A2E; --text-medium:#666680; --text-light:#AAAABC;
-      --border:#E8E8F0; --font:'Nunito',sans-serif;
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --upb-purple:#6B1F7C;--upb-purple-dark:#4A1258;--upb-pink:#C0186A;--upb-pink-light:#D91E7A;
+      --sidebar-bg:#fff;--bg-page:#F0F0F5;
+      --text-dark:#1A1A2E;--text-medium:#666680;--text-light:#AAAABC;
+      --border:#E8E8F0;--font:'Nunito',sans-serif;
+      --success:#16A34A;--success-bg:#DCFCE7;
+      --warning:#D97706;--warning-bg:#FFFBEB;
+      --danger:#DC2626;--danger-bg:#FEF2F2;
     }
-    body { font-family:var(--font); background:var(--bg-page); min-height:100vh; display:flex; flex-direction:column; }
-    .navbar { background:var(--upb-purple); height:52px; display:flex; align-items:center; justify-content:space-between; padding:0 16px 0 0; box-shadow:0 2px 8px rgba(0,0,0,0.25); flex-shrink:0; z-index:100; }
-    .navbar-left { display:flex; align-items:center; gap:0; }
-    .btn-menu-toggle { background:none; border:none; color:#fff; font-size:18px; cursor:pointer; padding:0 16px; height:52px; display:flex; align-items:center; transition:background 0.2s; }
-    .btn-menu-toggle:hover { background:rgba(255,255,255,0.1); }
-    .navbar-logo { display:flex; align-items:center; gap:8px; padding:0 12px; }
-    .navbar-logo img { height:32px; width:auto; object-fit:contain; border-radius:3px; }
-    .btn-acciones { background:rgba(255,255,255,0.15); border:none; color:#fff; font-family:var(--font); font-size:13px; font-weight:600; padding:6px 14px; border-radius:6px; cursor:pointer; margin-left:12px; display:flex; align-items:center; gap:6px; transition:background 0.2s; }
-    .btn-acciones:hover { background:rgba(255,255,255,0.25); }
-    .navbar-right { display:flex; align-items:center; gap:10px; }
-    .nav-user-info { text-align:right; }
-    .nav-user-name { color:#fff; font-size:13px; font-weight:700; display:block; }
-    .nav-user-lab { color:rgba(255,255,255,0.7); font-size:11px; display:block; }
-    .nav-avatar { width:34px; height:34px; border-radius:50%; overflow:hidden; border:2px solid rgba(255,255,255,0.4); flex-shrink:0; }
-    .nav-avatar img { width:100%; height:100%; object-fit:cover; }
-    .btn-salir { background:rgba(255,255,255,0.15); border:none; color:#fff; font-family:var(--font); font-size:11px; font-weight:700; padding:5px 10px; border-radius:5px; cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:1px; transition:background 0.2s; }
-    .btn-salir:hover { background:rgba(255,255,255,0.25); }
-    .btn-salir i { font-size:14px; }
-    .layout { display:flex; flex:1; overflow:hidden; }
-    .sidebar { width:200px; background:var(--sidebar-bg); border-right:1px solid var(--border); display:flex; flex-direction:column; flex-shrink:0; transition:width 0.25s ease; overflow:hidden; }
-    .sidebar.collapsed { width:0; }
-    .sidebar-nav { padding:12px 0; flex:1; }
-    .nav-item { position:relative; }
-    .nav-link { display:flex; align-items:center; justify-content:space-between; padding:10px 18px; color:var(--text-medium); font-size:13px; font-weight:600; text-decoration:none; cursor:pointer; transition:background 0.15s,color 0.15s; user-select:none; white-space:nowrap; }
-    .nav-link:hover, .nav-link.active { color:var(--upb-pink); background:#FDF0F7; }
-    .nav-link .nav-icon { margin-right:8px; font-size:14px; width:16px; text-align:center; flex-shrink:0; }
-    .nav-link .nav-label { flex:1; }
-    .nav-link .nav-arrow { font-size:11px; transition:transform 0.2s; color:var(--text-light); }
-    .nav-item.open > .nav-link .nav-arrow { transform:rotate(90deg); }
-    .nav-link.home { color:var(--upb-purple); font-weight:700; }
-    .nav-link.home:hover { background:#F5EEF8; }
-    .submenu { display:none; background:#FAFAFA; border-left:3px solid var(--upb-pink); margin-left:18px; }
-    .nav-item.open > .submenu { display:block; }
-    .submenu-link { display:flex; align-items:center; gap:8px; padding:8px 16px; color:var(--text-medium); font-size:12px; font-weight:500; text-decoration:none; transition:color 0.15s,background 0.15s; white-space:nowrap; }
-    .submenu-link:hover, .submenu-link.active { color:var(--upb-purple); background:#F5EEF8; }
-    .submenu-link i { width:14px; text-align:center; font-size:12px; }
-    .main-content { flex:1; overflow-y:auto; padding:0; }
-    .page-header { background:var(--bg-page); padding:14px 24px 0; display:flex; align-items:baseline; gap:10px; }
-    .page-title { font-size:18px; font-weight:800; color:var(--text-dark); text-transform:uppercase; letter-spacing:0.03em; }
-    .page-breadcrumb { font-size:12px; color:var(--text-light); font-weight:500; text-transform:uppercase; letter-spacing:0.05em; }
-    .page-body { padding:16px 24px 24px; }
-    .welcome-card { background:linear-gradient(135deg,#6B1F7C,#C0186A); border-radius:12px; padding:20px 24px; margin-bottom:20px; display:flex; align-items:center; justify-content:space-between; box-shadow:0 4px 16px rgba(107,31,124,0.25); }
-    .welcome-card .welcome-text p { color:rgba(255,255,255,0.8); font-size:13px; font-weight:600; margin-bottom:4px; }
-    .welcome-card .welcome-text h2 { color:#fff; font-size:20px; font-weight:800; margin:0; }
-    .welcome-card .welcome-text span { color:rgba(255,255,255,0.7); font-size:12px; margin-top:4px; display:block; }
-    .welcome-card .welcome-icon { font-size:42px; color:rgba(255,255,255,0.2); }
-    .section-card { background:#fff; border-radius:10px; border:1px solid var(--border); box-shadow:0 2px 8px rgba(0,0,0,0.05); overflow:hidden; margin-bottom:20px; }
-    .section-card-header { background:var(--upb-purple); color:#fff; padding:10px 18px; font-size:13px; font-weight:700; letter-spacing:0.03em; display:flex; align-items:center; gap:8px; }
-    .section-card-body { padding:18px; color:var(--text-medium); font-size:13px; }
+    body{font-family:var(--font);background:var(--bg-page);min-height:100vh;display:flex;flex-direction:column}
+    .navbar{background:var(--upb-purple);height:52px;display:flex;align-items:center;justify-content:space-between;padding:0 16px 0 0;box-shadow:0 2px 8px rgba(0,0,0,.25);flex-shrink:0;z-index:100}
+    .navbar-left{display:flex;align-items:center}
+    .btn-menu-toggle{background:none;border:none;color:#fff;font-size:18px;cursor:pointer;padding:0 16px;height:52px;display:flex;align-items:center;transition:background .2s}
+    .btn-menu-toggle:hover{background:rgba(255,255,255,.1)}
+    .navbar-logo{display:flex;align-items:center;gap:8px;padding:0 12px}
+    .navbar-logo img{height:32px;width:auto;object-fit:contain;border-radius:3px}
+    .acciones-wrap{position:relative;margin-left:12px}
+    .btn-acciones{background:rgba(255,255,255,.15);border:none;color:#fff;font-family:var(--font);font-size:13px;font-weight:600;padding:6px 14px;border-radius:6px;cursor:pointer;display:flex;align-items:center;gap:6px;transition:background .2s}
+    .btn-acciones:hover{background:rgba(255,255,255,.25)}
+    .dropdown-acciones{display:none;position:absolute;top:calc(100% + 8px);left:0;background:#fff;border-radius:10px;box-shadow:0 8px 32px rgba(0,0,0,.15);border:1px solid var(--border);min-width:220px;z-index:999;overflow:hidden;padding:4px 0}
+    .dropdown-acciones.open{display:block}
+    .dropdown-item{display:flex;align-items:center;gap:10px;padding:10px 16px;font-size:13px;font-weight:600;color:var(--text-dark);transition:background .15s;cursor:pointer;width:100%;border:none;background:none;font-family:var(--font);text-align:left;text-decoration:none}
+    .dropdown-item:hover{background:#F5EEF8;color:var(--upb-purple)}
+    .dropdown-item i{width:16px;text-align:center;color:var(--upb-pink)}
+    .dropdown-sep{height:1px;background:#E8E8F0;margin:4px 0}
+    .dropdown-label{padding:6px 16px 2px;font-size:10px;font-weight:800;color:var(--text-light);text-transform:uppercase;letter-spacing:.06em}
+    .navbar-right{display:flex;align-items:center;gap:10px}
+    .nav-user-info{text-align:right}
+    .nav-user-name{color:#fff;font-size:13px;font-weight:700;display:block}
+    .nav-user-lab{color:rgba(255,255,255,.7);font-size:11px;display:block}
+    .nav-avatar{width:34px;height:34px;border-radius:50%;overflow:hidden;border:2px solid rgba(255,255,255,.4);flex-shrink:0}
+    .nav-avatar img{width:100%;height:100%;object-fit:cover}
+    .btn-salir{background:rgba(255,255,255,.15);border:none;color:#fff;font-family:var(--font);font-size:11px;font-weight:700;padding:5px 10px;border-radius:5px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:1px;transition:background .2s}
+    .btn-salir:hover{background:rgba(255,255,255,.25)}
+    .btn-salir i{font-size:14px}
+    .layout{display:flex;flex:1;overflow:hidden}
+    .sidebar{width:200px;background:var(--sidebar-bg);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;transition:width .25s ease;overflow:hidden}
+    .sidebar.collapsed{width:0}
+    .sidebar-nav{padding:12px 0;flex:1;overflow-y:auto}
+    .nav-item{position:relative}
+    .nav-link{display:flex;align-items:center;justify-content:space-between;padding:10px 18px;color:var(--text-medium);font-size:13px;font-weight:600;cursor:pointer;transition:background .15s,color .15s;user-select:none;white-space:nowrap;text-decoration:none}
+    .nav-link:hover,.nav-link.active{color:var(--upb-pink);background:#FDF0F7}
+    .nav-link .nav-icon{margin-right:8px;font-size:14px;width:16px;text-align:center;flex-shrink:0}
+    .nav-link .nav-label{flex:1}
+    .nav-link .nav-arrow{font-size:11px;transition:transform .2s;color:var(--text-light)}
+    .nav-item.open>.nav-link .nav-arrow{transform:rotate(90deg)}
+    .nav-link.home{color:var(--upb-purple);font-weight:700}
+    .nav-link.home:hover,.nav-link.home.active{color:var(--upb-purple);background:#F5EEF8}
+    .submenu{display:none;background:#FAFAFA;border-left:3px solid var(--upb-pink);margin-left:18px}
+    .nav-item.open>.submenu{display:block}
+    .submenu-link{display:flex;align-items:center;gap:8px;padding:8px 16px;color:var(--text-medium);font-size:12px;font-weight:500;transition:color .15s,background .15s;white-space:nowrap;cursor:pointer;text-decoration:none}
+    .submenu-link:hover,.submenu-link.active{color:var(--upb-purple);background:#F5EEF8;font-weight:700}
+    .submenu-link i{width:14px;text-align:center;font-size:12px}
+    .main-content{flex:1;overflow-y:auto;padding:0}
+    .page-header{background:var(--bg-page);padding:14px 24px 0;display:flex;align-items:baseline;gap:10px}
+    .page-title{font-size:18px;font-weight:800;color:var(--text-dark);text-transform:uppercase;letter-spacing:.03em}
+    .page-breadcrumb{font-size:12px;color:var(--text-light);font-weight:500;text-transform:uppercase;letter-spacing:.05em}
+    .page-body{padding:16px 24px 32px}
+    .welcome-card{background:linear-gradient(135deg,#6B1F7C,#C0186A);border-radius:12px;padding:20px 24px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 4px 16px rgba(107,31,124,.25)}
+    .welcome-card .welcome-text p{color:rgba(255,255,255,.8);font-size:13px;font-weight:600;margin-bottom:4px}
+    .welcome-card .welcome-text h2{color:#fff;font-size:20px;font-weight:800;margin:0}
+    .welcome-card .welcome-text span{color:rgba(255,255,255,.7);font-size:12px;margin-top:4px;display:block}
+    .welcome-card .welcome-icon{font-size:42px;color:rgba(255,255,255,.2)}
+    .section-card{background:#fff;border-radius:10px;border:1px solid var(--border);box-shadow:0 2px 8px rgba(0,0,0,.05);overflow:hidden;margin-bottom:20px}
+    .section-card-header{background:var(--upb-purple);color:#fff;padding:10px 18px;font-size:13px;font-weight:700;letter-spacing:.03em;display:flex;align-items:center;gap:8px}
+    .section-card-body{padding:18px;color:var(--text-medium);font-size:13px}
+    .notif-list{display:flex;flex-direction:column;gap:8px}
+    .notif-item{display:flex;align-items:flex-start;gap:12px;padding:12px 14px;border-radius:8px;border:1px solid var(--border);background:#FAFAFA}
+    .notif-icon{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+    .notif-icon.purple{background:#F3E8FF;color:var(--upb-purple)}
+    .notif-icon.orange{background:var(--warning-bg);color:var(--warning)}
+    .notif-icon.green{background:var(--success-bg);color:var(--success)}
+    .notif-title{font-size:13px;font-weight:700;color:var(--text-dark)}
+    .notif-sub{font-size:11px;color:var(--text-light);margin-top:2px}
+    .toast-container{position:fixed;bottom:24px;right:24px;z-index:2000;display:flex;flex-direction:column;gap:8px}
+    .toast{background:#fff;border-radius:10px;padding:12px 16px;box-shadow:0 8px 24px rgba(0,0,0,.15);border-left:4px solid;display:flex;align-items:center;gap:10px;font-size:13px;font-weight:600;min-width:260px;animation:toastIn .25s ease}
+    @keyframes toastIn{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
+    .toast.success{border-color:var(--success);color:var(--success)}
+    .toast.error{border-color:var(--danger);color:var(--danger)}
+    .toast.warning{border-color:var(--warning);color:var(--warning)}
+    .toast i{font-size:16px}
+    .toast span{color:var(--text-dark)}
   </style>
 </head>
 <body>
 
-  <header class="navbar">
-    <div class="navbar-left">
-      <button class="btn-menu-toggle" onclick="toggleSidebar()" title="Menú">
-        <i class="fa-solid fa-bars"></i>
-      </button>
-      <div class="navbar-logo">
-        <img src="assets/images/LOGOUPB.jpg" alt="UPB" />
+<header class="navbar">
+  <div class="navbar-left">
+    <button class="btn-menu-toggle" onclick="toggleSidebar()"><i class="fa-solid fa-bars"></i></button>
+    <div class="navbar-logo"><img src="assets/images/LOGOUPB.jpg" alt="UPB"/></div>
+    <div class="acciones-wrap">
+      <button class="btn-acciones" onclick="toggleDropdown()">Acciones Rápidas <i class="fa-solid fa-chevron-down" style="font-size:10px"></i></button>
+      <div class="dropdown-acciones" id="dropdown-acciones">
+        <a class="dropdown-item" href="dashboard.html"><i class="fa-solid fa-house"></i> Menú Principal</a>
+        <a class="dropdown-item" href="seleccion-modulo.html"><i class="fa-solid fa-th-large"></i> Selección de Módulos</a>
+        <div class="dropdown-sep"></div>
+        <div class="dropdown-label">Accesos Rápidos</div>
+        <a class="dropdown-item" href="Admin-Usuarios.html"><i class="fa-solid fa-users"></i> Usuarios</a>
+        <a class="dropdown-item" href="Admin_Calendario.html"><i class="fa-solid fa-calendar"></i> Calendario</a>
+        <a class="dropdown-item" href="Admin-Equipos.html"><i class="fa-solid fa-desktop"></i> Elementos</a>
+        <a class="dropdown-item" href="Admin-Informacion-Importante.html"><i class="fa-solid fa-bullhorn"></i> Información</a>
+        <a class="dropdown-item" href="reporte-resumen.html"><i class="fa-solid fa-file-lines"></i> Reportes</a>
+        <div class="dropdown-sep"></div>
+        <div class="dropdown-label">Usuarios</div>
+        <a class="dropdown-item" href="Admin-Usuarios.html"><i class="fa-solid fa-users"></i> Ver Usuarios</a>
+        <a class="dropdown-item" href="Admin-Crear-Usuario.html"><i class="fa-solid fa-user-plus"></i> Nuevo Usuario</a>
+        <div class="dropdown-sep"></div>
+        <a class="dropdown-item" href="#"><i class="fa-solid fa-box-open"></i> Préstamos activos</a>
       </div>
-      <button class="btn-acciones">
-        Acciones Rápidas <i class="fa-solid fa-chevron-down" style="font-size:10px"></i>
-      </button>
     </div>
-    <div class="navbar-right">
-      <div class="nav-user-info">
-        <span class="nav-user-name" id="nav-nombre">...</span>
-        <span class="nav-user-lab" id="nav-lab"></span>
-      </div>
-      <div class="nav-avatar">
-        <img id="nav-avatar-img" src="" alt="Avatar" />
-      </div>
-      <button class="btn-salir" id="btn-salir">
-        <i class="fa-solid fa-right-from-bracket"></i>
-        Salir
-      </button>
-    </div>
-  </header>
-
-  <div class="layout">
-    <aside class="sidebar" id="sidebar">
-      <nav class="sidebar-nav">
-
-        <div class="nav-item">
-          <a class="nav-link home active" href="#">
-            <i class="nav-icon fa-solid fa-house"></i>
-            <span class="nav-label">Menú Principal</span>
-          </a>
-        </div>
-
-        <div class="nav-item" onclick="toggleMenu(this)">
-          <div class="nav-link">
-            <i class="nav-icon fa-solid fa-box-open"></i>
-            <span class="nav-label">Entregas</span>
-            <i class="nav-arrow fa-solid fa-chevron-right"></i>
-          </div>
-          <div class="submenu">
-            <a class="submenu-link" href="#"><i class="fa-solid fa-list"></i> Ver Entregas</a>
-            <a class="submenu-link" href="#"><i class="fa-solid fa-plus"></i> Nueva Entrega</a>
-          </div>
-        </div>
-
-        <div class="nav-item" onclick="toggleMenu(this)">
-          <div class="nav-link">
-            <i class="nav-icon fa-solid fa-users"></i>
-            <span class="nav-label">Usuarios</span>
-            <i class="nav-arrow fa-solid fa-chevron-right"></i>
-          </div>
-          <div class="submenu">
-            <a class="submenu-link" href="#"><i class="fa-solid fa-list"></i> Ver Usuarios</a>
-            <a class="submenu-link" href="#"><i class="fa-solid fa-user-plus"></i> Crear Usuario</a>
-          </div>
-        </div>
-
-        <div class="nav-item" onclick="toggleMenu(this)">
-          <div class="nav-link">
-            <i class="nav-icon fa-solid fa-cart-shopping"></i>
-            <span class="nav-label">Solicitudes</span>
-            <i class="nav-arrow fa-solid fa-chevron-right"></i>
-          </div>
-          <div class="submenu">
-            <a class="submenu-link" href="#"><i class="fa-solid fa-clipboard-list"></i> Solicitud de Equipos</a>
-            <a class="submenu-link" href="#"><i class="fa-solid fa-file-alt"></i> Solicitud Detalle</a>
-            <a class="submenu-link" href="#"><i class="fa-solid fa-search"></i> Seleccionar</a>
-            <a class="submenu-link" href="#"><i class="fa-solid fa-ban"></i> Cancelados</a>
-            <a class="submenu-link" href="#"><i class="fa-solid fa-star"></i> Solicitud Especial Admin</a>
-            <a class="submenu-link" href="#"><i class="fa-solid fa-star-half"></i> Solicitud Especial Persona</a>
-          </div>
-        </div>
-
-        <div class="nav-item" onclick="toggleMenu(this)">
-          <div class="nav-link">
-            <i class="nav-icon fa-solid fa-gear"></i>
-            <span class="nav-label">Administración</span>
-            <i class="nav-arrow fa-solid fa-chevron-right"></i>
-          </div>
-          <div class="submenu">
-           <a class="submenu-link" href="Admin-Equipos.html"><i class="fa-solid fa-desktop"></i> Equipos</a>
-          <a class="submenu-link" href="Admin_Calendario.html"><i class="fa-solid fa-calendar"></i> Calendario</a>
-            <a class="submenu-link" href="Admin-Informacion-Importante.html"><i class="fa-solid fa-bullhorn"></i> Información Importante</a>
-           <a class="submenu-link" href="Admin-Foto-Perfil.html"><i class="fa-solid fa-camera"></i> Foto Perfil</a>
-          </div>
-        </div>
-
-        <div class="nav-item" onclick="toggleMenu(this)">
-          <div class="nav-link">
-            <i class="nav-icon fa-solid fa-file-lines"></i>
-            <span class="nav-label">Reportes</span>
-            <i class="nav-arrow fa-solid fa-chevron-right"></i>
-          </div>
-          <div class="submenu">
-            <a class="submenu-link" href="#"><i class="fa-solid fa-file"></i> Resumen Préstamos</a>
-            <a class="submenu-link" href="#"><i class="fa-solid fa-file"></i> Detalle Préstamos</a>
-            <a class="submenu-link" href="#"><i class="fa-solid fa-file"></i> Préstamos x Equipo</a>
-            <a class="submenu-link" href="#"><i class="fa-solid fa-file"></i> Equipos prestados</a>
-            <a class="submenu-link" href="#"><i class="fa-solid fa-file"></i> Inventario General</a>
-          </div>
-        </div>
-
-      </nav>
-    </aside>
-
-    <main class="main-content">
-      <div class="page-header">
-        <span class="page-title">PÁGINA PRINCIPAL</span>
-        <span class="page-breadcrumb">PÁGINA PRINCIPAL</span>
-      </div>
-      <div class="page-body">
-
-        <div class="welcome-card">
-          <div class="welcome-text">
-            <p>¡Bienvenido de nuevo!</p>
-            <h2 id="bienvenida-nombre"></h2>
-            <span id="bienvenida-lab"></span>
-          </div>
-          <i class="fa-solid fa-flask welcome-icon"></i>
-        </div>
-
-        <div class="section-card">
-          <div class="section-card-header">
-            <i class="fa-solid fa-bullhorn"></i>
-            INFORMACIÓN IMPORTANTE
-          </div>
-          <div class="section-card-body">
-            Notificaciones del Módulo
-          </div>
-        </div>
-
-      </div>
-    </main>
   </div>
+  <div class="navbar-right">
+    <div class="nav-user-info">
+      <span class="nav-user-name" id="nav-nombre">...</span>
+      <span class="nav-user-lab" id="nav-lab"></span>
+    </div>
+    <div class="nav-avatar"><img id="nav-avatar-img" src="" alt="Avatar"/></div>
+    <button class="btn-salir" id="btn-salir"><i class="fa-solid fa-right-from-bracket"></i> Salir</button>
+  </div>
+</header>
 
-  <script>
-    const usuarioGuardado = sessionStorage.getItem('usuario');
-    if (!usuarioGuardado) { window.location.href = 'index.html'; }
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <nav class="sidebar-nav">
+      <div class="nav-item">
+        <a class="nav-link home active" href="dashboard.html"><i class="nav-icon fa-solid fa-house"></i><span class="nav-label">Menú Principal</span></a>
+      </div>
+      <div class="nav-item" onclick="toggleMenu(this)">
+        <div class="nav-link"><i class="nav-icon fa-solid fa-box-open"></i><span class="nav-label">Entregas</span><i class="nav-arrow fa-solid fa-chevron-right"></i></div>
+        <div class="submenu">
+          <a class="submenu-link" href="#"><i class="fa-solid fa-list"></i> Ver Entregas</a>
+          <a class="submenu-link" href="#"><i class="fa-solid fa-plus"></i> Nueva Entrega</a>
+        </div>
+      </div>
+      <div class="nav-item" onclick="toggleMenu(this)">
+        <div class="nav-link"><i class="nav-icon fa-solid fa-users"></i><span class="nav-label">Usuarios</span><i class="nav-arrow fa-solid fa-chevron-right"></i></div>
+        <div class="submenu">
+          <a class="submenu-link" href="Admin-Usuarios.html"><i class="fa-solid fa-list"></i> Ver Usuarios</a>
+          <a class="submenu-link" href="Admin-Crear-Usuario.html"><i class="fa-solid fa-user-plus"></i> Crear Usuario</a>
+        </div>
+      </div>
+      <div class="nav-item" onclick="toggleMenu(this)">
+        <div class="nav-link"><i class="nav-icon fa-solid fa-cart-shopping"></i><span class="nav-label">Solicitudes</span><i class="nav-arrow fa-solid fa-chevron-right"></i></div>
+        <div class="submenu">
+          <a class="submenu-link" href="#"><i class="fa-solid fa-clipboard-list"></i> Solicitud de Elementos</a>
+          <a class="submenu-link" href="#"><i class="fa-solid fa-file-alt"></i> Solicitud Detalle</a>
+          <a class="submenu-link" href="#"><i class="fa-solid fa-search"></i> Seleccionar</a>
+          <a class="submenu-link" href="#"><i class="fa-solid fa-ban"></i> Cancelados</a>
+          <a class="submenu-link" href="#"><i class="fa-solid fa-star"></i> Solicitud Especial Admin</a>
+          <a class="submenu-link" href="#"><i class="fa-solid fa-star-half"></i> Solicitud Especial Persona</a>
+        </div>
+      </div>
+      <div class="nav-item" onclick="toggleMenu(this)">
+        <div class="nav-link"><i class="nav-icon fa-solid fa-gear"></i><span class="nav-label">Administración</span><i class="nav-arrow fa-solid fa-chevron-right"></i></div>
+        <div class="submenu">
+          <a class="submenu-link" href="Admin-Equipos.html"><i class="fa-solid fa-desktop"></i> Elementos</a>
+          <a class="submenu-link" href="Admin_Calendario.html"><i class="fa-solid fa-calendar"></i> Calendario</a>
+          <a class="submenu-link" href="Admin-Informacion-Importante.html"><i class="fa-solid fa-bullhorn"></i> Información Importante</a>
+          <a class="submenu-link" href="Admin-Foto-Perfil.html"><i class="fa-solid fa-camera"></i> Foto Perfil</a>
+        </div>
+      </div>
+      <div class="nav-item" onclick="toggleMenu(this)">
+        <div class="nav-link"><i class="nav-icon fa-solid fa-file-lines"></i><span class="nav-label">Reportes</span><i class="nav-arrow fa-solid fa-chevron-right"></i></div>
+        <div class="submenu">
+          <a class="submenu-link" href="reporte-resumen.html"><i class="fa-solid fa-table"></i> Resumen Préstamos</a>
+          <a class="submenu-link" href="#"><i class="fa-solid fa-file-invoice"></i> Formato de Salida</a>
+          <a class="submenu-link" href="#"><i class="fa-solid fa-file"></i> Préstamos x Elemento</a>
+          <a class="submenu-link" href="#"><i class="fa-solid fa-file"></i> Elementos prestados</a>
+          <a class="submenu-link" href="#"><i class="fa-solid fa-file"></i> Inventario General</a>
+        </div>
+      </div>
+    </nav>
+  </aside>
 
-    const usuario = JSON.parse(usuarioGuardado);
-    document.getElementById('nav-nombre').textContent = usuario.nombre.toUpperCase();
-    document.getElementById('nav-lab').textContent = usuario.lab;
-    document.getElementById('bienvenida-nombre').textContent = usuario.nombre;
-    document.getElementById('bienvenida-lab').textContent = usuario.lab;
+  <main class="main-content">
+    <div class="page-header">
+      <span class="page-title">PÁGINA PRINCIPAL</span>
+      <span class="page-breadcrumb">PÁGINA PRINCIPAL</span>
+    </div>
+    <div class="page-body">
 
-    const avatares = {
-      admin:    'assets/images/AVATARADMINISTRADOR.jpg',
-      profesor: 'assets/images/AVATARPROFESOR.jpg',
-      usuario:  'assets/images/AVATARPROFESOR.jpg'
-    };
-    document.getElementById('nav-avatar-img').src = avatares[usuario.rol] || 'assets/images/AVATARADMINISTRADOR.jpg';
+      <div class="welcome-card">
+        <div class="welcome-text">
+          <p>¡Bienvenido de nuevo!</p>
+          <h2 id="bienvenida-nombre"></h2>
+          <span id="bienvenida-lab"></span>
+        </div>
+        <i class="fa-solid fa-flask welcome-icon"></i>
+      </div>
 
-    document.getElementById('btn-salir').addEventListener('click', function() {
-      sessionStorage.removeItem('usuario');
-      window.location.href = 'index.html';
-    });
+      <div class="section-card">
+        <div class="section-card-header"><i class="fa-solid fa-bullhorn"></i> INFORMACIÓN IMPORTANTE</div>
+        <div class="section-card-body">
+          <div class="notif-list">
+            <div class="notif-item">
+              <div class="notif-icon orange"><i class="fa-solid fa-triangle-exclamation"></i></div>
+              <div>
+                <div class="notif-title">2 usuarios pendientes de aprobación</div>
+                <div class="notif-sub">Ingresa a Usuarios para aprobar o rechazar solicitudes</div>
+              </div>
+            </div>
+            <div class="notif-item">
+              <div class="notif-icon purple"><i class="fa-solid fa-calendar"></i></div>
+              <div>
+                <div class="notif-title">Recuerda configurar el calendario del mes</div>
+                <div class="notif-sub">Marca los días no hábiles en la sección de Calendario</div>
+              </div>
+            </div>
+            <div class="notif-item">
+              <div class="notif-icon green"><i class="fa-solid fa-circle-check"></i></div>
+              <div>
+                <div class="notif-title">Sistema funcionando correctamente</div>
+                <div class="notif-sub">Todos los módulos están activos</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
 
-    function toggleSidebar() {
-      document.getElementById('sidebar').classList.toggle('collapsed');
-    }
+    </div>
+  </main>
+</div>
 
-   function toggleMenu(item) {
-  const isOpen = item.classList.contains('open');
-  document.querySelectorAll('.nav-item.open').forEach(el => el.classList.remove('open'));
-  if (!isOpen) item.classList.add('open');
-}
+<div class="toast-container" id="toastContainer"></div>
 
-document.querySelectorAll('.submenu-link').forEach(link => {
-  link.addEventListener('click', function(e) {
-    e.stopPropagation();
+<script>
+  const sesion = sessionStorage.getItem('usuario');
+  if (!sesion) { window.location.href = 'index.html'; }
+  const usuario = JSON.parse(sesion);
+  document.getElementById('nav-nombre').textContent        = usuario.nombre.toUpperCase();
+  document.getElementById('nav-lab').textContent           = usuario.lab || '';
+  document.getElementById('bienvenida-nombre').textContent = usuario.nombre;
+  document.getElementById('bienvenida-lab').textContent    = usuario.lab || '';
+  const avatares = { admin:'assets/images/AVATARADMINISTRADOR.jpg', profesor:'assets/images/AVATARPROFESOR.jpg', usuario:'assets/images/AVATARPROFESOR.jpg' };
+  document.getElementById('nav-avatar-img').src = avatares[usuario.rol] || 'assets/images/AVATARADMINISTRADOR.jpg';
+  document.getElementById('btn-salir').addEventListener('click', () => { sessionStorage.removeItem('usuario'); window.location.href = 'index.html'; });
+
+  function toggleSidebar()  { document.getElementById('sidebar').classList.toggle('collapsed'); }
+  function toggleDropdown() { document.getElementById('dropdown-acciones').classList.toggle('open'); }
+  function toggleMenu(item) {
+    const isOpen = item.classList.contains('open');
+    document.querySelectorAll('.nav-item.open').forEach(el => el.classList.remove('open'));
+    if (!isOpen) item.classList.add('open');
+  }
+  document.addEventListener('click', e => {
+    if (!e.target.closest('.acciones-wrap')) document.getElementById('dropdown-acciones').classList.remove('open');
   });
-});
-  </script>
-
+  document.querySelectorAll('.submenu-link').forEach(l => l.addEventListener('click', e => e.stopPropagation()));
+</script>
 </body>
 </html>

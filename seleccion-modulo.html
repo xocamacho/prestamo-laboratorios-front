@@ -530,6 +530,8 @@
         <input type="text" id="nuevo-lab-nombre" placeholder="Ej: Lab de Química No 2" />
         <label>Ubicación</label>
         <input type="text" id="nuevo-lab-ubicacion" placeholder="Ej: Bloque A, Piso 3" />
+        <label>Responsable del laboratorio *</label>
+        <input type="text" id="nuevo-lab-responsable" placeholder="Ej: Dr. Juan Martínez" />
         <label>Descripción</label>
         <textarea id="nuevo-lab-descripcion" placeholder="Descripción del laboratorio..."></textarea>
       </div>
@@ -755,26 +757,42 @@
     }
 
     function crearLaboratorio() {
-      const nombre = document.getElementById('nuevo-lab-nombre').value.trim();
-      const ubicacion = document.getElementById('nuevo-lab-ubicacion').value.trim();
+      const nombre      = document.getElementById('nuevo-lab-nombre').value.trim();
+      const ubicacion   = document.getElementById('nuevo-lab-ubicacion').value.trim();
+      const responsable = document.getElementById('nuevo-lab-responsable').value.trim();
+      const descripcion = document.getElementById('nuevo-lab-descripcion').value.trim();
+
+      let valido = true;
       if (!nombre) {
         document.getElementById('nuevo-lab-nombre').style.borderColor = '#F9A8D4';
-        return;
+        valido = false;
+      } else {
+        document.getElementById('nuevo-lab-nombre').style.borderColor = '#E8E8F0';
       }
-      document.getElementById('nuevo-lab-nombre').style.borderColor = '#E8E8F0';
+      if (!responsable) {
+        document.getElementById('nuevo-lab-responsable').style.borderColor = '#F9A8D4';
+        valido = false;
+      } else {
+        document.getElementById('nuevo-lab-responsable').style.borderColor = '#E8E8F0';
+      }
+      if (!valido) return;
+
       const labs = JSON.parse(localStorage.getItem('laboratorios_aprobados') || '[]');
-      labs.push({ nombre, ubicacion });
+      labs.push({ nombre, ubicacion, responsable, descripcion });
       localStorage.setItem('laboratorios_aprobados', JSON.stringify(labs));
+
       const opt = document.createElement('option');
       opt.value = nombre;
       opt.textContent = nombre;
       select.appendChild(opt);
       select.value = nombre;
+
       document.getElementById('exito-crear').style.display = 'flex';
       setTimeout(() => {
         cerrarModal('modal-crear-lab');
         document.getElementById('nuevo-lab-nombre').value = '';
         document.getElementById('nuevo-lab-ubicacion').value = '';
+        document.getElementById('nuevo-lab-responsable').value = '';
         document.getElementById('nuevo-lab-descripcion').value = '';
       }, 2000);
     }
@@ -811,4 +829,4 @@
   </script>
 
 </body>
-</html>
+</html>s

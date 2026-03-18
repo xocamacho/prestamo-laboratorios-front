@@ -1,297 +1,483 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Sistema de Préstamo de Laboratorio - UPB</title>
-  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/style.css"/>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Nunito',sans-serif;height:100vh;overflow:hidden;position:relative;background:#1A052A}
+    .lab-bg{position:fixed;inset:0;width:100%;height:100%;z-index:0}
+    .bg-overlay{position:fixed;inset:0;z-index:1;background:radial-gradient(ellipse 55% 65% at 50% 55%,rgba(10,2,22,.72) 0%,rgba(10,2,22,.28) 60%,transparent 100%),linear-gradient(to bottom,rgba(14,4,26,.18) 0%,rgba(14,4,26,.52) 65%,rgba(14,4,26,.9) 100%)}
+    .particles{position:fixed;inset:0;z-index:2;overflow:hidden;pointer-events:none}
+    .particle{position:absolute;border-radius:50%;animation:float linear infinite}
+    @keyframes float{0%{transform:translateY(100vh) scale(0);opacity:0}10%{opacity:1}90%{opacity:.35}100%{transform:translateY(-30px) scale(1.2);opacity:0}}
+    .page{position:relative;z-index:3;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
+    .login-card{width:420px;background:rgba(255,255,255,.97);border-radius:22px;padding:36px 34px 32px;box-shadow:0 32px 90px rgba(0,0,0,.55),0 0 0 1px rgba(255,255,255,.12);animation:popIn .7s cubic-bezier(.16,1,.3,1) both;position:relative;overflow:hidden}
+    @keyframes popIn{from{opacity:0;transform:translateY(20px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+    .login-card::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,#6B1F7C,#E8197A)}
+    .card-header{display:flex;flex-direction:column;align-items:center;gap:8px;margin-bottom:24px}
+    .card-shield{height:52px;width:auto;object-fit:contain;border-radius:6px}
+    .card-subtitle{font-size:12px;font-weight:700;color:#8888A0;letter-spacing:.06em;text-transform:uppercase}
+    .tabs{display:flex;background:#EDE8F5;border-radius:10px;padding:4px;margin-bottom:20px}
+    .tab{flex:1;height:34px;border:none;background:none;font-family:'Nunito',sans-serif;font-size:13px;font-weight:700;color:#5A5572;border-radius:7px;cursor:pointer;transition:all .2s}
+    .tab.active{background:#fff;color:#6B1F7C;box-shadow:0 2px 10px rgba(107,31,124,.15)}
+    .panel{display:none}.panel.active{display:block}
+    .form-group{display:flex;flex-direction:column;gap:5px;margin-bottom:13px}
+    .form-group label{font-size:10px;font-weight:800;color:#5A5572;text-transform:uppercase;letter-spacing:.06em}
+    .input-wrapper{position:relative;display:flex;align-items:center}
+    .input-icon{position:absolute;left:13px;color:#AAAABF;font-size:13px;pointer-events:none;z-index:1}
+    .input-wrapper input,.input-wrapper select{width:100%;height:40px;border:1.5px solid #E2E2EE;border-radius:9px;padding:0 12px 0 36px;font-family:'Nunito',sans-serif;font-size:13px;color:#1A1A2E;background:#F9F7FC;outline:none;transition:border-color .2s,box-shadow .2s}
+    .input-wrapper input:focus,.input-wrapper select:focus{border-color:#6B1F7C;box-shadow:0 0 0 3px rgba(107,31,124,.1);background:#fff}
+    .input-wrapper input::placeholder{color:#AAAABF}
+    .input-wrapper select{padding-left:12px;cursor:pointer}
+    .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    #toggle-password,#toggle-regpass,#toggle-regpass2{position:absolute;right:12px;background:none;border:none;cursor:pointer;color:#AAAABF;font-size:14px;padding:4px;display:flex;align-items:center;transition:color .2s;z-index:1}
+    .strength-row{display:flex;gap:3px;margin-top:4px}
+    .s-seg{height:3px;flex:1;border-radius:2px;background:#E2E2EE;transition:background .25s}
+    .s-seg.w{background:#DC2626}.s-seg.m{background:#D97706}.s-seg.s{background:#059669}
+    .btn-login{width:100%;height:44px;margin-top:4px;border:none;border-radius:10px;background:linear-gradient(135deg,#6B1F7C,#E8197A);color:#fff;font-family:'Nunito',sans-serif;font-size:14px;font-weight:800;cursor:pointer;letter-spacing:.02em;box-shadow:0 4px 20px rgba(107,31,124,.38);transition:transform .15s,box-shadow .15s;display:flex;align-items:center;justify-content:center;gap:8px}
+    .btn-login:hover{transform:translateY(-1px);box-shadow:0 7px 26px rgba(107,31,124,.5)}
+    .forgot-link{text-align:center;margin-top:13px}
+    .forgot-link a{font-size:12px;color:#6B1F7C;font-weight:700;text-decoration:none}
+    .forgot-link a:hover{text-decoration:underline}
+    .error-msg{display:none;background:#FFF0F5;border:1px solid #F9A8D4;color:#9D174D;border-radius:8px;padding:10px 14px;font-size:13px;font-weight:600;margin-bottom:14px;align-items:center;gap:8px}
+    .pending-screen{display:none;flex-direction:column;align-items:center;text-align:center;padding:12px 0 4px}
+    .pending-screen.visible{display:flex}
+    .pending-icon{width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,#FFF7ED,#FFFBEB);border:2px solid #FDE68A;display:flex;align-items:center;justify-content:center;margin-bottom:20px}
+    .pending-icon i{font-size:30px;color:#D97706}
+    .pending-screen h3{font-size:20px;font-weight:800;color:#1A1A2E;margin-bottom:10px;line-height:1.25}
+    .pending-screen p{font-size:13px;color:#8888A0;font-weight:600;line-height:1.6;max-width:280px;margin-bottom:24px}
+    .btn-volver{height:40px;padding:0 24px;border:1.5px solid #E2E2EE;border-radius:9px;background:#fff;color:#5A5572;font-family:'Nunito',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:background .2s,border-color .2s,color .2s}
+    .btn-volver:hover{background:#F5F0FA;border-color:#6B1F7C;color:#6B1F7C}
+    .modal-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:999;align-items:center;justify-content:center}
+    .modal-box{background:#fff;border-radius:16px;padding:32px;width:100%;max-width:400px;margin:16px;box-shadow:0 20px 60px rgba(0,0,0,.25)}
+    .modal-box h3{font-size:20px;font-weight:800;color:#1A1A2E;margin-bottom:8px}
+    .modal-box p{font-size:13px;color:#6B6B85;margin-bottom:20px}
+    .modal-success{display:none;background:#F0FDF4;border:1px solid #86EFAC;color:#166534;border-radius:8px;padding:10px 14px;font-size:13px;font-weight:600;margin-bottom:16px}
+    .modal-label{display:block;font-size:13px;font-weight:700;color:#1A1A2E;margin-bottom:6px}
+    .modal-input-wrap{position:relative;margin-bottom:16px}
+    .modal-input-wrap i{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:#AAAABF;font-size:14px}
+    .modal-input{width:100%;height:48px;border:1.5px solid #E2E2EE;border-radius:10px;padding:0 14px 0 40px;font-family:'Nunito',sans-serif;font-size:14px;color:#1A1A2E;background:#F9F9FC;outline:none}
+    .btn-modal-primary{width:100%;height:48px;border:none;border-radius:10px;background:linear-gradient(135deg,#6B1F7C,#D91E7A);color:#fff;font-family:'Nunito',sans-serif;font-size:15px;font-weight:700;cursor:pointer;margin-bottom:10px}
+    .btn-modal-cancel{width:100%;height:40px;border:1.5px solid #E2E2EE;border-radius:10px;background:#fff;color:#6B6B85;font-family:'Nunito',sans-serif;font-size:14px;font-weight:600;cursor:pointer}
+  </style>
 </head>
 <body>
 
-  <!-- NAVBAR -->
-  <header class="navbar">
-    <div class="navbar-brand">
-      <img src="assets/images/LOGOUPB.jpg" alt="Logo UPB" class="logo-img" />
-      <div class="brand-divider"></div>
-      <div class="brand-text">
-        <span class="brand-name">Universidad</span>
-        <span class="brand-name">Pontificia</span>
-        <span class="brand-name">Bolivariana</span>
-      </div>
+<svg class="lab-bg" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#1A052A"/><stop offset="40%" style="stop-color:#36085A"/><stop offset="100%" style="stop-color:#6B1F7C"/></linearGradient>
+    <linearGradient id="specGrad" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" style="stop-color:#FF4040;stop-opacity:.8"/><stop offset="25%" style="stop-color:#FFAA00;stop-opacity:.8"/><stop offset="50%" style="stop-color:#00FF88;stop-opacity:.8"/><stop offset="75%" style="stop-color:#0080FF;stop-opacity:.8"/><stop offset="100%" style="stop-color:#C040FF;stop-opacity:.8"/></linearGradient>
+    <filter id="g3"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    <filter id="g6"><feGaussianBlur stdDeviation="6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    <filter id="g28"><feGaussianBlur stdDeviation="28" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  </defs>
+  <rect width="1440" height="900" fill="url(#bg)"/>
+  <line x1="0" y1="220" x2="1440" y2="220" stroke="#3A0A5A" stroke-width=".6" opacity=".4"/>
+  <line x1="0" y1="440" x2="1440" y2="440" stroke="#3A0A5A" stroke-width=".6" opacity=".35"/>
+  <line x1="0" y1="660" x2="1440" y2="660" stroke="#3A0A5A" stroke-width=".6" opacity=".3"/>
+  <line x1="360" y1="0" x2="360" y2="900" stroke="#3A0A5A" stroke-width=".5" opacity=".28"/>
+  <line x1="720" y1="0" x2="720" y2="900" stroke="#3A0A5A" stroke-width=".5" opacity=".22"/>
+  <line x1="1080" y1="0" x2="1080" y2="900" stroke="#3A0A5A" stroke-width=".5" opacity=".22"/>
+  <rect x="0" y="720" width="1440" height="180" fill="#0D0218" opacity=".95"/>
+  <line x1="0" y1="720" x2="1440" y2="720" stroke="#7B2F9C" stroke-width="1.5" opacity=".55"/>
+  <rect x="280" y="0" width="120" height="5" rx="2.5" fill="#fff" opacity=".08"/>
+  <rect x="1040" y="0" width="120" height="5" rx="2.5" fill="#fff" opacity=".08"/>
+  <rect x="20" y="50" width="230" height="560" rx="5" fill="#200840" opacity=".9" stroke="#3A1060" stroke-width="1.2"/>
+  <rect x="20" y="145" width="230" height="8" fill="#3A0A60" opacity=".9"/>
+  <rect x="20" y="275" width="230" height="8" fill="#3A0A60" opacity=".9"/>
+  <rect x="20" y="405" width="230" height="8" fill="#3A0A60" opacity=".9"/>
+  <rect x="20" y="530" width="230" height="8" fill="#3A0A60" opacity=".9"/>
+  <rect x="35" y="90" width="34" height="50" rx="3" fill="none" stroke="#8B40B0" stroke-width="1.8"/>
+  <rect x="38" y="110" width="28" height="24" rx="2" fill="#6B1F7C" opacity=".55"/>
+  <ellipse cx="52" cy="141" rx="15" ry="4" fill="#C070FF" opacity=".8" filter="url(#g3)"/>
+  <rect x="82" y="94" width="32" height="46" rx="3" fill="none" stroke="#D040A0" stroke-width="1.8"/>
+  <rect x="85" y="110" width="26" height="26" rx="2" fill="#C0186A" opacity=".5"/>
+  <ellipse cx="98" cy="141" rx="13" ry="3.5" fill="#FF70C0" opacity=".9" filter="url(#g3)"/>
+  <path d="M148 143 Q134 124 134 102 L162 102 Z" fill="none" stroke="#40A060" stroke-width="1.8"/>
+  <path d="M134 124 Q148 140 162 124" fill="#1E8040" opacity=".4"/>
+  <ellipse cx="148" cy="143" rx="14" ry="3.5" fill="#00FF88" opacity=".7" filter="url(#g3)"/>
+  <circle cx="205" cy="118" r="18" fill="none" stroke="#5080D0" stroke-width="1.8"/>
+  <circle cx="205" cy="122" r="12" fill="#1840A0" opacity=".4"/>
+  <ellipse cx="205" cy="137" rx="12" ry="3" fill="#60A0FF" opacity=".75" filter="url(#g3)"/>
+  <rect x="202" y="96" width="6" height="14" fill="none" stroke="#5080D0" stroke-width="1.8"/>
+  <rect x="228" y="58" width="10" height="82" rx="5" fill="none" stroke="#8040C0" stroke-width="1.5"/>
+  <rect x="231" y="75" width="4" height="50" rx="2" fill="#8040C0" opacity=".35"/>
+  <ellipse cx="233" cy="141" rx="5" ry="2.5" fill="#A060FF" opacity=".7" filter="url(#g3)"/>
+  <rect x="30" y="188" width="72" height="78" rx="4" fill="#1E0530" stroke="#4A1870" stroke-width="1.2"/>
+  <rect x="34" y="193" width="54" height="44" rx="3" fill="#080014"/>
+  <polyline points="37,215 43,202 49,228 55,202 61,228 67,202 73,215 79,215 85,215" fill="none" stroke="#00FFAA" stroke-width="1.8" opacity=".9"/>
+  <circle cx="40" cy="248" r="5" fill="#3A1060" stroke="#7B40B0" stroke-width="1.2"/>
+  <circle cx="56" cy="248" r="5" fill="#3A1060" stroke="#7B40B0" stroke-width="1.2"/>
+  <circle cx="72" cy="248" r="5" fill="#C0186A" stroke="#E040A0" stroke-width="1.2"/>
+  <circle cx="88" cy="248" r="5" fill="#3A1060" stroke="#7B40B0" stroke-width="1.2"/>
+  <rect x="116" y="184" width="52" height="84" rx="5" fill="#1E0530" stroke="#4A1870" stroke-width="1.2"/>
+  <rect x="120" y="189" width="44" height="28" rx="3" fill="#050010"/>
+  <rect x="125" y="202" width="14" height="7" rx="1" fill="#00CCFF" opacity=".9"/>
+  <circle cx="128" cy="232" r="5" fill="#3A1060" stroke="#6B30A0" stroke-width="1.2"/>
+  <circle cx="142" cy="232" r="5" fill="#3A1060" stroke="#6B30A0" stroke-width="1.2"/>
+  <circle cx="156" cy="232" r="5" fill="#C0186A" stroke="#E040A0" stroke-width="1.2"/>
+  <rect x="28" y="320" width="100" height="72" rx="5" fill="#180430" stroke="#4A1268" stroke-width="1.5"/>
+  <rect x="38" y="331" width="15" height="11" rx="1" fill="#FF4040" opacity=".95"/>
+  <rect x="77" y="331" width="14" height="11" rx="1" fill="#40FF80" opacity=".95"/>
+  <circle cx="44" cy="357" r="4.5" fill="#FF4040" opacity=".9" filter="url(#g3)"/>
+  <circle cx="60" cy="357" r="4.5" fill="#4040FF" opacity=".9" filter="url(#g3)"/>
+  <circle cx="76" cy="357" r="4.5" fill="#FF4040" opacity=".7" filter="url(#g3)"/>
+  <circle cx="92" cy="357" r="4.5" fill="#4040FF" opacity=".7" filter="url(#g3)"/>
+  <circle cx="112" cy="341" r="20" fill="#280848" stroke="#5A2088" stroke-width="1.5"/>
+  <line x1="112" y1="330" x2="112" y2="336" stroke="#C0186A" stroke-width="2.5" stroke-linecap="round"/>
+  <rect x="26" y="450" width="110" height="70" rx="5" fill="#1A0428" stroke="#4A1268" stroke-width="1.5"/>
+  <circle cx="38" cy="465" r="4" fill="#00FF00" opacity=".9" filter="url(#g3)"/>
+  <circle cx="38" cy="479" r="4" fill="#00FF00" opacity=".7" filter="url(#g3)"/>
+  <circle cx="38" cy="493" r="4" fill="#FFAA00" opacity=".9" filter="url(#g3)"/>
+  <circle cx="38" cy="507" r="4" fill="#FF4040" opacity=".8" filter="url(#g3)"/>
+  <rect x="530" y="160" width="380" height="268" rx="12" fill="#160328" stroke="#5A1878" stroke-width="2.5"/>
+  <rect x="538" y="168" width="364" height="252" rx="8" fill="#05000D"/>
+  <rect x="538" y="168" width="364" height="26" rx="6" fill="#6B1F7C" opacity=".95"/>
+  <circle cx="553" cy="181" r="6" fill="rgba(255,255,255,.25)"/>
+  <rect x="567" y="178" width="70" height="7" rx="2" fill="rgba(255,255,255,.55)"/>
+  <rect x="830" y="174" width="30" height="12" rx="4" fill="#C0186A" opacity=".9"/>
+  <rect x="538" y="194" width="52" height="226" fill="#1E0438" opacity=".95"/>
+  <rect x="545" y="202" width="38" height="7" rx="2" fill="#6B1F7C" opacity=".8"/>
+  <rect x="548" y="215" width="32" height="5" rx="2" fill="#C0186A" opacity=".65"/>
+  <rect x="598" y="197" width="58" height="38" rx="4" fill="#3A0A60" stroke="#5A1888" stroke-width=".8"/>
+  <rect x="662" y="197" width="58" height="38" rx="4" fill="#3A0A60" stroke="#5A1888" stroke-width=".8"/>
+  <rect x="726" y="197" width="58" height="38" rx="4" fill="#3A0A60" stroke="#5A1888" stroke-width=".8"/>
+  <rect x="790" y="197" width="102" height="38" rx="4" fill="#3A0A60" stroke="#5A1888" stroke-width=".8"/>
+  <rect x="604" y="203" width="20" height="12" rx="2" fill="#C0186A" opacity=".9"/>
+  <rect x="668" y="203" width="20" height="12" rx="2" fill="#6B1F7C" opacity=".9"/>
+  <rect x="732" y="203" width="20" height="12" rx="2" fill="#059669" opacity=".9"/>
+  <rect x="796" y="203" width="20" height="12" rx="2" fill="#D97706" opacity=".9"/>
+  <rect x="598" y="242" width="294" height="108" rx="4" fill="#0E021E" stroke="#3A0A58" stroke-width=".8"/>
+  <rect x="608" y="330" width="13" height="18" rx="2" fill="#6B1F7C" opacity=".8"/>
+  <rect x="625" y="320" width="13" height="28" rx="2" fill="#8B2FA0" opacity=".85"/>
+  <rect x="642" y="308" width="13" height="40" rx="2" fill="#C0186A" opacity=".95"/>
+  <rect x="659" y="322" width="13" height="26" rx="2" fill="#6B1F7C" opacity=".75"/>
+  <rect x="676" y="313" width="13" height="35" rx="2" fill="#9B3FC0" opacity=".85"/>
+  <rect x="693" y="300" width="13" height="48" rx="2" fill="#E040A0" opacity=".95"/>
+  <rect x="710" y="318" width="13" height="30" rx="2" fill="#6B1F7C" opacity=".72"/>
+  <rect x="727" y="309" width="13" height="39" rx="2" fill="#8B2FA0" opacity=".85"/>
+  <rect x="744" y="295" width="13" height="53" rx="2" fill="#C0186A" opacity=".95" filter="url(#g3)"/>
+  <rect x="761" y="312" width="13" height="36" rx="2" fill="#6B1F7C" opacity=".7"/>
+  <rect x="778" y="303" width="13" height="45" rx="2" fill="#9B3FC0" opacity=".8"/>
+  <rect x="795" y="289" width="13" height="59" rx="2" fill="#E040A0" opacity=".9" filter="url(#g3)"/>
+  <rect x="812" y="306" width="13" height="42" rx="2" fill="#6B1F7C" opacity=".7"/>
+  <rect x="829" y="280" width="13" height="68" rx="2" fill="#C0186A" opacity=".9" filter="url(#g3)"/>
+  <line x1="602" y1="348" x2="882" y2="348" stroke="#3A0A58" stroke-width="1"/>
+  <rect x="706" y="428" width="28" height="264" rx="5" fill="#220840"/>
+  <rect x="646" y="688" width="148" height="16" rx="6" fill="#3A1060"/>
+  <rect x="564" y="710" width="280" height="22" rx="6" fill="#1E0630" stroke="#3A1060" stroke-width="1.2"/>
+  <ellipse cx="876" cy="722" rx="18" ry="22" fill="#1E0630" stroke="#3A1060" stroke-width="1.2"/>
+  <line x1="876" y1="706" x2="876" y2="724" stroke="#3A1060" stroke-width="1.2"/>
+  <rect x="1130" y="668" width="170" height="56" rx="8" fill="#1E0838" stroke="#4A1268" stroke-width="2"/>
+  <circle cx="1156" cy="698" r="7" fill="#C0186A" opacity=".95" filter="url(#g6)"/>
+  <circle cx="1178" cy="698" r="7" fill="#6B1F7C" opacity=".9"/>
+  <circle cx="1200" cy="698" r="7" fill="#059669" opacity=".9" filter="url(#g6)"/>
+  <rect x="1196" y="548" width="22" height="124" rx="7" fill="#2E0A48" stroke="#5A2080" stroke-width="2"/>
+  <circle cx="1207" cy="548" r="16" fill="#220840" stroke="#7B3FAA" stroke-width="2.5"/>
+  <circle cx="1207" cy="548" r="8" fill="#4A1A78" filter="url(#g6)"/>
+  <line x1="1207" y1="540" x2="1243" y2="452" stroke="#2E0A48" stroke-width="20" stroke-linecap="round"/>
+  <line x1="1207" y1="540" x2="1243" y2="452" stroke="#4A1A78" stroke-width="10" stroke-linecap="round" opacity=".5"/>
+  <circle cx="1243" cy="452" r="15" fill="#220840" stroke="#8B40B8" stroke-width="2.5"/>
+  <circle cx="1243" cy="452" r="7" fill="#C0186A" filter="url(#g6)" opacity=".95"/>
+  <line x1="1243" y1="444" x2="1278" y2="398" stroke="#2E0A48" stroke-width="15" stroke-linecap="round"/>
+  <circle cx="1278" cy="398" r="12" fill="#220840" stroke="#9B50C8" stroke-width="2.5"/>
+  <circle cx="1278" cy="398" r="6" fill="#E8197A" filter="url(#g6)" opacity=".95"/>
+  <line x1="1278" y1="390" x2="1305" y2="356" stroke="#2E0A48" stroke-width="11" stroke-linecap="round"/>
+  <circle cx="1305" cy="356" r="10" fill="#220840" stroke="#B060D8" stroke-width="2"/>
+  <circle cx="1305" cy="356" r="5" fill="#FF60C0" filter="url(#g6)" opacity=".9"/>
+  <line x1="1305" y1="350" x2="1290" y2="316" stroke="#3A1060" stroke-width="10" stroke-linecap="round"/>
+  <line x1="1305" y1="350" x2="1320" y2="313" stroke="#3A1060" stroke-width="10" stroke-linecap="round"/>
+  <rect x="1282" y="306" width="20" height="13" rx="4" fill="#2E0A48" stroke="#7B3FA8" stroke-width="2"/>
+  <rect x="1310" y="303" width="20" height="13" rx="4" fill="#2E0A48" stroke="#7B3FA8" stroke-width="2"/>
+  <rect x="1287" y="284" width="32" height="28" rx="6" fill="#C0186A" opacity=".82" filter="url(#g6)"/>
+  <circle cx="290" cy="760" r="56" fill="#160428" stroke="#4A1268" stroke-width="2.5"/>
+  <circle cx="290" cy="760" r="42" fill="#100218" stroke="#3A0A58" stroke-width="2"/>
+  <circle cx="290" cy="760" r="26" fill="#0C0114" stroke="#220840" stroke-width="1.5"/>
+  <circle cx="290" cy="760" r="10" fill="#5A1880" filter="url(#g6)"/>
+  <line x1="290" y1="718" x2="290" y2="734" stroke="#8B3FA0" stroke-width="3" stroke-linecap="round"/>
+  <line x1="290" y1="786" x2="290" y2="802" stroke="#8B3FA0" stroke-width="3" stroke-linecap="round"/>
+  <line x1="248" y1="760" x2="264" y2="760" stroke="#8B3FA0" stroke-width="3" stroke-linecap="round"/>
+  <line x1="316" y1="760" x2="332" y2="760" stroke="#8B3FA0" stroke-width="3" stroke-linecap="round"/>
+  <circle cx="290" cy="718" r="6" fill="#C0186A" opacity=".95" filter="url(#g6)"/>
+  <circle cx="332" cy="760" r="6" fill="#6B1F7C" opacity=".95" filter="url(#g6)"/>
+  <circle cx="290" cy="802" r="6" fill="#C0186A" opacity=".8" filter="url(#g6)"/>
+  <circle cx="248" cy="760" r="6" fill="#6B1F7C" opacity=".8" filter="url(#g6)"/>
+  <rect x="960" y="704" width="130" height="52" rx="7" fill="#1E0630" stroke="#4A1268" stroke-width="1.5"/>
+  <rect x="974" y="672" width="14" height="46" rx="7" fill="#6B1F7C" opacity=".9"/>
+  <ellipse cx="981" cy="708" rx="7" ry="3.5" fill="#C070FF" opacity=".9" filter="url(#g6)"/>
+  <rect x="994" y="664" width="14" height="54" rx="7" fill="#C0186A" opacity=".9"/>
+  <ellipse cx="1001" cy="708" rx="7" ry="3.5" fill="#FF70C0" opacity=".95" filter="url(#g6)"/>
+  <rect x="1014" y="670" width="14" height="48" rx="7" fill="#1A8040" opacity=".9"/>
+  <ellipse cx="1021" cy="708" rx="7" ry="3.5" fill="#00FF88" opacity=".8" filter="url(#g6)"/>
+  <rect x="1034" y="667" width="14" height="51" rx="7" fill="#1840B0" opacity=".9"/>
+  <ellipse cx="1041" cy="708" rx="7" ry="3.5" fill="#60A0FF" opacity=".85" filter="url(#g6)"/>
+  <rect x="1054" y="673" width="14" height="45" rx="7" fill="#A05010" opacity=".9"/>
+  <ellipse cx="1061" cy="708" rx="7" ry="3.5" fill="#FFB040" opacity=".8" filter="url(#g6)"/>
+  <rect x="1074" y="676" width="14" height="42" rx="7" fill="#901080" opacity=".9"/>
+  <ellipse cx="1081" cy="708" rx="7" ry="3.5" fill="#FF60E0" opacity=".8" filter="url(#g6)"/>
+  <rect x="1280" y="60" width="160" height="520" rx="5" fill="#200840" opacity=".85" stroke="#3A1060" stroke-width="1.2"/>
+  <rect x="1280" y="155" width="160" height="7" fill="#3A0A60" opacity=".9"/>
+  <rect x="1280" y="270" width="160" height="7" fill="#3A0A60" opacity=".9"/>
+  <rect x="1280" y="385" width="160" height="7" fill="#3A0A60" opacity=".9"/>
+  <rect x="1292" y="95" width="30" height="54" rx="3" fill="none" stroke="#5080D0" stroke-width="1.8"/>
+  <ellipse cx="1307" cy="150" rx="13" ry="3.5" fill="#60A0FF" opacity=".8" filter="url(#g3)"/>
+  <rect x="1330" y="99" width="28" height="50" rx="3" fill="none" stroke="#40A060" stroke-width="1.8"/>
+  <ellipse cx="1344" cy="150" rx="12" ry="3.5" fill="#00FF88" opacity=".8" filter="url(#g3)"/>
+  <rect x="1368" y="103" width="26" height="46" rx="3" fill="none" stroke="#C04020" stroke-width="1.8"/>
+  <ellipse cx="1381" cy="150" rx="11" ry="3.5" fill="#FFA040" opacity=".8" filter="url(#g3)"/>
+  <rect x="1287" y="180" width="145" height="80" rx="5" fill="#1A0428" stroke="#4A1068" stroke-width="1.5"/>
+  <rect x="1291" y="185" width="90" height="52" rx="3" fill="#06000E"/>
+  <rect x="1293" y="208" width="86" height="8" rx="2" fill="url(#specGrad)"/>
+  <polyline points="1297,202 1306,194 1315,206 1324,194 1333,206 1342,194 1351,202 1360,198 1369,202" fill="none" stroke="#E040A0" stroke-width="1.5" opacity=".8"/>
+  <rect x="1285" y="298" width="146" height="82" rx="5" fill="#180430" stroke="#4A1068" stroke-width="1.5"/>
+  <rect x="1292" y="306" width="18" height="18" rx="1" fill="#FF4040" opacity=".7"/>
+  <rect x="1312" y="306" width="18" height="18" rx="1" fill="#FF8040" opacity=".75"/>
+  <rect x="1332" y="306" width="18" height="18" rx="1" fill="#FFAA40" opacity=".7"/>
+  <rect x="1352" y="306" width="18" height="18" rx="1" fill="#FFCC40" opacity=".65"/>
+  <rect x="1292" y="326" width="18" height="18" rx="1" fill="#FF6040" opacity=".75"/>
+  <rect x="1312" y="326" width="18" height="18" rx="1" fill="#C04060" opacity=".8"/>
+  <rect x="1332" y="326" width="18" height="18" rx="1" fill="#FF8040" opacity=".7"/>
+  <rect x="1352" y="326" width="18" height="18" rx="1" fill="#FFAA40" opacity=".65"/>
+  <ellipse cx="720" cy="760" rx="220" ry="22" fill="#6B1F7C" opacity=".22" filter="url(#g28)"/>
+  <ellipse cx="1207" cy="748" rx="140" ry="16" fill="#C0186A" opacity=".15" filter="url(#g28)"/>
+  <ellipse cx="290" cy="816" rx="90" ry="14" fill="#6B1F7C" opacity=".2" filter="url(#g28)"/>
+  <ellipse cx="1000" cy="756" rx="110" ry="14" fill="#40A060" opacity=".14" filter="url(#g28)"/>
+  <ellipse cx="720" cy="450" rx="180" ry="20" fill="#6B1F7C" opacity=".12" filter="url(#g28)"/>
+</svg>
+
+<div class="bg-overlay"></div>
+<div class="particles" id="particles"></div>
+
+<div class="page">
+  <div class="login-card">
+    <div class="card-header">
+      <img src="assets/images/LOGOUPB.jpg" alt="Logo UPB" class="card-shield"/>
+      <p class="card-subtitle">Sistema de Préstamo de Laboratorio</p>
     </div>
-  </header>
-
-  <!-- MAIN -->
-  <main class="main-bg">
-    <div class="login-card">
-
-      <!-- Card Header -->
-      <div class="card-header">
-        <img src="assets/images/LOGOUPB.jpg" alt="Logo UPB" class="card-shield" />
-        <p class="card-subtitle">Sistema de Préstamo de Laboratorio</p>
+    <div class="tabs">
+      <button class="tab active" onclick="switchTab('login',this)">Iniciar Sesión</button>
+      <button class="tab" onclick="switchTab('registro',this)">Registrarse</button>
+    </div>
+    <div class="panel active" id="panel-login">
+      <div id="error-msg" class="error-msg">
+        <i class="fa-solid fa-circle-exclamation"></i>
+        <span id="error-text">Correo o contraseña incorrectos.</span>
       </div>
-
-      <!-- Login Form -->
-      <div class="card-body">
-        <h2 class="form-title">Iniciar sesión</h2>
-
-        <!-- Mensaje de error -->
-        <div id="error-msg" style="
-          display:none;
-          background:#FFF0F5;
-          border:1px solid #F9A8D4;
-          color:#9D174D;
-          border-radius:8px;
-          padding:10px 14px;
-          font-size:13px;
-          font-weight:600;
-          margin-bottom:16px;
-          align-items:center;
-          gap:8px;
-        ">
-          <i class="fa-solid fa-circle-exclamation"></i>
-          <span id="error-text">Correo o contraseña incorrectos.</span>
-        </div>
-
-        <form id="loginForm" novalidate onsubmit="handleLogin(event)">
-
-          <div class="form-group">
-            <label for="email">Correo electrónico</label>
-            <div class="input-wrapper">
-              <span class="input-icon"><i class="fa-regular fa-envelope"></i></span>
-              <input type="email" id="email" name="email" placeholder="Correo electrónico" autocomplete="email" required />
-            </div>
+      <form id="loginForm" novalidate onsubmit="handleLogin(event)">
+        <div class="form-group">
+          <label for="email">Correo electrónico</label>
+          <div class="input-wrapper">
+            <span class="input-icon"><i class="fa-regular fa-envelope"></i></span>
+            <input type="email" id="email" placeholder="Correo electrónico" autocomplete="email" required/>
           </div>
-
+        </div>
+        <div class="form-group">
+          <label for="password">Contraseña</label>
+          <div class="input-wrapper">
+            <span class="input-icon"><i class="fa-solid fa-lock"></i></span>
+            <input type="password" id="password" placeholder="Contraseña" autocomplete="current-password" required/>
+            <button type="button" id="toggle-password"><i class="fa-regular fa-eye" id="eye-icon"></i></button>
+          </div>
+        </div>
+        <button type="submit" class="btn-login">Iniciar sesión</button>
+        <div class="forgot-link"><a href="#" onclick="mostrarRecuperar(event)">¿Olvidaste tu contraseña?</a></div>
+      </form>
+    </div>
+    <div class="panel" id="panel-registro">
+      <div id="form-registro">
+        <div class="row2">
           <div class="form-group">
-            <label for="password">Contraseña</label>
+            <label>Nombre</label>
+            <div class="input-wrapper"><span class="input-icon"><i class="fa-solid fa-user"></i></span><input type="text" id="reg-nombre" placeholder="Carlos"/></div>
+          </div>
+          <div class="form-group">
+            <label>Apellidos</label>
+            <div class="input-wrapper"><span class="input-icon"><i class="fa-solid fa-user"></i></span><input type="text" id="reg-apellidos" placeholder="García Pérez"/></div>
+          </div>
+        </div>
+        <div class="row2">
+          <div class="form-group">
+            <label>Cédula / ID</label>
+            <div class="input-wrapper"><span class="input-icon"><i class="fa-solid fa-id-card"></i></span><input type="text" id="reg-cedula" placeholder="1234567890"/></div>
+          </div>
+          <div class="form-group">
+            <label>Teléfono</label>
+            <div class="input-wrapper"><span class="input-icon"><i class="fa-solid fa-phone"></i></span><input type="tel" id="reg-telefono" placeholder="300 000 0000"/></div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Módulo solicitado</label>
+          <div class="input-wrapper">
+            <select id="reg-modulo" style="padding-left:12px">
+              <option value="">Selecciona un laboratorio...</option>
+              <option>Lab Automatización Procesos Industriales</option>
+              <option>Lab de Física No 1</option>
+              <option>Centro Administrativo de Laboratorios</option>
+              <option>Almacén General</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Correo institucional</label>
+          <div class="input-wrapper"><span class="input-icon"><i class="fa-regular fa-envelope"></i></span><input type="email" id="reg-email" placeholder="correo@upb.edu.co"/></div>
+        </div>
+        <div class="row2">
+          <div class="form-group">
+            <label>Contraseña</label>
             <div class="input-wrapper">
               <span class="input-icon"><i class="fa-solid fa-lock"></i></span>
-              <input type="password" id="password" name="password" placeholder="Contraseña" autocomplete="current-password" required />
-              <button type="button" id="toggle-password" style="
-                position:absolute;
-                right:14px;
-                background:none;
-                border:none;
-                cursor:pointer;
-                color:#AAAABF;
-                font-size:15px;
-                padding:0;
-                display:flex;
-                align-items:center;
-              ">
-                <i class="fa-regular fa-eye" id="eye-icon"></i>
-              </button>
+              <input type="password" id="reg-pass" placeholder="••••••••" oninput="checkStrength(this)"/>
+              <button type="button" id="toggle-regpass" onclick="togglePass('reg-pass','toggle-regpass')"><i class="fa-regular fa-eye"></i></button>
+            </div>
+            <div class="strength-row">
+              <div class="s-seg" id="ss1"></div><div class="s-seg" id="ss2"></div>
+              <div class="s-seg" id="ss3"></div><div class="s-seg" id="ss4"></div>
             </div>
           </div>
-
-          <button type="submit" class="btn-login">Iniciar sesión</button>
-
-          <div class="forgot-link">
-            <a href="#" onclick="mostrarRecuperar(event)">¿Olvidaste tu contraseña?</a>
+          <div class="form-group">
+            <label>Confirmar</label>
+            <div class="input-wrapper">
+              <span class="input-icon"><i class="fa-solid fa-lock"></i></span>
+              <input type="password" id="reg-pass2" placeholder="••••••••"/>
+              <button type="button" id="toggle-regpass2" onclick="togglePass('reg-pass2','toggle-regpass2')"><i class="fa-regular fa-eye"></i></button>
+            </div>
           </div>
-
-        </form>
+        </div>
+        <button type="button" class="btn-login" onclick="enviarRegistro()"><i class="fa-solid fa-user-plus"></i> Enviar Solicitud</button>
       </div>
-
-    </div>
-  </main>
-
-  <!-- Modal recuperar contraseña -->
-  <div id="modal-recuperar" style="
-    display:none;
-    position:fixed;
-    inset:0;
-    background:rgba(0,0,0,0.4);
-    z-index:999;
-    align-items:center;
-    justify-content:center;
-  ">
-    <div style="
-      background:#fff;
-      border-radius:16px;
-      padding:32px;
-      width:100%;
-      max-width:400px;
-      margin:16px;
-      box-shadow:0 20px 60px rgba(0,0,0,0.2);
-    ">
-      <h3 style="font-size:20px;font-weight:800;color:#1A1A2E;margin-bottom:8px;">
-        Recuperar contraseña
-      </h3>
-      <p style="font-size:13px;color:#6B6B85;margin-bottom:20px;">
-        Ingresa tu correo y te enviaremos las instrucciones.
-      </p>
-
-      <div id="recuperar-exito" style="
-        display:none;
-        background:#F0FDF4;
-        border:1px solid #86EFAC;
-        color:#166534;
-        border-radius:8px;
-        padding:10px 14px;
-        font-size:13px;
-        font-weight:600;
-        margin-bottom:16px;
-      ">
-        ✓ Correo enviado. Revisa tu bandeja de entrada.
+      <div class="pending-screen" id="pending-screen">
+        <div class="pending-icon"><i class="fa-solid fa-clock"></i></div>
+        <h3>Cuenta pendiente<br/>de aprobación</h3>
+        <p>Tu solicitud fue enviada. Podrás ingresar una vez que sea aprobada.</p>
+        <button class="btn-volver" onclick="volverLogin()"><i class="fa-solid fa-arrow-left"></i> Volver al inicio</button>
       </div>
-
-      <label style="display:block;font-size:13px;font-weight:700;color:#1A1A2E;margin-bottom:6px;">
-        Correo electrónico
-      </label>
-      <div style="position:relative;margin-bottom:16px;">
-        <span style="position:absolute;left:14px;top:50%;transform:translateY(-50%);color:#AAAABF;font-size:14px;">
-          <i class="fa-regular fa-envelope"></i>
-        </span>
-        <input
-          type="email"
-          id="recuperar-email"
-          placeholder="Correo electrónico"
-          style="
-            width:100%;
-            height:48px;
-            border:1.5px solid #E2E2EE;
-            border-radius:10px;
-            padding:0 14px 0 40px;
-            font-family:'Nunito',sans-serif;
-            font-size:14px;
-            color:#1A1A2E;
-            background:#F9F9FC;
-            outline:none;
-          "
-        />
-      </div>
-
-      <button onclick="enviarRecuperar()" style="
-        width:100%;
-        height:48px;
-        border:none;
-        border-radius:10px;
-        background:linear-gradient(135deg,#6B1F7C,#D91E7A);
-        color:#fff;
-        font-family:'Nunito',sans-serif;
-        font-size:15px;
-        font-weight:700;
-        cursor:pointer;
-        margin-bottom:10px;
-      ">
-        Enviar instrucciones
-      </button>
-
-      <button onclick="cerrarRecuperar()" style="
-        width:100%;
-        height:40px;
-        border:1.5px solid #E2E2EE;
-        border-radius:10px;
-        background:#fff;
-        color:#6B6B85;
-        font-family:'Nunito',sans-serif;
-        font-size:14px;
-        font-weight:600;
-        cursor:pointer;
-      ">
-        Cancelar
-      </button>
     </div>
   </div>
+</div>
 
-  <script>
-    // Usuarios de prueba con roles
-    const usuarios = [
-      {
-        email: 'admin@upb.edu.co',
-        password: '1234',
-        nombre: 'Jairo Peña Fuentes',
-        rol: 'admin',
-        modulo: null
-      },
-      {
-        email: 'profesor@upb.edu.co',
-        password: '1234',
-        nombre: 'Oscar Santoya',
-        rol: 'profesor',
-        modulo: null
-      },
-      {
-        email: 'usuario@upb.edu.co',
-        password: '1234',
-        nombre: 'María García',
-        rol: 'usuario',
-        modulo: null
-      }
-    ];
+<div id="modal-recuperar" class="modal-backdrop">
+  <div class="modal-box">
+    <h3>Recuperar contraseña</h3>
+    <p>Ingresa tu correo y te enviaremos las instrucciones.</p>
+    <div id="recuperar-exito" class="modal-success">✓ Correo enviado. Revisa tu bandeja de entrada.</div>
+    <label class="modal-label">Correo electrónico</label>
+    <div class="modal-input-wrap">
+      <i class="fa-regular fa-envelope"></i>
+      <input type="email" id="recuperar-email" class="modal-input" placeholder="Correo electrónico"/>
+    </div>
+    <button class="btn-modal-primary" onclick="enviarRecuperar()">Enviar instrucciones</button>
+    <button class="btn-modal-cancel" onclick="cerrarRecuperar()">Cancelar</button>
+  </div>
+</div>
 
-    function handleLogin(e) {
-      e.preventDefault();
-      const email    = document.getElementById('email').value.trim();
-      const password = document.getElementById('password').value.trim();
-      const errorDiv = document.getElementById('error-msg');
+<script>
+  // ── CAMBIO 1: lab agregado a cada usuario ──
+  const usuarios = [
+    { email:'admin@upb.edu.co',    password:'1234', nombre:'Jairo Peña Fuentes', rol:'admin',    lab:'Super Admin',         modulo:null },
+    { email:'profesor@upb.edu.co', password:'1234', nombre:'Oscar Santoya',      rol:'profesor', lab:'Lab. Electrónica',    modulo:null },
+    { email:'usuario@upb.edu.co',  password:'1234', nombre:'María García',       rol:'usuario',  lab:'Lab. Redes',          modulo:null }
+  ];
 
-      errorDiv.style.display = 'none';
+  function switchTab(panel,btn){
+    document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('panel-'+panel).classList.add('active');
+    document.getElementById('error-msg').style.display='none';
+  }
 
-      if (!email || !password) {
-        mostrarError('Por favor completa todos los campos.');
-        return;
-      }
-
-      const usuario = usuarios.find(u => u.email === email && u.password === password);
-
-      if (usuario) {
-        sessionStorage.setItem('usuario', JSON.stringify(usuario));
-        window.location.href = 'seleccion-modulo.html';
-      } else {
-        mostrarError('Correo o contraseña incorrectos.');
-      }
+  function handleLogin(e){
+    e.preventDefault();
+    const email    = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value.trim();
+    document.getElementById('error-msg').style.display='none';
+    if(!email||!password){ mostrarError('Por favor completa todos los campos.'); return; }
+    const usuario = usuarios.find(u=>u.email===email && u.password===password);
+    if(usuario){
+      sessionStorage.setItem('usuario', JSON.stringify(usuario));
+      
+      window.location.href = 'seleccion-modulo.html';
+    } else {
+      mostrarError('Correo o contraseña incorrectos.');
     }
+  }
 
-    function mostrarError(msg) {
-      const errorDiv = document.getElementById('error-msg');
-      document.getElementById('error-text').textContent = msg;
-      errorDiv.style.display = 'flex';
-    }
+  function mostrarError(msg){
+    document.getElementById('error-text').textContent = msg;
+    document.getElementById('error-msg').style.display = 'flex';
+  }
 
-    // Ojito mostrar/ocultar contraseña
-    document.getElementById('toggle-password').addEventListener('click', function() {
-      const input = document.getElementById('password');
-      const icon  = document.getElementById('eye-icon');
-      if (input.type === 'password') {
-        input.type = 'text';
-        icon.classList.replace('fa-eye', 'fa-eye-slash');
-        this.style.color = '#6B1F7C';
-      } else {
-        input.type = 'password';
-        icon.classList.replace('fa-eye-slash', 'fa-eye');
-        this.style.color = '#AAAABF';
-      }
-    });
+  document.getElementById('toggle-password').addEventListener('click', function(){
+    const input = document.getElementById('password');
+    const icon  = document.getElementById('eye-icon');
+    const show  = input.type==='password';
+    input.type  = show ? 'text' : 'password';
+    icon.className = show ? 'fa-regular fa-eye-slash' : 'fa-regular fa-eye';
+    this.style.color = show ? '#6B1F7C' : '#AAAABF';
+  });
 
-    function mostrarRecuperar(e) {
-      e.preventDefault();
-      const modal = document.getElementById('modal-recuperar');
-      modal.style.display = 'flex';
-      document.getElementById('recuperar-exito').style.display = 'none';
-      document.getElementById('recuperar-email').value = '';
-    }
+  function togglePass(inputId,btnId){
+    const input = document.getElementById(inputId);
+    const btn   = document.getElementById(btnId);
+    const show  = input.type==='password';
+    input.type  = show ? 'text' : 'password';
+    btn.querySelector('i').className = show ? 'fa-regular fa-eye-slash' : 'fa-regular fa-eye';
+    btn.style.color = show ? '#6B1F7C' : '#AAAABF';
+  }
 
-    function cerrarRecuperar() {
-      document.getElementById('modal-recuperar').style.display = 'none';
-    }
+  function checkStrength(inp){
+    const v=inp.value; let sc=0;
+    if(v.length>=8)sc++; if(/[A-Z]/.test(v))sc++; if(/[0-9]/.test(v))sc++; if(/[^A-Za-z0-9]/.test(v))sc++;
+    const cl=sc<=1?'w':sc<=2?'m':'s';
+    ['ss1','ss2','ss3','ss4'].forEach((id,i)=>{ const el=document.getElementById(id); el.className='s-seg'; if(i<sc)el.classList.add(cl); });
+  }
 
-    function enviarRecuperar() {
-      const email = document.getElementById('recuperar-email').value.trim();
-      const input = document.getElementById('recuperar-email');
-      if (!email) {
-        input.style.borderColor = '#F9A8D4';
-        return;
-      }
-      input.style.borderColor = '#E2E2EE';
-      document.getElementById('recuperar-exito').style.display = 'block';
-      setTimeout(() => cerrarRecuperar(), 2500);
-    }
-  </script>
+  function enviarRegistro(){
+    const nombre   = document.getElementById('reg-nombre').value.trim();
+    const email    = document.getElementById('reg-email').value.trim();
+    const password = document.getElementById('reg-pass').value.trim();
+    const password2= document.getElementById('reg-pass2').value.trim();
+    if(!nombre||!email||!password){ alert('Por favor completa los campos obligatorios.'); return; }
+    if(password!==password2){ alert('Las contraseñas no coinciden.'); return; }
+    document.getElementById('form-registro').style.display='none';
+    document.getElementById('pending-screen').classList.add('visible');
+  }
 
+  function volverLogin(){
+    document.getElementById('form-registro').style.display='block';
+    document.getElementById('pending-screen').classList.remove('visible');
+    ['reg-nombre','reg-apellidos','reg-cedula','reg-telefono','reg-email','reg-pass','reg-pass2'].forEach(id=>{ document.getElementById(id).value=''; });
+    document.getElementById('reg-modulo').value='';
+    ['ss1','ss2','ss3','ss4'].forEach(id=>{ document.getElementById(id).className='s-seg'; });
+    document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+    document.querySelectorAll('.tab')[0].classList.add('active');
+    document.getElementById('panel-login').classList.add('active');
+  }
+
+  function mostrarRecuperar(e){ e.preventDefault(); document.getElementById('modal-recuperar').style.display='flex'; document.getElementById('recuperar-exito').style.display='none'; document.getElementById('recuperar-email').value=''; }
+  function cerrarRecuperar(){ document.getElementById('modal-recuperar').style.display='none'; }
+  function enviarRecuperar(){
+    const email = document.getElementById('recuperar-email').value.trim();
+    const input = document.getElementById('recuperar-email');
+    if(!email){ input.style.borderColor='#F9A8D4'; return; }
+    input.style.borderColor='#E2E2EE';
+    document.getElementById('recuperar-exito').style.display='block';
+    setTimeout(()=>cerrarRecuperar(), 2500);
+  }
+
+  const pc=document.getElementById('particles');
+  for(let i=0;i<22;i++){
+    const p=document.createElement('div'); p.className='particle';
+    const sz=Math.random()*5+2;
+    p.style.cssText=`width:${sz}px;height:${sz}px;left:${Math.random()*100}%;animation-duration:${Math.random()*15+9}s;animation-delay:${Math.random()*15}s;opacity:${Math.random()*.2+.04};background:${Math.random()>.5?'rgba(192,24,106,.5)':'rgba(255,255,255,.18)'};`;
+    pc.appendChild(p);
+  }
+</script>
 </body>
 </html>

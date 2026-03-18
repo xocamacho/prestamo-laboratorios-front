@@ -19,99 +19,92 @@
       --info:#2563EB; --info-bg:#EFF6FF;
     }
     body { font-family:var(--font); background:var(--bg-page); min-height:100vh; display:flex; flex-direction:column; }
-
-    .navbar { background:var(--upb-purple); height:52px; display:flex; align-items:center; justify-content:space-between; padding:0 16px 0 0; box-shadow:0 2px 8px rgba(0,0,0,0.25); flex-shrink:0; z-index:100; }
+    .navbar { background:var(--upb-purple); height:52px; display:flex; align-items:center; justify-content:space-between; padding:0 16px 0 0; box-shadow:0 2px 8px rgba(0,0,0,.25); flex-shrink:0; z-index:100; }
     .navbar-left { display:flex; align-items:center; }
-    .btn-menu-toggle { background:none; border:none; color:#fff; font-size:18px; cursor:pointer; padding:0 16px; height:52px; display:flex; align-items:center; transition:background 0.2s; }
-    .btn-menu-toggle:hover { background:rgba(255,255,255,0.1); }
+    .btn-menu-toggle { background:none; border:none; color:#fff; font-size:18px; cursor:pointer; padding:0 16px; height:52px; display:flex; align-items:center; transition:background .2s; }
+    .btn-menu-toggle:hover { background:rgba(255,255,255,.1); }
     .navbar-logo { display:flex; align-items:center; padding:0 12px; }
     .navbar-logo img { height:32px; width:auto; object-fit:contain; border-radius:3px; }
-    .btn-acciones { background:rgba(255,255,255,0.15); border:none; color:#fff; font-family:var(--font); font-size:13px; font-weight:600; padding:6px 14px; border-radius:6px; cursor:pointer; margin-left:12px; display:flex; align-items:center; gap:6px; transition:background 0.2s; }
-    .btn-acciones:hover { background:rgba(255,255,255,0.25); }
+    .acciones-wrap { position:relative; margin-left:12px; }
+    .btn-acciones { background:rgba(255,255,255,.15); border:none; color:#fff; font-family:var(--font); font-size:13px; font-weight:600; padding:6px 14px; border-radius:6px; cursor:pointer; display:flex; align-items:center; gap:6px; transition:background .2s; }
+    .btn-acciones:hover { background:rgba(255,255,255,.25); }
+    .dropdown-acciones { display:none; position:absolute; top:calc(100% + 8px); left:0; background:#fff; border-radius:10px; box-shadow:0 8px 32px rgba(0,0,0,.15); border:1px solid var(--border); min-width:210px; z-index:999; overflow:hidden; }
+    .dropdown-acciones.open { display:block; }
+    .dropdown-item { display:flex; align-items:center; gap:10px; padding:10px 16px; font-size:13px; font-weight:600; color:var(--text-dark); transition:background .15s; cursor:pointer; width:100%; border:none; background:none; font-family:var(--font); text-align:left; text-decoration:none; }
+    .dropdown-item:hover { background:#F5EEF8; color:var(--upb-purple); }
+    .dropdown-item i { width:16px; text-align:center; color:var(--upb-pink); }
     .navbar-right { display:flex; align-items:center; gap:10px; }
     .nav-user-info { text-align:right; }
     .nav-user-name { color:#fff; font-size:13px; font-weight:700; display:block; }
-    .nav-user-lab { color:rgba(255,255,255,0.7); font-size:11px; display:block; }
-    .nav-avatar { width:34px; height:34px; border-radius:50%; overflow:hidden; border:2px solid rgba(255,255,255,0.4); }
+    .nav-user-lab { color:rgba(255,255,255,.7); font-size:11px; display:block; }
+    .nav-avatar { width:34px; height:34px; border-radius:50%; overflow:hidden; border:2px solid rgba(255,255,255,.4); }
     .nav-avatar img { width:100%; height:100%; object-fit:cover; }
-    .btn-salir { background:rgba(255,255,255,0.15); border:none; color:#fff; font-family:var(--font); font-size:11px; font-weight:700; padding:5px 10px; border-radius:5px; cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:1px; transition:background 0.2s; }
-    .btn-salir:hover { background:rgba(255,255,255,0.25); }
+    .btn-salir { background:rgba(255,255,255,.15); border:none; color:#fff; font-family:var(--font); font-size:11px; font-weight:700; padding:5px 10px; border-radius:5px; cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:1px; transition:background .2s; }
+    .btn-salir:hover { background:rgba(255,255,255,.25); }
     .btn-salir i { font-size:14px; }
-
     .layout { display:flex; flex:1; overflow:hidden; }
-    .sidebar { width:200px; background:var(--sidebar-bg); border-right:1px solid var(--border); display:flex; flex-direction:column; flex-shrink:0; transition:width 0.25s ease; overflow:hidden; }
+    .sidebar { width:200px; background:var(--sidebar-bg); border-right:1px solid var(--border); display:flex; flex-direction:column; flex-shrink:0; transition:width .25s ease; overflow:hidden; }
     .sidebar.collapsed { width:0; }
-    .sidebar-nav { padding:12px 0; flex:1; }
+    .sidebar-nav { padding:12px 0; flex:1; overflow-y:auto; }
     .nav-item { position:relative; }
-    .nav-link { display:flex; align-items:center; justify-content:space-between; padding:10px 18px; color:var(--text-medium); font-size:13px; font-weight:600; text-decoration:none; cursor:pointer; transition:background 0.15s,color 0.15s; user-select:none; white-space:nowrap; }
+    .nav-link { display:flex; align-items:center; justify-content:space-between; padding:10px 18px; color:var(--text-medium); font-size:13px; font-weight:600; text-decoration:none; cursor:pointer; transition:background .15s,color .15s; user-select:none; white-space:nowrap; }
     .nav-link:hover, .nav-link.active { color:var(--upb-pink); background:#FDF0F7; }
     .nav-link .nav-icon { margin-right:8px; font-size:14px; width:16px; text-align:center; flex-shrink:0; }
     .nav-link .nav-label { flex:1; }
-    .nav-link .nav-arrow { font-size:11px; transition:transform 0.2s; color:var(--text-light); }
+    .nav-link .nav-arrow { font-size:11px; transition:transform .2s; color:var(--text-light); }
     .nav-item.open > .nav-link .nav-arrow { transform:rotate(90deg); }
     .nav-link.home { color:var(--upb-purple); font-weight:700; }
     .nav-link.home:hover { background:#F5EEF8; }
     .submenu { display:none; background:#FAFAFA; border-left:3px solid var(--upb-pink); margin-left:18px; }
     .nav-item.open > .submenu { display:block; }
-    .submenu-link { display:flex; align-items:center; gap:8px; padding:8px 16px; color:var(--text-medium); font-size:12px; font-weight:500; text-decoration:none; transition:color 0.15s,background 0.15s; white-space:nowrap; }
-    .submenu-link:hover { color:var(--upb-purple); background:#F5EEF8; }
-    .submenu-link.active { color:var(--upb-purple); background:#F5EEF8; font-weight:700; }
+    .submenu-link { display:flex; align-items:center; gap:8px; padding:8px 16px; color:var(--text-medium); font-size:12px; font-weight:500; text-decoration:none; transition:color .15s,background .15s; white-space:nowrap; }
+    .submenu-link:hover, .submenu-link.active { color:var(--upb-purple); background:#F5EEF8; font-weight:700; }
     .submenu-link i { width:14px; text-align:center; font-size:12px; }
-
     .main-content { flex:1; overflow-y:auto; }
     .page-header { background:var(--bg-page); padding:14px 24px 0; display:flex; align-items:baseline; gap:10px; }
-    .page-title { font-size:18px; font-weight:800; color:var(--text-dark); text-transform:uppercase; letter-spacing:0.03em; }
-    .page-breadcrumb { font-size:12px; color:var(--text-light); font-weight:500; text-transform:uppercase; letter-spacing:0.05em; }
+    .page-title { font-size:18px; font-weight:800; color:var(--text-dark); text-transform:uppercase; letter-spacing:.03em; }
+    .page-breadcrumb { font-size:12px; color:var(--text-light); font-weight:500; text-transform:uppercase; letter-spacing:.05em; }
     .page-body { padding:16px 24px 24px; }
-
     .stats-row { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:20px; }
-    .stat-card { background:#fff; border-radius:10px; border:1px solid var(--border); padding:14px 16px; display:flex; align-items:center; gap:14px; box-shadow:0 2px 6px rgba(0,0,0,0.04); }
-    .stat-icon { width:42px; height:42px; border-radius:10px; flex-shrink:0; display:flex; align-items:center; justify-content:18px; font-size:18px; }
-    .stat-icon { display:flex; align-items:center; justify-content:center; }
+    .stat-card { background:#fff; border-radius:10px; border:1px solid var(--border); padding:14px 16px; display:flex; align-items:center; gap:14px; box-shadow:0 2px 6px rgba(0,0,0,.04); }
+    .stat-icon { width:42px; height:42px; border-radius:10px; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:18px; }
     .stat-icon.purple { background:#F3E8FF; color:var(--upb-purple); }
     .stat-icon.green  { background:var(--success-bg); color:var(--success); }
     .stat-icon.orange { background:var(--warning-bg); color:var(--warning); }
     .stat-icon.red    { background:var(--danger-bg); color:var(--danger); }
-    .stat-icon.blue   { background:var(--info-bg); color:var(--info); }
-    .stat-icon.gray   { background:#F3F4F6; color:#6B7280; }
     .stat-value { font-size:22px; font-weight:800; color:var(--text-dark); line-height:1; }
     .stat-label { font-size:11px; color:var(--text-light); font-weight:600; margin-top:2px; }
-
-    .tabs-bar { display:flex; gap:4px; margin-bottom:20px; background:#fff; border-radius:10px; padding:6px; border:1px solid var(--border); width:fit-content; box-shadow:0 2px 6px rgba(0,0,0,0.05); }
-    .tab-btn { padding:7px 16px; border:none; border-radius:7px; font-family:var(--font); font-size:13px; font-weight:600; cursor:pointer; color:var(--text-medium); background:transparent; display:flex; align-items:center; gap:7px; transition:all 0.2s; }
+    .tabs-bar { display:flex; gap:4px; margin-bottom:20px; background:#fff; border-radius:10px; padding:6px; border:1px solid var(--border); width:fit-content; box-shadow:0 2px 6px rgba(0,0,0,.05); }
+    .tab-btn { padding:7px 16px; border:none; border-radius:7px; font-family:var(--font); font-size:13px; font-weight:600; cursor:pointer; color:var(--text-medium); background:transparent; display:flex; align-items:center; gap:7px; transition:all .2s; }
     .tab-btn:hover { color:var(--upb-purple); background:#F5EEF8; }
-    .tab-btn.active { background:var(--upb-purple); color:#fff; box-shadow:0 2px 8px rgba(107,31,124,0.3); }
+    .tab-btn.active { background:var(--upb-purple); color:#fff; box-shadow:0 2px 8px rgba(107,31,124,.3); }
     .tab-panel { display:none; }
     .tab-panel.active { display:block; }
-
     .toolbar { display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; gap:12px; flex-wrap:wrap; }
     .toolbar-left { display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
     .search-box { position:relative; display:flex; align-items:center; }
     .search-box i { position:absolute; left:11px; color:var(--text-light); font-size:13px; pointer-events:none; }
-    .search-box input { height:36px; border:1.5px solid var(--border); border-radius:8px; padding:0 12px 0 34px; font-family:var(--font); font-size:13px; color:var(--text-dark); background:#fff; outline:none; width:220px; transition:border-color 0.2s; }
-    .search-box input:focus { border-color:var(--upb-purple); box-shadow:0 0 0 3px rgba(107,31,124,0.08); }
+    .search-box input { height:36px; border:1.5px solid var(--border); border-radius:8px; padding:0 12px 0 34px; font-family:var(--font); font-size:13px; color:var(--text-dark); background:#fff; outline:none; width:220px; transition:border-color .2s; }
+    .search-box input:focus { border-color:var(--upb-purple); box-shadow:0 0 0 3px rgba(107,31,124,.08); }
     .filter-select { height:36px; border:1.5px solid var(--border); border-radius:8px; padding:0 10px; font-family:var(--font); font-size:13px; color:var(--text-dark); background:#fff; outline:none; cursor:pointer; }
-
-    .btn-primary { height:36px; padding:0 16px; border:none; border-radius:8px; background:linear-gradient(135deg,var(--upb-purple),var(--upb-pink-light)); color:#fff; font-family:var(--font); font-size:13px; font-weight:700; cursor:pointer; display:flex; align-items:center; gap:7px; box-shadow:0 2px 10px rgba(192,24,106,0.3); transition:opacity 0.2s,transform 0.15s; }
-    .btn-primary:hover { opacity:0.9; transform:translateY(-1px); }
-    .btn-secondary { height:36px; padding:0 14px; border:1.5px solid var(--border); border-radius:8px; background:#fff; color:var(--text-medium); font-family:var(--font); font-size:13px; font-weight:600; cursor:pointer; display:flex; align-items:center; gap:7px; transition:border-color 0.2s,color 0.2s; }
+    .btn-primary { height:36px; padding:0 16px; border:none; border-radius:8px; background:linear-gradient(135deg,var(--upb-purple),var(--upb-pink-light)); color:#fff; font-family:var(--font); font-size:13px; font-weight:700; cursor:pointer; display:flex; align-items:center; gap:7px; box-shadow:0 2px 10px rgba(192,24,106,.3); transition:opacity .2s,transform .15s; }
+    .btn-primary:hover { opacity:.9; transform:translateY(-1px); }
+    .btn-secondary { height:36px; padding:0 14px; border:1.5px solid var(--border); border-radius:8px; background:#fff; color:var(--text-medium); font-family:var(--font); font-size:13px; font-weight:600; cursor:pointer; display:flex; align-items:center; gap:7px; transition:border-color .2s,color .2s; }
     .btn-secondary:hover { border-color:var(--upb-purple); color:var(--upb-purple); }
-    .btn-danger { height:36px; padding:0 16px; border:none; border-radius:8px; background:var(--danger); color:#fff; font-family:var(--font); font-size:13px; font-weight:700; cursor:pointer; transition:opacity 0.2s; }
-    .btn-danger:hover { opacity:0.85; }
-
-    .table-card { background:#fff; border-radius:10px; border:1px solid var(--border); box-shadow:0 2px 8px rgba(0,0,0,0.05); overflow:hidden; }
+    .btn-danger { height:36px; padding:0 16px; border:none; border-radius:8px; background:var(--danger); color:#fff; font-family:var(--font); font-size:13px; font-weight:700; cursor:pointer; transition:opacity .2s; }
+    .btn-danger:hover { opacity:.85; }
+    .table-card { background:#fff; border-radius:10px; border:1px solid var(--border); box-shadow:0 2px 8px rgba(0,0,0,.05); overflow:hidden; }
     .table-wrap { overflow-x:auto; }
     table { width:100%; border-collapse:collapse; }
     thead { background:#FAFAFA; border-bottom:2px solid var(--border); }
-    th { padding:11px 14px; text-align:left; font-size:11px; font-weight:700; color:var(--text-light); text-transform:uppercase; letter-spacing:0.07em; white-space:nowrap; }
+    th { padding:11px 14px; text-align:left; font-size:11px; font-weight:700; color:var(--text-light); text-transform:uppercase; letter-spacing:.07em; white-space:nowrap; }
     td { padding:11px 14px; font-size:13px; color:var(--text-dark); border-bottom:1px solid #F4F4F8; vertical-align:middle; }
     tr:last-child td { border-bottom:none; }
     tr:hover td { background:#FDFAFF; }
     .table-footer { display:flex; align-items:center; justify-content:space-between; padding:12px 16px; border-top:1px solid var(--border); font-size:12px; color:var(--text-light); font-weight:600; }
     .empty-state { text-align:center; padding:48px 24px; color:var(--text-light); }
-    .empty-state i { font-size:40px; margin-bottom:12px; opacity:0.4; display:block; }
+    .empty-state i { font-size:40px; margin-bottom:12px; opacity:.4; display:block; }
     .empty-state p { font-size:14px; font-weight:600; }
-
     .badge { display:inline-flex; align-items:center; gap:4px; padding:3px 9px; border-radius:20px; font-size:11px; font-weight:700; }
     .badge-dot { width:6px; height:6px; border-radius:50%; background:currentColor; }
     .badge-active   { background:var(--success-bg); color:var(--success); }
@@ -119,13 +112,10 @@
     .badge-info     { background:var(--info-bg); color:var(--info); }
     .badge-warning  { background:var(--warning-bg); color:var(--warning); }
     .badge-urgente  { background:var(--danger-bg); color:var(--danger); }
-
     .action-btns { display:flex; gap:6px; }
-    .btn-icon { width:30px; height:30px; border-radius:7px; border:1px solid var(--border); background:#fff; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:13px; transition:all 0.15s; color:var(--text-medium); }
+    .btn-icon { width:30px; height:30px; border-radius:7px; border:1px solid var(--border); background:#fff; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:13px; transition:all .15s; color:var(--text-medium); }
     .btn-icon:hover { border-color:var(--upb-purple); color:var(--upb-purple); background:#F5EEF8; }
     .btn-icon.danger:hover { border-color:var(--danger); color:var(--danger); background:var(--danger-bg); }
-
-    /* Anuncio card preview */
     .anuncio-card { border-radius:10px; padding:16px 18px; border-left:4px solid; margin-bottom:12px; }
     .anuncio-card.informativo { background:var(--info-bg); border-color:var(--info); }
     .anuncio-card.advertencia { background:var(--warning-bg); border-color:var(--warning); }
@@ -134,18 +124,16 @@
     .anuncio-card.informativo .anuncio-titulo { color:var(--info); }
     .anuncio-card.advertencia .anuncio-titulo { color:var(--warning); }
     .anuncio-card.urgente .anuncio-titulo     { color:var(--danger); }
-    .anuncio-msg { font-size:13px; color:var(--text-medium); line-height:1.5; }
+    .anuncio-msg  { font-size:13px; color:var(--text-medium); line-height:1.5; }
     .anuncio-meta { font-size:11px; color:var(--text-light); margin-top:8px; display:flex; gap:12px; flex-wrap:wrap; }
-
-    /* Modal */
-    .modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.45); z-index:1000; align-items:center; justify-content:center; padding:16px; }
+    .modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.45); z-index:1000; align-items:center; justify-content:center; padding:16px; }
     .modal-overlay.open { display:flex; }
-    .modal { background:#fff; border-radius:16px; width:100%; max-width:560px; max-height:90vh; overflow-y:auto; box-shadow:0 24px 60px rgba(0,0,0,0.25); animation:modalIn 0.2s ease; }
-    @keyframes modalIn { from{opacity:0;transform:scale(0.96) translateY(10px)} to{opacity:1;transform:scale(1) translateY(0)} }
+    .modal { background:#fff; border-radius:16px; width:100%; max-width:560px; max-height:90vh; overflow-y:auto; box-shadow:0 24px 60px rgba(0,0,0,.25); animation:modalIn .2s ease; }
+    @keyframes modalIn { from{opacity:0;transform:scale(.96) translateY(10px)} to{opacity:1;transform:scale(1) translateY(0)} }
     .modal-header { display:flex; align-items:center; justify-content:space-between; padding:18px 22px 16px; border-bottom:1px solid var(--border); }
     .modal-title { font-size:16px; font-weight:800; color:var(--text-dark); display:flex; align-items:center; gap:10px; }
     .modal-title-icon { width:34px; height:34px; border-radius:9px; background:linear-gradient(135deg,var(--upb-purple),var(--upb-pink-light)); display:flex; align-items:center; justify-content:center; color:#fff; font-size:15px; }
-    .modal-close { width:30px; height:30px; border-radius:8px; border:1.5px solid var(--border); background:#fff; cursor:pointer; display:flex; align-items:center; justify-content:center; color:var(--text-light); font-size:14px; transition:all 0.15s; }
+    .modal-close { width:30px; height:30px; border-radius:8px; border:1.5px solid var(--border); background:#fff; cursor:pointer; display:flex; align-items:center; justify-content:center; color:var(--text-light); font-size:14px; transition:all .15s; }
     .modal-close:hover { border-color:var(--danger); color:var(--danger); }
     .modal-body { padding:20px 22px; }
     .modal-footer { padding:14px 22px; border-top:1px solid var(--border); display:flex; justify-content:flex-end; gap:10px; }
@@ -154,12 +142,10 @@
     .form-group { display:flex; flex-direction:column; gap:5px; }
     .form-label { font-size:12px; font-weight:700; color:var(--text-dark); }
     .form-label .req { color:var(--upb-pink); }
-    .form-control { height:38px; border:1.5px solid var(--border); border-radius:8px; padding:0 12px; font-family:var(--font); font-size:13px; color:var(--text-dark); background:#F9F9FC; outline:none; transition:border-color 0.2s,box-shadow 0.2s; }
-    .form-control:focus { border-color:var(--upb-purple); background:#fff; box-shadow:0 0 0 3px rgba(107,31,124,0.08); }
+    .form-control { height:38px; border:1.5px solid var(--border); border-radius:8px; padding:0 12px; font-family:var(--font); font-size:13px; color:var(--text-dark); background:#F9F9FC; outline:none; transition:border-color .2s,box-shadow .2s; }
+    .form-control:focus { border-color:var(--upb-purple); background:#fff; box-shadow:0 0 0 3px rgba(107,31,124,.08); }
     textarea.form-control { height:90px; padding:10px 12px; resize:vertical; }
-
-    /* Preview en modal */
-    .preview-box { border-radius:10px; padding:14px 16px; border-left:4px solid var(--border); background:#F9F9FC; margin-top:4px; min-height:60px; transition:all 0.2s; }
+    .preview-box { border-radius:10px; padding:14px 16px; border-left:4px solid var(--border); background:#F9F9FC; margin-top:4px; min-height:60px; transition:all .2s; }
     .preview-box.informativo { background:var(--info-bg); border-color:var(--info); }
     .preview-box.advertencia { background:var(--warning-bg); border-color:var(--warning); }
     .preview-box.urgente { background:var(--danger-bg); border-color:var(--danger); }
@@ -168,14 +154,12 @@
     .preview-box.advertencia .preview-titulo { color:var(--warning); }
     .preview-box.urgente .preview-titulo { color:var(--danger); }
     .preview-msg { font-size:12px; color:var(--text-medium); line-height:1.5; }
-
     .confirm-icon { text-align:center; margin-bottom:16px; }
     .confirm-icon i { font-size:48px; }
     .confirm-title { text-align:center; font-size:18px; font-weight:800; color:var(--text-dark); margin-bottom:8px; }
-    .confirm-text { text-align:center; font-size:13px; color:var(--text-medium); line-height:1.5; }
-
+    .confirm-text  { text-align:center; font-size:13px; color:var(--text-medium); line-height:1.5; }
     .toast-container { position:fixed; bottom:24px; right:24px; z-index:2000; display:flex; flex-direction:column; gap:8px; }
-    .toast { background:#fff; border-radius:10px; padding:12px 16px; box-shadow:0 8px 24px rgba(0,0,0,0.15); border-left:4px solid; display:flex; align-items:center; gap:10px; font-size:13px; font-weight:600; min-width:260px; animation:toastIn 0.25s ease; }
+    .toast { background:#fff; border-radius:10px; padding:12px 16px; box-shadow:0 8px 24px rgba(0,0,0,.15); border-left:4px solid; display:flex; align-items:center; gap:10px; font-size:13px; font-weight:600; min-width:260px; animation:toastIn .25s ease; }
     @keyframes toastIn { from{opacity:0;transform:translateX(20px)} to{opacity:1;transform:translateX(0)} }
     .toast.success { border-color:var(--success); color:var(--success); }
     .toast.error   { border-color:var(--danger);  color:var(--danger); }
@@ -186,489 +170,429 @@
 </head>
 <body>
 
-  <header class="navbar">
-    <div class="navbar-left">
-      <button class="btn-menu-toggle" onclick="toggleSidebar()"><i class="fa-solid fa-bars"></i></button>
-      <div class="navbar-logo"><img src="assets/images/LOGOUPB.jpg" alt="UPB" /></div>
-      <button class="btn-acciones">Acciones Rápidas <i class="fa-solid fa-chevron-down" style="font-size:10px"></i></button>
+<header class="navbar">
+  <div class="navbar-left">
+    <button class="btn-menu-toggle" onclick="toggleSidebar()"><i class="fa-solid fa-bars"></i></button>
+    <div class="navbar-logo"><img src="assets/images/LOGOUPB.jpg" alt="UPB"/></div>
+    <div class="acciones-wrap">
+      <button class="btn-acciones" onclick="toggleDropdown()">Acciones Rápidas <i class="fa-solid fa-chevron-down" style="font-size:10px"></i></button>
+      <div class="dropdown-acciones" id="dropdown-acciones">
+        <a class="dropdown-item" href="dashboard.html"><i class="fa-solid fa-house"></i> Menú Principal</a>
+        <a class="dropdown-item" href="Admin-Usuarios.html"><i class="fa-solid fa-users"></i> Usuarios</a>
+        <a class="dropdown-item" href="reporte-resumen.html"><i class="fa-solid fa-file-lines"></i> Resumen Préstamos</a>
+        <a class="dropdown-item" href="Admin-Equipos.html"><i class="fa-solid fa-desktop"></i> Elementos</a>
+      </div>
     </div>
-    <div class="navbar-right">
-      <div class="nav-user-info">
-        <span class="nav-user-name" id="nav-nombre">...</span>
-        <span class="nav-user-lab" id="nav-lab"></span>
-      </div>
-      <div class="nav-avatar"><img id="nav-avatar-img" src="" alt="Avatar" /></div>
-      <button class="btn-salir" id="btn-salir"><i class="fa-solid fa-right-from-bracket"></i> Salir</button>
-    </div>
-  </header>
-
-  <div class="layout">
-    <aside class="sidebar" id="sidebar">
-      <nav class="sidebar-nav">
-        <div class="nav-item">
-          <a class="nav-link home" href="dashboard.html">
-            <i class="nav-icon fa-solid fa-house"></i>
-            <span class="nav-label">Menú Principal</span>
-          </a>
-        </div>
-        <div class="nav-item" onclick="toggleMenu(this)">
-          <div class="nav-link">
-            <i class="nav-icon fa-solid fa-box-open"></i>
-            <span class="nav-label">Entregas</span>
-            <i class="nav-arrow fa-solid fa-chevron-right"></i>
-          </div>
-          <div class="submenu">
-            <a class="submenu-link" href="#"><i class="fa-solid fa-list"></i> Ver Entregas</a>
-            <a class="submenu-link" href="#"><i class="fa-solid fa-plus"></i> Nueva Entrega</a>
-          </div>
-        </div>
-        <div class="nav-item" onclick="toggleMenu(this)">
-          <div class="nav-link">
-            <i class="nav-icon fa-solid fa-users"></i>
-            <span class="nav-label">Usuarios</span>
-            <i class="nav-arrow fa-solid fa-chevron-right"></i>
-          </div>
-          <div class="submenu">
-            <a class="submenu-link" href="#"><i class="fa-solid fa-list"></i> Ver Usuarios</a>
-            <a class="submenu-link" href="#"><i class="fa-solid fa-user-plus"></i> Crear Usuario</a>
-          </div>
-        </div>
-        <div class="nav-item" onclick="toggleMenu(this)">
-          <div class="nav-link">
-            <i class="nav-icon fa-solid fa-cart-shopping"></i>
-            <span class="nav-label">Solicitudes</span>
-            <i class="nav-arrow fa-solid fa-chevron-right"></i>
-          </div>
-          <div class="submenu">
-            <a class="submenu-link" href="#"><i class="fa-solid fa-clipboard-list"></i> Solicitud de Elementos</a>
-            <a class="submenu-link" href="#"><i class="fa-solid fa-file-alt"></i> Solicitud Detalle</a>
-            <a class="submenu-link" href="#"><i class="fa-solid fa-search"></i> Seleccionar</a>
-            <a class="submenu-link" href="#"><i class="fa-solid fa-ban"></i> Cancelados</a>
-            <a class="submenu-link" href="#"><i class="fa-solid fa-star"></i> Solicitud Especial Admin</a>
-            <a class="submenu-link" href="#"><i class="fa-solid fa-star-half"></i> Solicitud Especial Persona</a>
-          </div>
-        </div>
-        <div class="nav-item open" onclick="toggleMenu(this)">
-          <div class="nav-link active">
-            <i class="nav-icon fa-solid fa-gear"></i>
-            <span class="nav-label">Administración</span>
-            <i class="nav-arrow fa-solid fa-chevron-right"></i>
-          </div>
-          <div class="submenu">
-            <a class="submenu-link" href="Admin-Equipos.html"><i class="fa-solid fa-desktop"></i> Elementos</a>
-            <a class="submenu-link" href="Admin_Calendario.html"><i class="fa-solid fa-calendar"></i> Calendario</a>
-            <a class="submenu-link active" href="Admin-Informacion-Importante.html"><i class="fa-solid fa-bullhorn"></i> Información Importante</a>
-            <a class="submenu-link" href="Admin-Foto-Perfil.html"><i class="fa-solid fa-camera"></i> Foto Perfil</a>
-          </div>
-        </div>
-        <div class="nav-item" onclick="toggleMenu(this)">
-          <div class="nav-link">
-            <i class="nav-icon fa-solid fa-file-lines"></i>
-            <span class="nav-label">Reportes</span>
-            <i class="nav-arrow fa-solid fa-chevron-right"></i>
-          </div>
-          <div class="submenu">
-            <a class="submenu-link" href="#"><i class="fa-solid fa-file"></i> Resumen Préstamos</a>
-            <a class="submenu-link" href="#"><i class="fa-solid fa-file"></i> Detalle Préstamos</a>
-            <a class="submenu-link" href="#"><i class="fa-solid fa-file"></i> Préstamos x Elemento</a>
-            <a class="submenu-link" href="#"><i class="fa-solid fa-file"></i> Elementos prestados</a>
-            <a class="submenu-link" href="#"><i class="fa-solid fa-file"></i> Inventario General</a>
-          </div>
-        </div>
-      </nav>
-    </aside>
-
-    <main class="main-content">
-      <div class="page-header">
-        <span class="page-title">ADMINISTRACIÓN</span>
-        <span class="page-breadcrumb">ADMINISTRACIÓN › INFORMACIÓN IMPORTANTE</span>
-      </div>
-      <div class="page-body">
-
-        <!-- STATS -->
-        <div class="stats-row">
-          <div class="stat-card">
-            <div class="stat-icon purple"><i class="fa-solid fa-bullhorn"></i></div>
-            <div><div class="stat-value" id="stat-total">0</div><div class="stat-label">Total Anuncios</div></div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-icon green"><i class="fa-solid fa-circle-check"></i></div>
-            <div><div class="stat-value" id="stat-activos">0</div><div class="stat-label">Activos</div></div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-icon orange"><i class="fa-solid fa-triangle-exclamation"></i></div>
-            <div><div class="stat-value" id="stat-advertencia">0</div><div class="stat-label">Advertencias</div></div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-icon red"><i class="fa-solid fa-circle-exclamation"></i></div>
-            <div><div class="stat-value" id="stat-urgente">0</div><div class="stat-label">Urgentes</div></div>
-          </div>
-        </div>
-
-        <!-- TABS -->
-        <div class="tabs-bar">
-          <button class="tab-btn active" onclick="switchTab('lista',this)"><i class="fa-solid fa-list"></i> Lista de Anuncios</button>
-          <button class="tab-btn" onclick="switchTab('preview',this)"><i class="fa-solid fa-eye"></i> Vista Previa</button>
-        </div>
-
-        <!-- TAB LISTA -->
-        <div class="tab-panel active" id="tab-lista">
-          <div class="toolbar">
-            <div class="toolbar-left">
-              <div class="search-box">
-                <i class="fa-solid fa-magnifying-glass"></i>
-                <input type="text" placeholder="Buscar anuncio..." id="searchAnuncio" oninput="renderAnuncios()" />
-              </div>
-              <select class="filter-select" id="filterTipo" onchange="renderAnuncios()">
-                <option value="">Todos los tipos</option>
-                <option value="informativo">Informativo</option>
-                <option value="advertencia">Advertencia</option>
-                <option value="urgente">Urgente</option>
-              </select>
-              <select class="filter-select" id="filterEstado" onchange="renderAnuncios()">
-                <option value="">Todos los estados</option>
-                <option value="activo">Activo</option>
-                <option value="inactivo">Inactivo</option>
-              </select>
-            </div>
-            <button class="btn-primary" onclick="abrirModalAnuncio()"><i class="fa-solid fa-plus"></i> Nuevo Anuncio</button>
-          </div>
-          <div class="table-card">
-            <div class="table-wrap">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Título</th>
-                    <th>Tipo</th>
-                    <th>Fecha Publicación</th>
-                    <th>Fecha Expiración</th>
-                    <th>Estado</th>
-                    <th>Acciones</th>
-                  </tr>
-                </thead>
-                <tbody id="tbodyAnuncios"></tbody>
-              </table>
-            </div>
-            <div class="table-footer"><span id="anuncios-count">Mostrando 0 anuncios</span></div>
-          </div>
-        </div>
-
-        <!-- TAB PREVIEW -->
-        <div class="tab-panel" id="tab-preview">
-          <div style="background:#fff;border-radius:10px;border:1px solid var(--border);padding:20px;box-shadow:0 2px 8px rgba(0,0,0,0.05);">
-            <div style="font-size:13px;font-weight:800;color:var(--text-dark);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:16px;display:flex;align-items:center;gap:8px;">
-              <i class="fa-solid fa-eye" style="color:var(--upb-purple)"></i> Vista Previa — Anuncios Activos
-            </div>
-            <div id="previewContainer">
-              <div class="empty-state"><i class="fa-solid fa-bullhorn"></i><p>No hay anuncios activos para mostrar</p></div>
-            </div>
-          </div>
-        </div>
-
-      </div>
-    </main>
   </div>
+  <div class="navbar-right">
+    <div class="nav-user-info">
+      <span class="nav-user-name" id="nav-nombre">...</span>
+      <span class="nav-user-lab" id="nav-lab"></span>
+    </div>
+    <div class="nav-avatar"><img id="nav-avatar-img" src="" alt="Avatar"/></div>
+    <button class="btn-salir" id="btn-salir"><i class="fa-solid fa-right-from-bracket"></i> Salir</button>
+  </div>
+</header>
 
-  <!-- MODAL ANUNCIO -->
-  <div class="modal-overlay" id="modalAnuncio">
-    <div class="modal">
-      <div class="modal-header">
-        <div class="modal-title">
-          <div class="modal-title-icon"><i class="fa-solid fa-bullhorn"></i></div>
-          <span id="modalAnuncioTitle">Nuevo Anuncio</span>
-        </div>
-        <button class="modal-close" onclick="cerrarModal('modalAnuncio')"><i class="fa-solid fa-xmark"></i></button>
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <nav class="sidebar-nav">
+
+      <div class="nav-item">
+        <a class="nav-link home" href="dashboard.html">
+          <i class="nav-icon fa-solid fa-house"></i><span class="nav-label">Menú Principal</span>
+        </a>
       </div>
-      <div class="modal-body">
-        <div class="form-row full">
-          <div class="form-group">
-            <label class="form-label">Título <span class="req">*</span></label>
-            <input class="form-control" type="text" id="an-titulo" placeholder="Ej: Mantenimiento programado" oninput="updatePreview()" />
-          </div>
+
+      <div class="nav-item" onclick="toggleMenu(this)">
+        <div class="nav-link"><i class="nav-icon fa-solid fa-box-open"></i><span class="nav-label">Entregas</span><i class="nav-arrow fa-solid fa-chevron-right"></i></div>
+        <div class="submenu">
+          <a class="submenu-link" href="#"><i class="fa-solid fa-list"></i> Ver Entregas</a>
+          <a class="submenu-link" href="#"><i class="fa-solid fa-plus"></i> Nueva Entrega</a>
         </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label class="form-label">Tipo <span class="req">*</span></label>
-            <select class="form-control" id="an-tipo" onchange="updatePreview()">
+      </div>
+
+      <div class="nav-item" onclick="toggleMenu(this)">
+        <div class="nav-link"><i class="nav-icon fa-solid fa-users"></i><span class="nav-label">Usuarios</span><i class="nav-arrow fa-solid fa-chevron-right"></i></div>
+        <div class="submenu">
+          <a class="submenu-link" href="Admin-Usuarios.html"><i class="fa-solid fa-list"></i> Ver Usuarios</a>
+          <a class="submenu-link" href="Admin-Crear-Usuario.html"><i class="fa-solid fa-user-plus"></i> Crear Usuario</a>
+        </div>
+      </div>
+
+      <div class="nav-item" onclick="toggleMenu(this)">
+        <div class="nav-link"><i class="nav-icon fa-solid fa-cart-shopping"></i><span class="nav-label">Solicitudes</span><i class="nav-arrow fa-solid fa-chevron-right"></i></div>
+        <div class="submenu">
+          <a class="submenu-link" href="#"><i class="fa-solid fa-clipboard-list"></i> Solicitud de Elementos</a>
+          <a class="submenu-link" href="#"><i class="fa-solid fa-file-alt"></i> Solicitud Detalle</a>
+          <a class="submenu-link" href="#"><i class="fa-solid fa-search"></i> Seleccionar</a>
+          <a class="submenu-link" href="#"><i class="fa-solid fa-ban"></i> Cancelados</a>
+          <a class="submenu-link" href="#"><i class="fa-solid fa-star"></i> Solicitud Especial Admin</a>
+          <a class="submenu-link" href="#"><i class="fa-solid fa-star-half"></i> Solicitud Especial Persona</a>
+        </div>
+      </div>
+
+      <!-- ADMINISTRACIÓN — activo aquí -->
+      <div class="nav-item open" onclick="toggleMenu(this)">
+        <div class="nav-link active"><i class="nav-icon fa-solid fa-gear"></i><span class="nav-label">Administración</span><i class="nav-arrow fa-solid fa-chevron-right"></i></div>
+        <div class="submenu">
+          <a class="submenu-link" href="Admin-Equipos.html"><i class="fa-solid fa-desktop"></i> Elementos</a>
+          <a class="submenu-link" href="Admin_Calendario.html"><i class="fa-solid fa-calendar"></i> Calendario</a>
+          <a class="submenu-link active" href="Admin-Informacion-Importante.html"><i class="fa-solid fa-bullhorn"></i> Información Importante</a>
+          <a class="submenu-link" href="Admin-Foto-Perfil.html"><i class="fa-solid fa-camera"></i> Foto Perfil</a>
+        </div>
+      </div>
+
+      <!-- REPORTES — completo -->
+      <div class="nav-item" onclick="toggleMenu(this)">
+        <div class="nav-link"><i class="nav-icon fa-solid fa-file-lines"></i><span class="nav-label">Reportes</span><i class="nav-arrow fa-solid fa-chevron-right"></i></div>
+        <div class="submenu">
+          <a class="submenu-link" href="reporte-resumen.html"><i class="fa-solid fa-table"></i> Resumen Préstamos</a>
+          <a class="submenu-link" href="reporte-prestamos-activos.html"><i class="fa-solid fa-rotate"></i> Préstamos Activos</a>
+          <a class="submenu-link" href="reporte-inventario.html"><i class="fa-solid fa-boxes-stacked"></i> Inventario</a>
+          <a class="submenu-link" href="reporte-por-equipo.html"><i class="fa-solid fa-desktop"></i> Por Elemento</a>
+          <a class="submenu-link" href="reporte-por-usuario.html"><i class="fa-solid fa-user-clock"></i> Por Usuario</a>
+          <a class="submenu-link" href="reporte-cancelados.html"><i class="fa-solid fa-ban"></i> Cancelados</a>
+          <a class="submenu-link" href="reporte-equipos-dañados.html"><i class="fa-solid fa-triangle-exclamation"></i> Daños/Obs.</a>
+          <a class="submenu-link" href="reporte-comparativo.html"><i class="fa-solid fa-chart-bar"></i> Comparativo</a>
+          <a class="submenu-link" href="reporte-solicitudes-pendientes.html"><i class="fa-solid fa-clock"></i> Pendientes</a>
+          <a class="submenu-link" href="reporte-formato-salida.html"><i class="fa-solid fa-file-invoice"></i> Formato Salida</a>
+        </div>
+      </div>
+
+    </nav>
+  </aside>
+
+  <main class="main-content">
+    <div class="page-header">
+      <span class="page-title">ADMINISTRACIÓN</span>
+      <span class="page-breadcrumb">ADMINISTRACIÓN › INFORMACIÓN IMPORTANTE</span>
+    </div>
+    <div class="page-body">
+
+      <div class="stats-row">
+        <div class="stat-card"><div class="stat-icon purple"><i class="fa-solid fa-bullhorn"></i></div><div><div class="stat-value" id="stat-total">0</div><div class="stat-label">Total Anuncios</div></div></div>
+        <div class="stat-card"><div class="stat-icon green"><i class="fa-solid fa-circle-check"></i></div><div><div class="stat-value" id="stat-activos">0</div><div class="stat-label">Activos</div></div></div>
+        <div class="stat-card"><div class="stat-icon orange"><i class="fa-solid fa-triangle-exclamation"></i></div><div><div class="stat-value" id="stat-advertencia">0</div><div class="stat-label">Advertencias</div></div></div>
+        <div class="stat-card"><div class="stat-icon red"><i class="fa-solid fa-circle-exclamation"></i></div><div><div class="stat-value" id="stat-urgente">0</div><div class="stat-label">Urgentes</div></div></div>
+      </div>
+
+      <div class="tabs-bar">
+        <button class="tab-btn active" onclick="switchTab('lista',this)"><i class="fa-solid fa-list"></i> Lista de Anuncios</button>
+        <button class="tab-btn" onclick="switchTab('preview',this)"><i class="fa-solid fa-eye"></i> Vista Previa</button>
+      </div>
+
+      <!-- TAB LISTA -->
+      <div class="tab-panel active" id="tab-lista">
+        <div class="toolbar">
+          <div class="toolbar-left">
+            <div class="search-box"><i class="fa-solid fa-magnifying-glass"></i><input type="text" placeholder="Buscar anuncio..." id="searchAnuncio" oninput="renderAnuncios()"/></div>
+            <select class="filter-select" id="filterTipo" onchange="renderAnuncios()">
+              <option value="">Todos los tipos</option>
               <option value="informativo">Informativo</option>
               <option value="advertencia">Advertencia</option>
               <option value="urgente">Urgente</option>
             </select>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Estado</label>
-            <select class="form-control" id="an-estado">
+            <select class="filter-select" id="filterEstado" onchange="renderAnuncios()">
+              <option value="">Todos los estados</option>
               <option value="activo">Activo</option>
               <option value="inactivo">Inactivo</option>
             </select>
           </div>
+          <button class="btn-primary" onclick="abrirModalAnuncio()"><i class="fa-solid fa-plus"></i> Nuevo Anuncio</button>
         </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label class="form-label">Fecha Publicación <span class="req">*</span></label>
-            <input class="form-control" type="date" id="an-fecha-pub" />
+        <div class="table-card">
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Título</th><th>Tipo</th><th>Fecha Publicación</th><th>Fecha Expiración</th><th>Estado</th><th>Acciones</th></tr></thead>
+              <tbody id="tbodyAnuncios"></tbody>
+            </table>
           </div>
-          <div class="form-group">
-            <label class="form-label">Fecha Expiración</label>
-            <input class="form-control" type="date" id="an-fecha-exp" />
-          </div>
+          <div class="table-footer"><span id="anuncios-count">Mostrando 0 anuncios</span></div>
         </div>
-        <div class="form-row full">
-          <div class="form-group">
-            <label class="form-label">Mensaje <span class="req">*</span></label>
-            <textarea class="form-control" id="an-mensaje" placeholder="Escribe el contenido del anuncio..." oninput="updatePreview()"></textarea>
+      </div>
+
+      <!-- TAB PREVIEW -->
+      <div class="tab-panel" id="tab-preview">
+        <div style="background:#fff;border-radius:10px;border:1px solid var(--border);padding:20px;box-shadow:0 2px 8px rgba(0,0,0,.05);">
+          <div style="font-size:13px;font-weight:800;color:var(--text-dark);text-transform:uppercase;letter-spacing:.05em;margin-bottom:16px;display:flex;align-items:center;gap:8px;">
+            <i class="fa-solid fa-eye" style="color:var(--upb-purple)"></i> Vista Previa — Anuncios Activos
           </div>
-        </div>
-        <!-- Preview en modal -->
-        <div class="form-row full">
-          <div class="form-group">
-            <label class="form-label">Vista Previa</label>
-            <div class="preview-box" id="modalPreview">
-              <div class="preview-titulo" id="prev-titulo">Título del anuncio</div>
-              <div class="preview-msg" id="prev-msg">El mensaje aparecerá aquí...</div>
-            </div>
+          <div id="previewContainer">
+            <div class="empty-state"><i class="fa-solid fa-bullhorn"></i><p>No hay anuncios activos para mostrar</p></div>
           </div>
         </div>
       </div>
-      <div class="modal-footer">
-        <button class="btn-secondary" onclick="cerrarModal('modalAnuncio')">Cancelar</button>
-        <button class="btn-primary" onclick="guardarAnuncio()"><i class="fa-solid fa-floppy-disk"></i> Guardar</button>
+
+    </div>
+  </main>
+</div>
+
+<!-- MODAL ANUNCIO -->
+<div class="modal-overlay" id="modalAnuncio">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title"><div class="modal-title-icon"><i class="fa-solid fa-bullhorn"></i></div><span id="modalAnuncioTitle">Nuevo Anuncio</span></div>
+      <button class="modal-close" onclick="cerrarModal('modalAnuncio')"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="form-row full">
+        <div class="form-group"><label class="form-label">Título <span class="req">*</span></label><input class="form-control" type="text" id="an-titulo" placeholder="Ej: Mantenimiento programado" oninput="updatePreview()"/></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Tipo <span class="req">*</span></label>
+          <select class="form-control" id="an-tipo" onchange="updatePreview()">
+            <option value="informativo">Informativo</option>
+            <option value="advertencia">Advertencia</option>
+            <option value="urgente">Urgente</option>
+          </select>
+        </div>
+        <div class="form-group"><label class="form-label">Estado</label>
+          <select class="form-control" id="an-estado">
+            <option value="activo">Activo</option>
+            <option value="inactivo">Inactivo</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Fecha Publicación <span class="req">*</span></label><input class="form-control" type="date" id="an-fecha-pub"/></div>
+        <div class="form-group"><label class="form-label">Fecha Expiración</label><input class="form-control" type="date" id="an-fecha-exp"/></div>
+      </div>
+      <div class="form-row full">
+        <div class="form-group"><label class="form-label">Mensaje <span class="req">*</span></label><textarea class="form-control" id="an-mensaje" placeholder="Escribe el contenido del anuncio..." oninput="updatePreview()"></textarea></div>
+      </div>
+      <div class="form-row full">
+        <div class="form-group">
+          <label class="form-label">Vista Previa</label>
+          <div class="preview-box" id="modalPreview">
+            <div class="preview-titulo" id="prev-titulo">Título del anuncio</div>
+            <div class="preview-msg"  id="prev-msg">El mensaje aparecerá aquí...</div>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
-
-  <!-- MODAL CONFIRMAR ELIMINAR -->
-  <div class="modal-overlay" id="modalConfirm">
-    <div class="modal" style="max-width:400px">
-      <div class="modal-body" style="padding:28px 24px 20px">
-        <div class="confirm-icon"><i class="fa-solid fa-triangle-exclamation" style="color:#D97706"></i></div>
-        <div class="confirm-title">¿Eliminar anuncio?</div>
-        <div class="confirm-text" id="confirm-text">Este anuncio será eliminado permanentemente.</div>
-      </div>
-      <div class="modal-footer">
-        <button class="btn-secondary" onclick="cerrarModal('modalConfirm')">Cancelar</button>
-        <button class="btn-danger" id="btn-confirm-action">Eliminar</button>
-      </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="cerrarModal('modalAnuncio')">Cancelar</button>
+      <button class="btn-primary" onclick="guardarAnuncio()"><i class="fa-solid fa-floppy-disk"></i> Guardar</button>
     </div>
   </div>
+</div>
 
-  <div class="toast-container" id="toastContainer"></div>
+<!-- MODAL CONFIRMAR -->
+<div class="modal-overlay" id="modalConfirm">
+  <div class="modal" style="max-width:400px">
+    <div class="modal-body" style="padding:28px 24px 20px">
+      <div class="confirm-icon"><i class="fa-solid fa-triangle-exclamation" style="color:#D97706"></i></div>
+      <div class="confirm-title">¿Eliminar anuncio?</div>
+      <div class="confirm-text" id="confirm-text">Este anuncio será eliminado permanentemente.</div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="cerrarModal('modalConfirm')">Cancelar</button>
+      <button class="btn-danger" id="btn-confirm-action">Eliminar</button>
+    </div>
+  </div>
+</div>
 
-  <script>
-    // Sesión
-    const u = sessionStorage.getItem('usuario');
-    if (u) {
-      const usr = JSON.parse(u);
-      document.getElementById('nav-nombre').textContent = usr.nombre.toUpperCase();
-      document.getElementById('nav-lab').textContent = usr.lab;
-      const avatares = {
-        admin:    'assets/images/AVATARADMINISTRADOR.jpg',
-        profesor: 'assets/images/AVATARPROFESOR.jpg',
-        usuario:  'assets/images/AVATARPROFESOR.jpg'
-      };
-      document.getElementById('nav-avatar-img').src = avatares[usr.rol] || 'assets/images/AVATARADMINISTRADOR.jpg';
+<div class="toast-container" id="toastContainer"></div>
+
+<script>
+  // AUTH
+  const u = sessionStorage.getItem('usuario');
+  if (!u) { window.location.href = 'index.html'; }
+  const usr = JSON.parse(u);
+  document.getElementById('nav-nombre').textContent = usr.nombre.toUpperCase();
+  document.getElementById('nav-lab').textContent    = usr.lab;
+  const avatares = {
+    admin:    'assets/images/AVATARADMINISTRADOR.jpg',
+    profesor: 'assets/images/AVATARPROFESOR.jpg',
+    usuario:  'assets/images/AVATARPROFESOR.jpg'
+  };
+  document.getElementById('nav-avatar-img').src = avatares[usr.rol] || 'assets/images/AVATARADMINISTRADOR.jpg';
+  document.getElementById('btn-salir').addEventListener('click', () => {
+    sessionStorage.removeItem('usuario'); window.location.href = 'index.html';
+  });
+
+  function toggleSidebar()  { document.getElementById('sidebar').classList.toggle('collapsed'); }
+  function toggleDropdown() { document.getElementById('dropdown-acciones').classList.toggle('open'); }
+  function toggleMenu(item) {
+    const isOpen = item.classList.contains('open');
+    document.querySelectorAll('.nav-item.open').forEach(el => el.classList.remove('open'));
+    if (!isOpen) item.classList.add('open');
+  }
+  document.addEventListener('click', e => {
+    if (!e.target.closest('.acciones-wrap'))
+      document.getElementById('dropdown-acciones').classList.remove('open');
+  });
+  document.querySelectorAll('.submenu-link').forEach(l => l.addEventListener('click', e => e.stopPropagation()));
+
+  function switchTab(name, btn) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('tab-' + name).classList.add('active');
+    if (name === 'preview') renderPreview();
+  }
+  function abrirModal(id)  { document.getElementById(id).classList.add('open'); }
+  function cerrarModal(id) { document.getElementById(id).classList.remove('open'); }
+  document.querySelectorAll('.modal-overlay').forEach(o => {
+    o.addEventListener('click', function(e) { if (e.target === this) this.classList.remove('open'); });
+  });
+
+  let anuncios = [], editingId = null, nextId = 1;
+  const TIPO_LABELS = { informativo:'Informativo', advertencia:'Advertencia', urgente:'Urgente' };
+  const TIPO_ICONS  = { informativo:'fa-circle-info', advertencia:'fa-triangle-exclamation', urgente:'fa-circle-exclamation' };
+
+  function badgeTipo(tipo) {
+    const cls  = { informativo:'badge-info', advertencia:'badge-warning', urgente:'badge-urgente' };
+    return `<span class="badge ${cls[tipo]||''}"><i class="fa-solid ${TIPO_ICONS[tipo]||'fa-circle-info'}"></i> ${TIPO_LABELS[tipo]||tipo}</span>`;
+  }
+  function badgeEstado(estado) {
+    return estado === 'activo'
+      ? `<span class="badge badge-active"><span class="badge-dot"></span>Activo</span>`
+      : `<span class="badge badge-inactive"><span class="badge-dot"></span>Inactivo</span>`;
+  }
+
+  function updateStats() {
+    document.getElementById('stat-total').textContent       = anuncios.length;
+    document.getElementById('stat-activos').textContent     = anuncios.filter(a => a.estado==='activo').length;
+    document.getElementById('stat-advertencia').textContent = anuncios.filter(a => a.tipo==='advertencia').length;
+    document.getElementById('stat-urgente').textContent     = anuncios.filter(a => a.tipo==='urgente').length;
+  }
+
+  function renderAnuncios() {
+    const search   = document.getElementById('searchAnuncio').value.toLowerCase();
+    const fTipo    = document.getElementById('filterTipo').value;
+    const fEst     = document.getElementById('filterEstado').value;
+    const filtered = anuncios.filter(a =>
+      (a.titulo.toLowerCase().includes(search) || a.mensaje.toLowerCase().includes(search))
+      && (!fTipo || a.tipo===fTipo) && (!fEst || a.estado===fEst)
+    );
+    document.getElementById('tbodyAnuncios').innerHTML = filtered.length===0
+      ? `<tr><td colspan="6"><div class="empty-state"><i class="fa-solid fa-bullhorn"></i><p>No hay anuncios registrados</p></div></td></tr>`
+      : filtered.map(a => `<tr>
+          <td><strong>${a.titulo}</strong></td>
+          <td>${badgeTipo(a.tipo)}</td>
+          <td>${a.fechaPub||'—'}</td>
+          <td>${a.fechaExp||'—'}</td>
+          <td>${badgeEstado(a.estado)}</td>
+          <td><div class="action-btns">
+            <button class="btn-icon" onclick="editarAnuncio(${a.id})"><i class="fa-solid fa-pen"></i></button>
+            <button class="btn-icon" onclick="toggleEstado(${a.id})" style="color:${a.estado==='activo'?'var(--warning)':'var(--success)'}">
+              <i class="fa-solid ${a.estado==='activo'?'fa-eye-slash':'fa-eye'}"></i>
+            </button>
+            <button class="btn-icon danger" onclick="confirmarEliminar(${a.id})"><i class="fa-solid fa-trash"></i></button>
+          </div></td>
+        </tr>`).join('');
+    document.getElementById('anuncios-count').textContent = `Mostrando ${filtered.length} anuncio${filtered.length!==1?'s':''}`;
+  }
+
+  function renderPreview() {
+    const activos = anuncios.filter(a => a.estado==='activo');
+    const cont = document.getElementById('previewContainer');
+    if (!activos.length) {
+      cont.innerHTML = `<div class="empty-state"><i class="fa-solid fa-bullhorn"></i><p>No hay anuncios activos para mostrar</p></div>`;
+      return;
     }
-    document.getElementById('btn-salir').addEventListener('click', () => {
-      sessionStorage.removeItem('usuario');
-      window.location.href = 'index.html';
-    });
+    cont.innerHTML = activos.map(a => `
+      <div class="anuncio-card ${a.tipo}">
+        <div class="anuncio-titulo"><i class="fa-solid ${TIPO_ICONS[a.tipo]}"></i> ${a.titulo}</div>
+        <div class="anuncio-msg">${a.mensaje}</div>
+        <div class="anuncio-meta">
+          <span><i class="fa-solid fa-calendar"></i> Publicado: ${a.fechaPub||'—'}</span>
+          ${a.fechaExp?`<span><i class="fa-solid fa-calendar-xmark"></i> Expira: ${a.fechaExp}</span>`:''}
+        </div>
+      </div>`).join('');
+  }
 
-    function toggleSidebar() { document.getElementById('sidebar').classList.toggle('collapsed'); }
-    function toggleMenu(item) {
-      const isOpen = item.classList.contains('open');
-      document.querySelectorAll('.nav-item.open').forEach(el => el.classList.remove('open'));
-      if (!isOpen) item.classList.add('open');
+  function updatePreview() {
+    const titulo  = document.getElementById('an-titulo').value  || 'Título del anuncio';
+    const mensaje = document.getElementById('an-mensaje').value || 'El mensaje aparecerá aquí...';
+    const tipo    = document.getElementById('an-tipo').value;
+    document.getElementById('modalPreview').className = `preview-box ${tipo}`;
+    document.getElementById('prev-titulo').innerHTML  = `<i class="fa-solid ${TIPO_ICONS[tipo]}"></i> ${titulo}`;
+    document.getElementById('prev-msg').textContent   = mensaje;
+  }
+
+  const today    = new Date();
+  const todayStr = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
+
+  function abrirModalAnuncio() {
+    editingId = null;
+    document.getElementById('modalAnuncioTitle').textContent = 'Nuevo Anuncio';
+    document.getElementById('an-titulo').value    = '';
+    document.getElementById('an-mensaje').value   = '';
+    document.getElementById('an-tipo').value      = 'informativo';
+    document.getElementById('an-estado').value    = 'activo';
+    document.getElementById('an-fecha-pub').value = todayStr;
+    document.getElementById('an-fecha-exp').value = '';
+    updatePreview(); abrirModal('modalAnuncio');
+  }
+
+  function editarAnuncio(id) {
+    const a = anuncios.find(x => x.id===id); if (!a) return;
+    editingId = id;
+    document.getElementById('modalAnuncioTitle').textContent = 'Editar Anuncio';
+    document.getElementById('an-titulo').value    = a.titulo;
+    document.getElementById('an-mensaje').value   = a.mensaje;
+    document.getElementById('an-tipo').value      = a.tipo;
+    document.getElementById('an-estado').value    = a.estado;
+    document.getElementById('an-fecha-pub').value = a.fechaPub||'';
+    document.getElementById('an-fecha-exp').value = a.fechaExp||'';
+    updatePreview(); abrirModal('modalAnuncio');
+  }
+
+  function guardarAnuncio() {
+    const titulo   = document.getElementById('an-titulo').value.trim();
+    const mensaje  = document.getElementById('an-mensaje').value.trim();
+    const fechaPub = document.getElementById('an-fecha-pub').value;
+    if (!titulo)   { showToast('El título es obligatorio.','error'); return; }
+    if (!mensaje)  { showToast('El mensaje es obligatorio.','error'); return; }
+    if (!fechaPub) { showToast('La fecha de publicación es obligatoria.','error'); return; }
+    const obj = {
+      titulo, mensaje, fechaPub,
+      tipo:     document.getElementById('an-tipo').value,
+      estado:   document.getElementById('an-estado').value,
+      fechaExp: document.getElementById('an-fecha-exp').value || null
+    };
+    if (editingId) {
+      const idx = anuncios.findIndex(a => a.id===editingId);
+      anuncios[idx] = { ...anuncios[idx], ...obj };
+      showToast('Anuncio actualizado correctamente.','success');
+    } else {
+      anuncios.push({ id: nextId++, ...obj });
+      showToast('Anuncio creado correctamente.','success');
     }
-    document.querySelectorAll('.submenu-link').forEach(link => {
-      link.addEventListener('click', function(e) { e.stopPropagation(); });
-    });
-    function switchTab(name, btn) {
-      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-      document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-      btn.classList.add('active');
-      document.getElementById('tab-' + name).classList.add('active');
-      if (name === 'preview') renderPreview();
-    }
-    function abrirModal(id) { document.getElementById(id).classList.add('open'); }
-    function cerrarModal(id) { document.getElementById(id).classList.remove('open'); }
-    document.querySelectorAll('.modal-overlay').forEach(o => {
-      o.addEventListener('click', function(e) { if (e.target === this) this.classList.remove('open'); });
-    });
+    cerrarModal('modalAnuncio'); renderAnuncios(); updateStats();
+  }
 
-    // Estado
-    let anuncios = [];
-    let editingId = null;
-    let nextId = 1;
+  function toggleEstado(id) {
+    const a = anuncios.find(x => x.id===id); if (!a) return;
+    a.estado = a.estado==='activo' ? 'inactivo' : 'activo';
+    showToast(`Anuncio ${a.estado==='activo'?'activado':'desactivado'}.`,'warning');
+    renderAnuncios(); updateStats();
+  }
 
-    const TIPO_LABELS = { informativo:'Informativo', advertencia:'Advertencia', urgente:'Urgente' };
-    const TIPO_ICONS  = { informativo:'fa-circle-info', advertencia:'fa-triangle-exclamation', urgente:'fa-circle-exclamation' };
+  function confirmarEliminar(id) {
+    const a = anuncios.find(x => x.id===id);
+    document.getElementById('confirm-text').textContent = `"${a.titulo}" será eliminado permanentemente.`;
+    document.getElementById('btn-confirm-action').onclick = () => {
+      anuncios = anuncios.filter(x => x.id!==id);
+      showToast('Anuncio eliminado.','warning');
+      cerrarModal('modalConfirm'); renderAnuncios(); updateStats();
+    };
+    abrirModal('modalConfirm');
+  }
 
-    function badgeTipo(tipo) {
-      const cls = { informativo:'badge-info', advertencia:'badge-warning', urgente:'badge-urgente' };
-      const icon = TIPO_ICONS[tipo] || 'fa-circle-info';
-      return `<span class="badge ${cls[tipo]||''}"><i class="fa-solid ${icon}"></i> ${TIPO_LABELS[tipo]||tipo}</span>`;
-    }
-    function badgeEstado(estado) {
-      return estado === 'activo'
-        ? `<span class="badge badge-active"><span class="badge-dot"></span>Activo</span>`
-        : `<span class="badge badge-inactive"><span class="badge-dot"></span>Inactivo</span>`;
-    }
+  function showToast(msg, type='success') {
+    const icons = { success:'fa-circle-check', error:'fa-circle-exclamation', warning:'fa-triangle-exclamation' };
+    const t = document.createElement('div');
+    t.className = `toast ${type}`;
+    t.innerHTML = `<i class="fa-solid ${icons[type]}"></i><span>${msg}</span>`;
+    document.getElementById('toastContainer').appendChild(t);
+    setTimeout(() => { t.style.opacity='0'; t.style.transition='opacity 0.3s'; setTimeout(() => t.remove(), 300); }, 3000);
+  }
 
-    function updateStats() {
-      document.getElementById('stat-total').textContent      = anuncios.length;
-      document.getElementById('stat-activos').textContent    = anuncios.filter(a => a.estado === 'activo').length;
-      document.getElementById('stat-advertencia').textContent= anuncios.filter(a => a.tipo === 'advertencia').length;
-      document.getElementById('stat-urgente').textContent    = anuncios.filter(a => a.tipo === 'urgente').length;
-    }
-
-    function renderAnuncios() {
-      const search = document.getElementById('searchAnuncio').value.toLowerCase();
-      const fTipo  = document.getElementById('filterTipo').value;
-      const fEst   = document.getElementById('filterEstado').value;
-      const filtered = anuncios.filter(a =>
-        (a.titulo.toLowerCase().includes(search) || a.mensaje.toLowerCase().includes(search))
-        && (!fTipo || a.tipo === fTipo)
-        && (!fEst  || a.estado === fEst)
-      );
-
-      document.getElementById('tbodyAnuncios').innerHTML = filtered.length === 0
-        ? `<tr><td colspan="6"><div class="empty-state"><i class="fa-solid fa-bullhorn"></i><p>No hay anuncios registrados</p></div></td></tr>`
-        : filtered.map(a => `<tr>
-            <td><strong>${a.titulo}</strong></td>
-            <td>${badgeTipo(a.tipo)}</td>
-            <td>${a.fechaPub || '—'}</td>
-            <td>${a.fechaExp || '—'}</td>
-            <td>${badgeEstado(a.estado)}</td>
-            <td><div class="action-btns">
-              <button class="btn-icon" onclick="editarAnuncio(${a.id})" title="Editar"><i class="fa-solid fa-pen"></i></button>
-              <button class="btn-icon" onclick="toggleEstado(${a.id})" title="${a.estado==='activo'?'Desactivar':'Activar'}" style="color:${a.estado==='activo'?'var(--warning)':'var(--success)'}">
-                <i class="fa-solid ${a.estado==='activo'?'fa-eye-slash':'fa-eye'}"></i>
-              </button>
-              <button class="btn-icon danger" onclick="confirmarEliminar(${a.id})" title="Eliminar"><i class="fa-solid fa-trash"></i></button>
-            </div></td>
-          </tr>`).join('');
-
-      document.getElementById('anuncios-count').textContent = `Mostrando ${filtered.length} anuncio${filtered.length!==1?'s':''}`;
-    }
-
-    function renderPreview() {
-      const activos = anuncios.filter(a => a.estado === 'activo');
-      const cont = document.getElementById('previewContainer');
-      if (!activos.length) {
-        cont.innerHTML = `<div class="empty-state"><i class="fa-solid fa-bullhorn"></i><p>No hay anuncios activos para mostrar</p></div>`;
-        return;
-      }
-      cont.innerHTML = activos.map(a => `
-        <div class="anuncio-card ${a.tipo}">
-          <div class="anuncio-titulo"><i class="fa-solid ${TIPO_ICONS[a.tipo]}"></i> ${a.titulo}</div>
-          <div class="anuncio-msg">${a.mensaje}</div>
-          <div class="anuncio-meta">
-            <span><i class="fa-solid fa-calendar"></i> Publicado: ${a.fechaPub || '—'}</span>
-            ${a.fechaExp ? `<span><i class="fa-solid fa-calendar-xmark"></i> Expira: ${a.fechaExp}</span>` : ''}
-          </div>
-        </div>`).join('');
-    }
-
-    function updatePreview() {
-      const titulo  = document.getElementById('an-titulo').value || 'Título del anuncio';
-      const mensaje = document.getElementById('an-mensaje').value || 'El mensaje aparecerá aquí...';
-      const tipo    = document.getElementById('an-tipo').value;
-      const box = document.getElementById('modalPreview');
-      box.className = `preview-box ${tipo}`;
-      document.getElementById('prev-titulo').innerHTML = `<i class="fa-solid ${TIPO_ICONS[tipo]}"></i> ${titulo}`;
-      document.getElementById('prev-msg').textContent = mensaje;
-    }
-
-    function abrirModalAnuncio() {
-      editingId = null;
-      document.getElementById('modalAnuncioTitle').textContent = 'Nuevo Anuncio';
-      document.getElementById('an-titulo').value   = '';
-      document.getElementById('an-mensaje').value  = '';
-      document.getElementById('an-tipo').value     = 'informativo';
-      document.getElementById('an-estado').value   = 'activo';
-      document.getElementById('an-fecha-pub').value = todayStr;
-      document.getElementById('an-fecha-exp').value = '';
-      updatePreview();
-      abrirModal('modalAnuncio');
-    }
-
-    function editarAnuncio(id) {
-      const a = anuncios.find(x => x.id === id); if (!a) return;
-      editingId = id;
-      document.getElementById('modalAnuncioTitle').textContent = 'Editar Anuncio';
-      document.getElementById('an-titulo').value    = a.titulo;
-      document.getElementById('an-mensaje').value   = a.mensaje;
-      document.getElementById('an-tipo').value      = a.tipo;
-      document.getElementById('an-estado').value    = a.estado;
-      document.getElementById('an-fecha-pub').value = a.fechaPub || '';
-      document.getElementById('an-fecha-exp').value = a.fechaExp || '';
-      updatePreview();
-      abrirModal('modalAnuncio');
-    }
-
-    function guardarAnuncio() {
-      const titulo   = document.getElementById('an-titulo').value.trim();
-      const mensaje  = document.getElementById('an-mensaje').value.trim();
-      const fechaPub = document.getElementById('an-fecha-pub').value;
-      if (!titulo)   { showToast('El título es obligatorio.', 'error'); return; }
-      if (!mensaje)  { showToast('El mensaje es obligatorio.', 'error'); return; }
-      if (!fechaPub) { showToast('La fecha de publicación es obligatoria.', 'error'); return; }
-
-      const obj = {
-        titulo, mensaje, fechaPub,
-        tipo:     document.getElementById('an-tipo').value,
-        estado:   document.getElementById('an-estado').value,
-        fechaExp: document.getElementById('an-fecha-exp').value || null
-      };
-
-      if (editingId) {
-        const idx = anuncios.findIndex(a => a.id === editingId);
-        anuncios[idx] = { ...anuncios[idx], ...obj };
-        showToast('Anuncio actualizado correctamente.', 'success');
-      } else {
-        anuncios.push({ id: nextId++, ...obj });
-        showToast('Anuncio creado correctamente.', 'success');
-      }
-      cerrarModal('modalAnuncio');
-      renderAnuncios();
-      updateStats();
-    }
-
-    function toggleEstado(id) {
-      const a = anuncios.find(x => x.id === id); if (!a) return;
-      a.estado = a.estado === 'activo' ? 'inactivo' : 'activo';
-      showToast(`Anuncio ${a.estado === 'activo' ? 'activado' : 'desactivado'}.`, 'warning');
-      renderAnuncios();
-      updateStats();
-    }
-
-    function confirmarEliminar(id) {
-      const a = anuncios.find(x => x.id === id);
-      document.getElementById('confirm-text').textContent = `"${a.titulo}" será eliminado permanentemente.`;
-      document.getElementById('btn-confirm-action').onclick = () => {
-        anuncios = anuncios.filter(x => x.id !== id);
-        showToast('Anuncio eliminado.', 'warning');
-        cerrarModal('modalConfirm');
-        renderAnuncios();
-        updateStats();
-      };
-      abrirModal('modalConfirm');
-    }
-
-    function showToast(msg, type = 'success') {
-      const icons = { success:'fa-circle-check', error:'fa-circle-exclamation', warning:'fa-triangle-exclamation' };
-      const t = document.createElement('div');
-      t.className = `toast ${type}`;
-      t.innerHTML = `<i class="fa-solid ${icons[type]}"></i><span>${msg}</span>`;
-      document.getElementById('toastContainer').appendChild(t);
-      setTimeout(() => { t.style.opacity='0'; t.style.transition='opacity 0.3s'; setTimeout(() => t.remove(), 300); }, 3000);
-    }
-
-    const today = new Date();
-    const todayStr = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
-
-    renderAnuncios();
-    updateStats();
-  </script>
+  renderAnuncios(); updateStats();
+</script>
 </body>
 </html>
