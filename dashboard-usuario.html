@@ -1,0 +1,963 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dashboard - Portal del Profesor | UPB</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --upb-purple:#6B1F7C;--upb-pink:#C0186A;--upb-pink-light:#D91E7A;
+      --sidebar-bg:#fff;--bg-page:#F0F0F5;
+      --text-dark:#1A1A2E;--text-medium:#666680;--text-light:#AAAABC;
+      --border:#E8E8F0;--font:'Nunito',sans-serif;
+      --success:#16A34A;--success-bg:#DCFCE7;
+      --warning:#D97706;--warning-bg:#FFFBEB;
+      --danger:#DC2626;--danger-bg:#FEF2F2;
+      --info:#0EA5E9;--info-bg:#F0F9FF;
+    }
+    body{font-family:var(--font);background:var(--bg-page);min-height:100vh;display:flex;flex-direction:column}
+
+    /* NAVBAR */
+    .navbar{background:var(--upb-purple);height:52px;display:flex;align-items:center;justify-content:space-between;padding:0 16px 0 0;box-shadow:0 2px 8px rgba(0,0,0,.25);flex-shrink:0;z-index:100}
+    .navbar-left{display:flex;align-items:center}
+    .btn-menu-toggle{background:none;border:none;color:#fff;font-size:18px;cursor:pointer;padding:0 16px;height:52px;display:flex;align-items:center;transition:background .2s}
+    .btn-menu-toggle:hover{background:rgba(255,255,255,.1)}
+    .navbar-logo{display:flex;align-items:center;gap:8px;padding:0 12px}
+    .navbar-logo img{height:32px;width:auto;object-fit:contain;border-radius:3px}
+    .navbar-right{display:flex;align-items:center;gap:10px}
+    .nav-user-info{text-align:right}
+    .nav-user-name{color:#fff;font-size:13px;font-weight:700;display:block}
+    .nav-user-lab{color:rgba(255,255,255,.7);font-size:11px;display:block}
+    .nav-avatar{width:34px;height:34px;border-radius:50%;overflow:hidden;border:2px solid rgba(255,255,255,.4);flex-shrink:0;cursor:pointer}
+    .nav-avatar img{width:100%;height:100%;object-fit:cover}
+    .btn-salir{background:rgba(255,255,255,.15);border:none;color:#fff;font-family:var(--font);font-size:11px;font-weight:700;padding:5px 10px;border-radius:5px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:1px;transition:background .2s}
+    .btn-salir:hover{background:rgba(255,255,255,.25)}
+    .btn-salir i{font-size:14px}
+
+    /* LAYOUT */
+    .layout{display:flex;flex:1;overflow:hidden}
+    .sidebar{width:210px;background:var(--sidebar-bg);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;transition:width .25s ease;overflow:hidden}
+    .sidebar.collapsed{width:0}
+    .sidebar-nav{padding:12px 0;flex:1;overflow-y:auto}
+    .nav-item{position:relative}
+    .nav-link{display:flex;align-items:center;justify-content:space-between;padding:10px 18px;color:var(--text-medium);font-size:13px;font-weight:600;cursor:pointer;transition:background .15s,color .15s;user-select:none;white-space:nowrap;text-decoration:none}
+    .nav-link:hover,.nav-link.active{color:var(--upb-pink);background:#FDF0F7}
+    .nav-link .nav-icon{margin-right:8px;font-size:14px;width:16px;text-align:center;flex-shrink:0}
+    .nav-link .nav-label{flex:1}
+    .nav-link .nav-arrow{font-size:11px;transition:transform .2s;color:var(--text-light)}
+    .nav-item.open>.nav-link .nav-arrow{transform:rotate(90deg)}
+    .nav-link.home{color:var(--upb-purple);font-weight:700}
+    .nav-link.home:hover,.nav-link.home.active{color:var(--upb-purple);background:#F5EEF8}
+    .submenu{display:none;background:#FAFAFA;border-left:3px solid var(--upb-pink);margin-left:18px}
+    .nav-item.open>.submenu{display:block}
+    .submenu-link{display:flex;align-items:center;gap:8px;padding:8px 16px;color:var(--text-medium);font-size:12px;font-weight:500;transition:color .15s,background .15s;white-space:nowrap;cursor:pointer;text-decoration:none}
+    .submenu-link:hover,.submenu-link.active{color:var(--upb-purple);background:#F5EEF8;font-weight:700}
+    .submenu-link i{width:14px;text-align:center;font-size:12px}
+    .sidebar-footer{padding:12px 16px;border-top:1px solid var(--border)}
+    .sidebar-role{display:flex;align-items:center;gap:10px;padding:10px 12px;background:#F9F5FF;border-radius:8px;border:1px solid #E9D5FF}
+    .sidebar-role-icon{width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,var(--upb-purple),var(--upb-pink));display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;flex-shrink:0}
+    .sidebar-role-name{font-size:12px;font-weight:700;color:var(--text-dark)}
+    .sidebar-role-label{font-size:10px;color:var(--text-light);font-weight:600}
+
+    /* MAIN */
+    .main-content{flex:1;overflow-y:auto;padding:0}
+    .page-header{background:var(--bg-page);padding:14px 24px 0;display:flex;align-items:baseline;gap:10px}
+    .page-title{font-size:18px;font-weight:800;color:var(--text-dark);text-transform:uppercase;letter-spacing:.03em}
+    .page-breadcrumb{font-size:12px;color:var(--text-light);font-weight:500;text-transform:uppercase;letter-spacing:.05em}
+    .page-body{padding:16px 24px 32px}
+
+    /* VISTAS */
+    .vista{display:none}
+    .vista.active{display:block}
+
+    /* WELCOME */
+    .welcome-card{background:linear-gradient(135deg,#6B1F7C,#C0186A);border-radius:12px;padding:20px 24px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 4px 16px rgba(107,31,124,.25)}
+    .welcome-card .welcome-text p{color:rgba(255,255,255,.8);font-size:13px;font-weight:600;margin-bottom:4px}
+    .welcome-card .welcome-text h2{color:#fff;font-size:20px;font-weight:800;margin:0}
+    .welcome-card .welcome-text span{color:rgba(255,255,255,.7);font-size:12px;margin-top:4px;display:block}
+    .welcome-card .welcome-icon{font-size:42px;color:rgba(255,255,255,.2)}
+
+    /* STATS */
+    .stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
+    .stat-card{background:#fff;border-radius:10px;border:1px solid var(--border);padding:14px 16px;display:flex;align-items:center;gap:14px;box-shadow:0 2px 6px rgba(0,0,0,.04);cursor:pointer;transition:transform .15s,box-shadow .15s}
+    .stat-card:hover{transform:translateY(-2px);box-shadow:0 4px 14px rgba(0,0,0,.08)}
+    .stat-icon{width:42px;height:42px;border-radius:10px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:18px}
+    .stat-icon.purple{background:#F3E8FF;color:var(--upb-purple)}
+    .stat-icon.green{background:var(--success-bg);color:var(--success)}
+    .stat-icon.orange{background:var(--warning-bg);color:var(--warning)}
+    .stat-icon.red{background:var(--danger-bg);color:var(--danger)}
+    .stat-icon.blue{background:var(--info-bg);color:var(--info)}
+    .stat-value{font-size:22px;font-weight:800;color:var(--text-dark);line-height:1}
+    .stat-label{font-size:11px;color:var(--text-light);font-weight:600;margin-top:2px}
+
+    /* SECTION CARD */
+    .section-card{background:#fff;border-radius:10px;border:1px solid var(--border);box-shadow:0 2px 8px rgba(0,0,0,.05);overflow:hidden;margin-bottom:20px}
+    .section-card-header{background:var(--upb-purple);color:#fff;padding:10px 18px;font-size:13px;font-weight:700;letter-spacing:.03em;display:flex;align-items:center;gap:8px}
+    .section-card-body{padding:18px;color:var(--text-medium);font-size:13px}
+
+    /* NOTIF */
+    .notif-list{display:flex;flex-direction:column;gap:8px}
+    .notif-item{display:flex;align-items:flex-start;gap:12px;padding:12px 14px;border-radius:8px;border:1px solid var(--border);background:#FAFAFA}
+    .notif-icon{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+    .notif-icon.purple{background:#F3E8FF;color:var(--upb-purple)}
+    .notif-icon.orange{background:var(--warning-bg);color:var(--warning)}
+    .notif-icon.green{background:var(--success-bg);color:var(--success)}
+    .notif-icon.red{background:var(--danger-bg);color:var(--danger)}
+    .notif-title{font-size:13px;font-weight:700;color:var(--text-dark)}
+    .notif-sub{font-size:11px;color:var(--text-light);margin-top:2px}
+
+    /* TABLE */
+    .toolbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;gap:12px;flex-wrap:wrap}
+    .toolbar-left{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+    .search-box{position:relative;display:flex;align-items:center}
+    .search-box i{position:absolute;left:11px;color:var(--text-light);font-size:13px;pointer-events:none}
+    .search-box input{height:36px;border:1.5px solid var(--border);border-radius:8px;padding:0 12px 0 34px;font-family:var(--font);font-size:13px;color:var(--text-dark);background:#fff;outline:none;width:200px;transition:border-color .2s}
+    .search-box input:focus{border-color:var(--upb-purple);box-shadow:0 0 0 3px rgba(107,31,124,.08)}
+    .filter-select{height:36px;border:1.5px solid var(--border);border-radius:8px;padding:0 10px;font-family:var(--font);font-size:13px;color:var(--text-dark);background:#fff;outline:none;cursor:pointer}
+    .btn-primary{height:36px;padding:0 16px;border:none;border-radius:8px;background:linear-gradient(135deg,var(--upb-purple),var(--upb-pink-light));color:#fff;font-family:var(--font);font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:7px;box-shadow:0 2px 10px rgba(192,24,106,.3);transition:opacity .2s,transform .15s}
+    .btn-primary:hover{opacity:.9;transform:translateY(-1px)}
+    .btn-secondary{height:36px;padding:0 14px;border:1.5px solid var(--border);border-radius:8px;background:#fff;color:var(--text-medium);font-family:var(--font);font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:7px;transition:border-color .2s,color .2s}
+    .btn-secondary:hover{border-color:var(--upb-purple);color:var(--upb-purple)}
+    .table-card{background:#fff;border-radius:10px;border:1px solid var(--border);box-shadow:0 2px 8px rgba(0,0,0,.05);overflow:hidden}
+    .table-wrap{overflow-x:auto}
+    table{width:100%;border-collapse:collapse}
+    thead{background:#FAFAFA;border-bottom:2px solid var(--border)}
+    th{padding:11px 14px;text-align:left;font-size:11px;font-weight:700;color:var(--text-light);text-transform:uppercase;letter-spacing:.07em;white-space:nowrap}
+    td{padding:11px 14px;font-size:13px;color:var(--text-dark);border-bottom:1px solid #F4F4F8}
+    tr:last-child td{border-bottom:none}
+    tr:hover td{background:#FDFAFF}
+    .table-footer{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-top:1px solid var(--border);font-size:12px;color:var(--text-light);font-weight:600}
+    .empty-state{text-align:center;padding:40px 24px;color:var(--text-light)}
+    .empty-state i{font-size:36px;margin-bottom:10px;opacity:.4;display:block}
+    .empty-state p{font-size:13px;font-weight:600}
+
+    /* BADGES */
+    .badge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:700}
+    .badge-active,.badge-aprobado{background:var(--success-bg);color:var(--success)}
+    .badge-pending,.badge-pendiente{background:var(--warning-bg);color:var(--warning)}
+    .badge-inactive,.badge-rechazado{background:var(--danger-bg);color:var(--danger)}
+    .badge-prestado{background:var(--info-bg);color:var(--info)}
+    .badge-finalizado{background:#F3F4F6;color:#6B7280}
+    .badge-dot{width:6px;height:6px;border-radius:50%;background:currentColor}
+    .chip{display:inline-block;padding:2px 8px;border-radius:5px;font-size:11px;font-weight:700;background:#F3E8FF;color:var(--upb-purple)}
+    .action-btns{display:flex;gap:6px}
+    .btn-icon{width:30px;height:30px;border-radius:7px;border:1px solid var(--border);background:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px;transition:all .15s;color:var(--text-medium)}
+    .btn-icon:hover{border-color:var(--upb-purple);color:var(--upb-purple);background:#F5EEF8}
+
+    /* FORM */
+    .form-card{background:#fff;border-radius:12px;border:1px solid var(--border);box-shadow:0 2px 8px rgba(0,0,0,.05);overflow:hidden;max-width:680px}
+    .form-card-header{background:linear-gradient(135deg,var(--upb-purple),var(--upb-pink-light));padding:16px 22px;display:flex;align-items:center;gap:12px}
+    .form-card-header i{font-size:18px;color:rgba(255,255,255,.8)}
+    .form-card-header h2{color:#fff;font-size:15px;font-weight:800;margin:0}
+    .form-card-header p{color:rgba(255,255,255,.7);font-size:11px;margin-top:2px}
+    .form-card-body{padding:22px}
+    .form-section-title{font-size:11px;font-weight:800;color:var(--upb-purple);text-transform:uppercase;letter-spacing:.07em;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+    .form-section-title::after{content:'';flex:1;height:1px;background:var(--border)}
+    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+    .form-row.full{grid-template-columns:1fr}
+    .form-group{display:flex;flex-direction:column;gap:5px}
+    .form-label{font-size:12px;font-weight:700;color:var(--text-dark)}
+    .form-label .req{color:var(--upb-pink)}
+    .input-wrap{position:relative;display:flex;align-items:center}
+    .input-icon{position:absolute;left:12px;color:var(--text-light);font-size:13px;pointer-events:none}
+    .form-control{height:38px;border:1.5px solid var(--border);border-radius:8px;padding:0 12px 0 36px;font-family:var(--font);font-size:13px;color:var(--text-dark);background:#F9F9FC;outline:none;width:100%;transition:border-color .2s,box-shadow .2s}
+    .form-control:focus{border-color:var(--upb-purple);background:#fff;box-shadow:0 0 0 3px rgba(107,31,124,.08)}
+    .form-control.no-icon{padding-left:12px}
+    textarea.form-control{height:80px;padding:10px 12px 10px 36px;resize:vertical}
+    .form-actions{display:flex;justify-content:flex-end;gap:10px;padding-top:8px;border-top:1px solid var(--border);margin-top:4px}
+
+    /* PERFIL */
+    .perfil-card{background:#fff;border-radius:12px;border:1px solid var(--border);box-shadow:0 2px 8px rgba(0,0,0,.05);overflow:hidden;max-width:620px}
+    .perfil-header{background:linear-gradient(135deg,#6B1F7C,#C0186A);padding:28px 24px;display:flex;align-items:center;gap:18px}
+    .perfil-avatar{width:72px;height:72px;border-radius:50%;border:3px solid rgba(255,255,255,.5);overflow:hidden;background:linear-gradient(135deg,#8B2FA0,#E040A0);display:flex;align-items:center;justify-content:center;color:#fff;font-size:26px;font-weight:800;flex-shrink:0;cursor:pointer;position:relative}
+    .perfil-avatar img{width:100%;height:100%;object-fit:cover;display:none}
+    .perfil-avatar-overlay{position:absolute;inset:0;background:rgba(0,0,0,.35);display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .2s;border-radius:50%}
+    .perfil-avatar:hover .perfil-avatar-overlay{opacity:1}
+    .perfil-info h2{color:#fff;font-size:18px;font-weight:800}
+    .perfil-info p{color:rgba(255,255,255,.7);font-size:12px;margin-top:3px}
+    .perfil-body{padding:22px}
+    .perfil-section{margin-bottom:20px}
+    .detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    .detail-item{display:flex;flex-direction:column;gap:3px}
+    .detail-label{font-size:10px;font-weight:800;color:var(--text-light);text-transform:uppercase;letter-spacing:.06em}
+    .detail-value{font-size:13px;font-weight:600;color:var(--text-dark)}
+    .btn-edit-field{background:none;border:none;cursor:pointer;color:var(--upb-purple);font-size:12px;font-weight:700;padding:0;display:flex;align-items:center;gap:4px;margin-top:6px;transition:color .15s}
+    .btn-edit-field:hover{color:var(--upb-pink)}
+
+    /* CALENDARIO */
+    .cal-wrap{background:#fff;border-radius:10px;border:1px solid var(--border);padding:20px;box-shadow:0 2px 8px rgba(0,0,0,.05)}
+    .cal-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+    .cal-nav-btn{width:32px;height:32px;border-radius:7px;border:1.5px solid var(--border);background:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--text-medium);transition:all .15s}
+    .cal-nav-btn:hover{border-color:var(--upb-purple);color:var(--upb-purple)}
+    .cal-month{font-size:15px;font-weight:800;color:var(--text-dark)}
+    .cal-legend{display:flex;gap:16px;margin-bottom:14px;font-size:11px;font-weight:700}
+    .legend-dot{width:10px;height:10px;border-radius:3px;flex-shrink:0}
+    .legend-dot.disponible{background:#BBFFD9;border:1.5px solid #16A34A}
+    .legend-dot.no-habil{background:#FECACA;border:1.5px solid #DC2626}
+    .cal-legend span{display:flex;align-items:center;gap:5px;color:var(--text-medium)}
+    .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+    .cal-header{text-align:center;font-size:10px;font-weight:800;color:var(--text-light);text-transform:uppercase;padding:6px 0}
+    .cal-day{text-align:center;padding:10px 4px;border-radius:7px;font-size:13px;font-weight:600;cursor:default}
+    .cal-day.disponible{background:#DCFCE7;color:#166534}
+    .cal-day.no-habil{background:#FEE2E2;color:#991B1B}
+    .cal-day.empty{background:transparent}
+    .cal-day.today{outline:2px solid var(--upb-purple);outline-offset:-2px}
+
+    /* MODAL */
+    .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1000;align-items:center;justify-content:center;padding:16px}
+    .modal-overlay.open{display:flex}
+    .modal{background:#fff;border-radius:16px;width:100%;max-width:480px;max-height:90vh;overflow-y:auto;box-shadow:0 24px 60px rgba(0,0,0,.25);animation:modalIn .2s ease}
+    @keyframes modalIn{from{opacity:0;transform:scale(.96) translateY(10px)}to{opacity:1;transform:scale(1) translateY(0)}}
+    .modal-header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--border)}
+    .modal-title{font-size:15px;font-weight:800;color:var(--text-dark);display:flex;align-items:center;gap:10px}
+    .modal-title-icon{width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,var(--upb-purple),var(--upb-pink-light));display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px}
+    .modal-close{width:28px;height:28px;border-radius:7px;border:1.5px solid var(--border);background:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-light);font-size:13px;transition:all .15s}
+    .modal-close:hover{border-color:var(--danger);color:var(--danger)}
+    .modal-body{padding:18px 20px}
+    .modal-footer{padding:12px 20px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:10px}
+
+    /* TOAST */
+    .toast-container{position:fixed;bottom:24px;right:24px;z-index:2000;display:flex;flex-direction:column;gap:8px}
+    .toast{background:#fff;border-radius:10px;padding:12px 16px;box-shadow:0 8px 24px rgba(0,0,0,.15);border-left:4px solid;display:flex;align-items:center;gap:10px;font-size:13px;font-weight:600;min-width:260px;animation:toastIn .25s ease}
+    @keyframes toastIn{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
+    .toast.success{border-color:var(--success);color:var(--success)}
+    .toast.error{border-color:var(--danger);color:var(--danger)}
+    .toast.warning{border-color:var(--warning);color:var(--warning)}
+    .toast i{font-size:16px}
+    .toast span{color:var(--text-dark)}
+
+    /* SOLICITUD DETALLE */
+    .detalle-row{display:flex;flex-direction:column;gap:3px;margin-bottom:12px}
+    .detalle-label{font-size:10px;font-weight:800;color:var(--text-light);text-transform:uppercase;letter-spacing:.06em}
+    .detalle-value{font-size:13px;font-weight:600;color:var(--text-dark)}
+    .timeline{display:flex;flex-direction:column;gap:0}
+    .timeline-item{display:flex;gap:12px;padding-bottom:14px;position:relative}
+    .timeline-item:last-child{padding-bottom:0}
+    .timeline-item:not(:last-child)::before{content:'';position:absolute;left:15px;top:30px;bottom:0;width:2px;background:var(--border)}
+    .timeline-dot{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;border:2px solid}
+    .timeline-dot.done{background:var(--success-bg);color:var(--success);border-color:var(--success)}
+    .timeline-dot.pending{background:var(--warning-bg);color:var(--warning);border-color:var(--warning)}
+    .timeline-dot.rejected{background:var(--danger-bg);color:var(--danger);border-color:var(--danger)}
+    .timeline-dot.inactive{background:#F3F4F6;color:#9CA3AF;border-color:#E5E7EB}
+    .timeline-text-title{font-size:13px;font-weight:700;color:var(--text-dark)}
+    .timeline-text-sub{font-size:11px;color:var(--text-light);margin-top:2px}
+  </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<header class="navbar">
+  <div class="navbar-left">
+    <button class="btn-menu-toggle" onclick="toggleSidebar()"><i class="fa-solid fa-bars"></i></button>
+    <div class="navbar-logo"><img src="assets/images/LOGOUPB.jpg" alt="UPB"/></div>
+  </div>
+  <div class="navbar-right">
+    <div class="nav-user-info">
+      <span class="nav-user-name" id="nav-nombre">...</span>
+      <span class="nav-user-lab" id="nav-lab"></span>
+    </div>
+    <div class="nav-avatar" onclick="mostrarVista('perfil')">
+      <img id="nav-avatar-img" src="" alt="Avatar"/>
+    </div>
+    <button class="btn-salir" id="btn-salir"><i class="fa-solid fa-right-from-bracket"></i> Salir</button>
+  </div>
+</header>
+
+<!-- LAYOUT -->
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <nav class="sidebar-nav">
+
+      <div class="nav-item">
+        <a class="nav-link home active" id="nav-inicio" onclick="mostrarVista('inicio')">
+          <i class="nav-icon fa-solid fa-house"></i><span class="nav-label">Inicio</span>
+        </a>
+      </div>
+
+      <div class="nav-item" onclick="toggleMenu(this)">
+        <div class="nav-link"><i class="nav-icon fa-solid fa-clipboard-list"></i><span class="nav-label">Mis Solicitudes</span><i class="nav-arrow fa-solid fa-chevron-right"></i></div>
+        <div class="submenu">
+          <a class="submenu-link" onclick="mostrarVista('mis-solicitudes')"><i class="fa-solid fa-list"></i> Ver Solicitudes</a>
+          <a class="submenu-link" onclick="mostrarVista('nueva-solicitud')"><i class="fa-solid fa-plus"></i> Nueva Solicitud</a>
+        </div>
+      </div>
+
+      <div class="nav-item" onclick="toggleMenu(this)">
+        <div class="nav-link"><i class="nav-icon fa-solid fa-box-open"></i><span class="nav-label">Mis Entregas</span><i class="nav-arrow fa-solid fa-chevron-right"></i></div>
+        <div class="submenu">
+          <a class="submenu-link" onclick="mostrarVista('mis-entregas')"><i class="fa-solid fa-list"></i> Ver Entregas</a>
+        </div>
+      </div>
+
+      <div class="nav-item">
+        <a class="nav-link" onclick="mostrarVista('calendario')">
+          <i class="nav-icon fa-solid fa-calendar"></i><span class="nav-label">Calendario</span>
+        </a>
+      </div>
+
+      <div class="nav-item">
+        <a class="nav-link" onclick="mostrarVista('informacion')">
+          <i class="nav-icon fa-solid fa-bullhorn"></i><span class="nav-label">Información</span>
+        </a>
+      </div>
+
+      <div class="nav-item">
+        <a class="nav-link" onclick="mostrarVista('perfil')">
+          <i class="nav-icon fa-solid fa-user-circle"></i><span class="nav-label">Mi Perfil</span>
+        </a>
+      </div>
+
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sidebar-role">
+        <div class="sidebar-role-icon"><i class="fa-solid fa-chalkboard-user"></i></div>
+        <div>
+          <div class="sidebar-role-name" id="sidebar-nombre">...</div>
+          <div class="sidebar-role-label">Profesor / Usuario</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <main class="main-content" id="mainContent">
+
+    <!-- ══ VISTA: INICIO ══ -->
+    <div class="vista active" id="vista-inicio">
+      <div class="page-header">
+        <span class="page-title">INICIO</span>
+        <span class="page-breadcrumb">PORTAL DEL PROFESOR</span>
+      </div>
+      <div class="page-body">
+        <div class="welcome-card">
+          <div class="welcome-text">
+            <p>¡Bienvenido de nuevo!</p>
+            <h2 id="bienvenida-nombre"></h2>
+            <span id="bienvenida-lab"></span>
+          </div>
+          <i class="fa-solid fa-chalkboard-user welcome-icon"></i>
+        </div>
+
+        <div class="stats-row">
+          <div class="stat-card" onclick="mostrarVista('mis-solicitudes')">
+            <div class="stat-icon purple"><i class="fa-solid fa-clipboard-list"></i></div>
+            <div><div class="stat-value" id="st-total">0</div><div class="stat-label">Mis Solicitudes</div></div>
+          </div>
+          <div class="stat-card" onclick="mostrarVista('mis-solicitudes')">
+            <div class="stat-icon orange"><i class="fa-solid fa-clock"></i></div>
+            <div><div class="stat-value" id="st-pendientes">0</div><div class="stat-label">Pendientes</div></div>
+          </div>
+          <div class="stat-card" onclick="mostrarVista('mis-solicitudes')">
+            <div class="stat-icon green"><i class="fa-solid fa-circle-check"></i></div>
+            <div><div class="stat-value" id="st-aprobadas">0</div><div class="stat-label">Aprobadas</div></div>
+          </div>
+          <div class="stat-card" onclick="mostrarVista('mis-entregas')">
+            <div class="stat-icon blue"><i class="fa-solid fa-box-open"></i></div>
+            <div><div class="stat-value" id="st-prestados">0</div><div class="stat-label">En Préstamo</div></div>
+          </div>
+        </div>
+
+        <div class="section-card">
+          <div class="section-card-header"><i class="fa-solid fa-bullhorn"></i> INFORMACIÓN IMPORTANTE</div>
+          <div class="section-card-body">
+            <div class="notif-list" id="notif-inicio"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ VISTA: MIS SOLICITUDES ══ -->
+    <div class="vista" id="vista-mis-solicitudes">
+      <div class="page-header">
+        <span class="page-title">MIS SOLICITUDES</span>
+        <span class="page-breadcrumb">SOLICITUDES › VER</span>
+      </div>
+      <div class="page-body">
+        <div class="toolbar">
+          <div class="toolbar-left">
+            <div class="search-box"><i class="fa-solid fa-magnifying-glass"></i><input type="text" placeholder="Buscar..." id="searchSol" oninput="renderSolicitudes()"/></div>
+            <select class="filter-select" id="filterSolEstado" onchange="renderSolicitudes()">
+              <option value="">Todos los estados</option>
+              <option value="Pendiente">Pendiente</option>
+              <option value="Aprobada">Aprobada</option>
+              <option value="Rechazada">Rechazada</option>
+              <option value="Finalizada">Finalizada</option>
+            </select>
+          </div>
+          <button class="btn-primary" onclick="mostrarVista('nueva-solicitud')"><i class="fa-solid fa-plus"></i> Nueva Solicitud</button>
+        </div>
+        <div class="table-card">
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Elemento</th><th>Laboratorio</th><th>Fecha Inicio</th><th>Fecha Fin</th><th>Estado</th><th>Acciones</th></tr></thead>
+              <tbody id="tbodySolicitudes"></tbody>
+            </table>
+          </div>
+          <div class="table-footer"><span id="sol-count">Mostrando 0 solicitudes</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ VISTA: NUEVA SOLICITUD ══ -->
+    <div class="vista" id="vista-nueva-solicitud">
+      <div class="page-header">
+        <span class="page-title">NUEVA SOLICITUD</span>
+        <span class="page-breadcrumb">SOLICITUDES › NUEVA</span>
+      </div>
+      <div class="page-body">
+        <div class="form-card">
+          <div class="form-card-header">
+            <i class="fa-solid fa-clipboard-list"></i>
+            <div><h2>Solicitud de Préstamo</h2><p>Completa los datos para solicitar un elemento</p></div>
+          </div>
+          <div class="form-card-body">
+            <div class="form-section-title"><i class="fa-solid fa-desktop"></i> Elemento</div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Laboratorio <span class="req">*</span></label>
+                <select class="form-control no-icon" id="sol-lab" onchange="cargarElementos()">
+                  <option value="">Selecciona laboratorio...</option>
+                  <option>Lab Automatización</option>
+                  <option>Lab de Física No 1</option>
+                  <option>Lab de Electrónica</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Elemento <span class="req">*</span></label>
+                <select class="form-control no-icon" id="sol-elemento">
+                  <option value="">Selecciona elemento...</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-section-title"><i class="fa-solid fa-calendar"></i> Periodo de Uso</div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Fecha de Inicio <span class="req">*</span></label>
+                <div class="input-wrap"><i class="input-icon fa-solid fa-calendar-day"></i><input class="form-control" type="date" id="sol-fecha-inicio"/></div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Fecha de Fin <span class="req">*</span></label>
+                <div class="input-wrap"><i class="input-icon fa-solid fa-calendar-check"></i><input class="form-control" type="date" id="sol-fecha-fin"/></div>
+              </div>
+            </div>
+            <div class="form-row full">
+              <div class="form-group">
+                <label class="form-label">Justificación / Propósito</label>
+                <div class="input-wrap"><i class="input-icon fa-solid fa-pen-to-square" style="top:12px"></i><textarea class="form-control" id="sol-justificacion" placeholder="Describe el uso que le darás al elemento..."></textarea></div>
+              </div>
+            </div>
+            <div class="form-actions">
+              <button class="btn-secondary" onclick="mostrarVista('mis-solicitudes')"><i class="fa-solid fa-arrow-left"></i> Cancelar</button>
+              <button class="btn-primary" onclick="enviarSolicitud()"><i class="fa-solid fa-paper-plane"></i> Enviar Solicitud</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ VISTA: MIS ENTREGAS ══ -->
+    <div class="vista" id="vista-mis-entregas">
+      <div class="page-header">
+        <span class="page-title">MIS ENTREGAS</span>
+        <span class="page-breadcrumb">ENTREGAS › MIS PRÉSTAMOS</span>
+      </div>
+      <div class="page-body">
+        <div class="toolbar">
+          <div class="toolbar-left">
+            <div class="search-box"><i class="fa-solid fa-magnifying-glass"></i><input type="text" placeholder="Buscar..." id="searchEntrega" oninput="renderEntregas()"/></div>
+            <select class="filter-select" id="filterEntregaEstado" onchange="renderEntregas()">
+              <option value="">Todos</option>
+              <option value="Prestado">En Préstamo</option>
+              <option value="Devuelto">Devuelto</option>
+              <option value="Vencido">Vencido</option>
+            </select>
+          </div>
+        </div>
+        <div class="table-card">
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Elemento</th><th>Laboratorio</th><th>Fecha Entrega</th><th>Fecha Devolución</th><th>Estado</th><th>Acciones</th></tr></thead>
+              <tbody id="tbodyEntregas"></tbody>
+            </table>
+          </div>
+          <div class="table-footer"><span id="entregas-count">Mostrando 0 entregas</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ VISTA: CALENDARIO ══ -->
+    <div class="vista" id="vista-calendario">
+      <div class="page-header">
+        <span class="page-title">CALENDARIO</span>
+        <span class="page-breadcrumb">CALENDARIO › DÍAS HÁBILES</span>
+      </div>
+      <div class="page-body">
+        <div class="stats-row" style="grid-template-columns:repeat(3,1fr);max-width:600px">
+          <div class="stat-card">
+            <div class="stat-icon purple"><i class="fa-solid fa-calendar"></i></div>
+            <div><div class="stat-value" id="cal-total">0</div><div class="stat-label">Total días</div></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon green"><i class="fa-solid fa-circle-check"></i></div>
+            <div><div class="stat-value" id="cal-disponibles">0</div><div class="stat-label">Días disponibles</div></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon red"><i class="fa-solid fa-ban"></i></div>
+            <div><div class="stat-value" id="cal-nohabiles">0</div><div class="stat-label">Días no hábiles</div></div>
+          </div>
+        </div>
+        <div class="cal-wrap">
+          <div class="cal-nav">
+            <button class="cal-nav-btn" onclick="cambiarMes(-1)"><i class="fa-solid fa-chevron-left"></i></button>
+            <span class="cal-month" id="cal-titulo"></span>
+            <button class="cal-nav-btn" onclick="cambiarMes(1)"><i class="fa-solid fa-chevron-right"></i></button>
+          </div>
+          <div class="cal-legend">
+            <span><div class="legend-dot disponible"></div> Disponible</span>
+            <span><div class="legend-dot no-habil"></div> No hábil</span>
+          </div>
+          <div class="cal-grid" id="calGrid"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ VISTA: INFORMACIÓN ══ -->
+    <div class="vista" id="vista-informacion">
+      <div class="page-header">
+        <span class="page-title">INFORMACIÓN</span>
+        <span class="page-breadcrumb">INFORMACIÓN IMPORTANTE</span>
+      </div>
+      <div class="page-body">
+        <div class="section-card">
+          <div class="section-card-header"><i class="fa-solid fa-bullhorn"></i> AVISOS Y NOTIFICACIONES</div>
+          <div class="section-card-body">
+            <div class="notif-list" id="notif-full"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ VISTA: MI PERFIL ══ -->
+    <div class="vista" id="vista-perfil">
+      <div class="page-header">
+        <span class="page-title">MI PERFIL</span>
+        <span class="page-breadcrumb">PERFIL › MIS DATOS</span>
+      </div>
+      <div class="page-body">
+        <div class="perfil-card">
+          <div class="perfil-header">
+            <div class="perfil-avatar" id="perfilAvatar" onclick="document.getElementById('inputFotoPerfil').click()">
+              <span id="perfilInitials"></span>
+              <img id="perfilImg" src="" alt=""/>
+              <div class="perfil-avatar-overlay"><i class="fa-solid fa-camera" style="color:#fff;font-size:18px"></i></div>
+            </div>
+            <div class="perfil-info">
+              <h2 id="perfil-nombre-display"></h2>
+              <p id="perfil-lab-display"></p>
+              <div style="margin-top:6px"><span class="badge badge-active"><span class="badge-dot"></span> Activo</span></div>
+            </div>
+          </div>
+          <input type="file" id="inputFotoPerfil" accept="image/*" style="display:none" onchange="cambiarFotoPerfil(event)"/>
+          <div class="perfil-body">
+            <div class="perfil-section">
+              <div class="form-section-title"><i class="fa-solid fa-user"></i> Datos Personales</div>
+              <div class="detail-grid">
+                <div class="detail-item"><div class="detail-label">Nombre completo</div><div class="detail-value" id="pd-nombre"></div></div>
+                <div class="detail-item"><div class="detail-label">Correo institucional</div><div class="detail-value" id="pd-correo"></div></div>
+                <div class="detail-item"><div class="detail-label">Laboratorio</div><div class="detail-value" id="pd-lab"></div></div>
+                <div class="detail-item"><div class="detail-label">Rol</div><div class="detail-value" id="pd-rol"></div></div>
+              </div>
+            </div>
+            <div class="perfil-section">
+              <div class="form-section-title"><i class="fa-solid fa-pen"></i> Editar Datos</div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">Nombre</label>
+                  <div class="input-wrap"><i class="input-icon fa-solid fa-user"></i><input class="form-control" type="text" id="edit-p-nombre"/></div>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Teléfono</label>
+                  <div class="input-wrap"><i class="input-icon fa-solid fa-phone"></i><input class="form-control" type="text" id="edit-p-telefono"/></div>
+                </div>
+              </div>
+              <div class="form-section-title" style="margin-top:4px"><i class="fa-solid fa-lock"></i> Cambiar Contraseña</div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">Nueva Contraseña</label>
+                  <div class="input-wrap"><i class="input-icon fa-solid fa-lock"></i><input class="form-control" type="password" id="edit-p-pass" placeholder="••••••••"/></div>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Confirmar</label>
+                  <div class="input-wrap"><i class="input-icon fa-solid fa-lock"></i><input class="form-control" type="password" id="edit-p-pass2" placeholder="••••••••"/></div>
+                </div>
+              </div>
+              <div class="form-actions">
+                <button class="btn-primary" onclick="guardarPerfil()"><i class="fa-solid fa-floppy-disk"></i> Guardar Cambios</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- MODAL: DETALLE SOLICITUD -->
+<div class="modal-overlay" id="modalDetalleSol">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title"><div class="modal-title-icon"><i class="fa-solid fa-clipboard-list"></i></div><span>Detalle de Solicitud</span></div>
+      <button class="modal-close" onclick="cerrarModal('modalDetalleSol')"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="modal-body" id="detalleSolBody"></div>
+    <div class="modal-footer"><button class="btn-secondary" onclick="cerrarModal('modalDetalleSol')">Cerrar</button></div>
+  </div>
+</div>
+
+<!-- MODAL: DETALLE ENTREGA -->
+<div class="modal-overlay" id="modalDetalleEntrega">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title"><div class="modal-title-icon"><i class="fa-solid fa-box-open"></i></div><span>Detalle de Entrega</span></div>
+      <button class="modal-close" onclick="cerrarModal('modalDetalleEntrega')"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="modal-body" id="detalleEntregaBody"></div>
+    <div class="modal-footer"><button class="btn-secondary" onclick="cerrarModal('modalDetalleEntrega')">Cerrar</button></div>
+  </div>
+</div>
+
+<div class="toast-container" id="toastContainer"></div>
+
+<script>
+  // ── SESIÓN ──
+  const sesion = sessionStorage.getItem('usuario');
+  if (!sesion) { window.location.href = 'index.html'; }
+  const usr = JSON.parse(sesion);
+  if (usr.rol === 'admin' || usr.rol === 'mod') { window.location.href = 'dashboard.html'; }
+
+  document.getElementById('nav-nombre').textContent        = usr.nombre.toUpperCase();
+  document.getElementById('nav-lab').textContent           = usr.lab || '';
+  document.getElementById('bienvenida-nombre').textContent = usr.nombre;
+  document.getElementById('bienvenida-lab').textContent    = usr.lab || '';
+  document.getElementById('sidebar-nombre').textContent    = usr.nombre;
+  document.getElementById('perfil-nombre-display').textContent = usr.nombre;
+  document.getElementById('perfil-lab-display').textContent    = usr.lab || '';
+  document.getElementById('pd-nombre').textContent  = usr.nombre;
+  document.getElementById('pd-correo').textContent  = usr.email || usr.correo || '—';
+  document.getElementById('pd-lab').textContent     = usr.lab || '—';
+  document.getElementById('pd-rol').textContent     = 'Profesor / Usuario';
+  document.getElementById('edit-p-nombre').value    = usr.nombre;
+  document.getElementById('perfilInitials').textContent = usr.nombre.split(' ').map(w=>w[0]).join('').substring(0,2).toUpperCase();
+
+  const avatarSrc = 'assets/images/AVATARPROFESOR.jpg';
+  document.getElementById('nav-avatar-img').src = avatarSrc;
+
+  document.getElementById('btn-salir').addEventListener('click', () => {
+    sessionStorage.removeItem('usuario'); window.location.href = 'index.html';
+  });
+
+  // ── DATOS DEMO ──
+  let misSolicitudes = [
+    { id:1, elemento:'Osciloscopio Digital', lab:'Lab Automatización', fechaInicio:'2026-03-10', fechaFin:'2026-03-12', estado:'Aprobada',  justificacion:'Práctica de electrónica' },
+    { id:2, elemento:'Multímetro Fluke',     lab:'Lab Automatización', fechaInicio:'2026-03-15', fechaFin:'2026-03-15', estado:'Pendiente', justificacion:'Medición de circuitos' },
+    { id:3, elemento:'Laptop HP',            lab:'Lab de Física No 1', fechaInicio:'2026-02-20', fechaFin:'2026-02-25', estado:'Finalizada',justificacion:'Laboratorio de redes' },
+    { id:4, elemento:'Proyector Epson',      lab:'Lab de Física No 1', fechaInicio:'2026-02-10', fechaFin:'2026-02-10', estado:'Rechazada', justificacion:'Presentación académica' },
+  ];
+
+  let misEntregas = [
+    { id:1, elemento:'Osciloscopio Digital', lab:'Lab Automatización', fechaEntrega:'2026-03-10', fechaDevolucion:'2026-03-12', estado:'Prestado',  nota:'Entregar en buen estado' },
+    { id:2, elemento:'Laptop HP',            lab:'Lab de Física No 1', fechaEntrega:'2026-02-20', fechaDevolucion:'2026-02-25', estado:'Devuelto',  nota:'Devuelto sin daños' },
+  ];
+
+  const misNotificaciones = [
+    { tipo:'orange', icon:'fa-triangle-exclamation', titulo:'Solicitud pendiente de respuesta', sub:'Tu solicitud del Multímetro Fluke está en revisión' },
+    { tipo:'green',  icon:'fa-circle-check',         titulo:'Solicitud aprobada', sub:'El Osciloscopio Digital fue aprobado para el 10-12 de marzo' },
+    { tipo:'purple', icon:'fa-calendar',             titulo:'Recuerda devolver el equipo', sub:'El Osciloscopio Digital debe devolverse el 12 de marzo' },
+  ];
+
+  let nextSolId = 5;
+
+  // ── NAVEGACIÓN ──
+  function mostrarVista(nombre) {
+    document.querySelectorAll('.vista').forEach(v => v.classList.remove('active'));
+    document.getElementById('vista-' + nombre).classList.add('active');
+    document.querySelectorAll('.nav-link, .submenu-link').forEach(l => l.classList.remove('active'));
+    if (nombre === 'inicio')           document.getElementById('nav-inicio').classList.add('active');
+    if (nombre === 'mis-solicitudes')  renderSolicitudes();
+    if (nombre === 'mis-entregas')     renderEntregas();
+    if (nombre === 'calendario')       renderCalendario();
+    if (nombre === 'informacion')      renderNotificaciones(false);
+    if (nombre === 'nueva-solicitud')  limpiarFormSolicitud();
+    updateStats();
+  }
+
+  function toggleSidebar()  { document.getElementById('sidebar').classList.toggle('collapsed'); }
+  function toggleMenu(item) {
+    const isOpen = item.classList.contains('open');
+    document.querySelectorAll('.nav-item.open').forEach(el => el.classList.remove('open'));
+    if (!isOpen) item.classList.add('open');
+  }
+
+  // ── STATS ──
+  function updateStats() {
+    document.getElementById('st-total').textContent     = misSolicitudes.length;
+    document.getElementById('st-pendientes').textContent= misSolicitudes.filter(s=>s.estado==='Pendiente').length;
+    document.getElementById('st-aprobadas').textContent = misSolicitudes.filter(s=>s.estado==='Aprobada').length;
+    document.getElementById('st-prestados').textContent = misEntregas.filter(e=>e.estado==='Prestado').length;
+  }
+
+  // ── BADGES ──
+  function badgeSol(e) {
+    const map = { Pendiente:'badge-pendiente', Aprobada:'badge-aprobado', Rechazada:'badge-rechazado', Finalizada:'badge-finalizado' };
+    return `<span class="badge ${map[e]||'badge-finalizado'}"><span class="badge-dot"></span>${e}</span>`;
+  }
+  function badgeEntrega(e) {
+    const map = { Prestado:'badge-prestado', Devuelto:'badge-active', Vencido:'badge-rechazado' };
+    return `<span class="badge ${map[e]||'badge-finalizado'}"><span class="badge-dot"></span>${e}</span>`;
+  }
+
+  // ── SOLICITUDES ──
+  function renderSolicitudes() {
+    const search = document.getElementById('searchSol').value.toLowerCase();
+    const est    = document.getElementById('filterSolEstado').value;
+    const filtered = misSolicitudes.filter(s =>
+      s.elemento.toLowerCase().includes(search) && (!est || s.estado === est)
+    );
+    const tbody = document.getElementById('tbodySolicitudes');
+    tbody.innerHTML = filtered.length === 0
+      ? `<tr><td colspan="6"><div class="empty-state"><i class="fa-solid fa-clipboard-list"></i><p>No tienes solicitudes</p></div></td></tr>`
+      : filtered.map(s => `<tr>
+          <td><strong>${s.elemento}</strong></td>
+          <td><span class="chip">${s.lab}</span></td>
+          <td>${s.fechaInicio}</td>
+          <td>${s.fechaFin}</td>
+          <td>${badgeSol(s.estado)}</td>
+          <td><div class="action-btns">
+            <button class="btn-icon" title="Ver detalle" onclick="verDetalleSol(${s.id})"><i class="fa-solid fa-eye"></i></button>
+            ${s.estado === 'Pendiente' ? `<button class="btn-icon" title="Cancelar" onclick="cancelarSolicitud(${s.id})" style="color:var(--danger)"><i class="fa-solid fa-xmark"></i></button>` : ''}
+          </div></td>
+        </tr>`).join('');
+    document.getElementById('sol-count').textContent = `Mostrando ${filtered.length} solicitud${filtered.length!==1?'es':''}`;
+  }
+
+  function verDetalleSol(id) {
+    const s = misSolicitudes.find(x=>x.id===id); if(!s) return;
+    const pasos = [
+      { label:'Solicitud enviada',   estado: 'done',     fecha: s.fechaInicio },
+      { label:'En revisión',         estado: s.estado==='Pendiente'?'pending':'done', fecha: '' },
+      { label:'Decisión del admin',  estado: s.estado==='Aprobada'?'done': s.estado==='Rechazada'?'rejected': s.estado==='Pendiente'?'inactive':'done', fecha: '' },
+      { label:'Préstamo activo',     estado: s.estado==='Aprobada'?'pending': s.estado==='Finalizada'?'done':'inactive', fecha: '' },
+      { label:'Finalizado',          estado: s.estado==='Finalizada'?'done':'inactive', fecha: s.fechaFin },
+    ];
+    const iconMap = { done:'fa-check', pending:'fa-clock', rejected:'fa-xmark', inactive:'fa-minus' };
+    document.getElementById('detalleSolBody').innerHTML = `
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:18px">
+        <div class="detalle-row"><div class="detalle-label">Elemento</div><div class="detalle-value">${s.elemento}</div></div>
+        <div class="detalle-row"><div class="detalle-label">Laboratorio</div><div class="detalle-value">${s.lab}</div></div>
+        <div class="detalle-row"><div class="detalle-label">Fecha Inicio</div><div class="detalle-value">${s.fechaInicio}</div></div>
+        <div class="detalle-row"><div class="detalle-label">Fecha Fin</div><div class="detalle-value">${s.fechaFin}</div></div>
+        <div class="detalle-row"><div class="detalle-label">Estado</div><div class="detalle-value">${badgeSol(s.estado)}</div></div>
+        <div class="detalle-row"><div class="detalle-label">Justificación</div><div class="detalle-value">${s.justificacion||'—'}</div></div>
+      </div>
+      <div style="font-size:11px;font-weight:800;color:var(--text-light);text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px">Seguimiento</div>
+      <div class="timeline">
+        ${pasos.map(p=>`
+          <div class="timeline-item">
+            <div class="timeline-dot ${p.estado}"><i class="fa-solid ${iconMap[p.estado]}"></i></div>
+            <div style="padding-top:6px">
+              <div class="timeline-text-title">${p.label}</div>
+              ${p.fecha?`<div class="timeline-text-sub">${p.fecha}</div>`:''}
+            </div>
+          </div>`).join('')}
+      </div>`;
+    abrirModal('modalDetalleSol');
+  }
+
+  function cancelarSolicitud(id) {
+    misSolicitudes = misSolicitudes.filter(s=>s.id!==id);
+    renderSolicitudes(); updateStats();
+    showToast('Solicitud cancelada.','warning');
+  }
+
+  // ── NUEVA SOLICITUD ──
+  const elementosPorLab = {
+    'Lab Automatización': ['Osciloscopio Digital','Multímetro Fluke','Fuente de Poder DC'],
+    'Lab de Física No 1': ['Laptop HP','Proyector Epson','Balanza Analítica'],
+    'Lab de Electrónica': ['Soldador de Estaño','Protoboard','Generador de Señales'],
+  };
+
+  function cargarElementos() {
+    const lab = document.getElementById('sol-lab').value;
+    const sel = document.getElementById('sol-elemento');
+    sel.innerHTML = '<option value="">Selecciona elemento...</option>';
+    if (lab && elementosPorLab[lab]) {
+      elementosPorLab[lab].forEach(e => { const o = document.createElement('option'); o.value=e; o.textContent=e; sel.appendChild(o); });
+    }
+  }
+
+  function limpiarFormSolicitud() {
+    ['sol-lab','sol-elemento'].forEach(id=>document.getElementById(id).value='');
+    ['sol-fecha-inicio','sol-fecha-fin','sol-justificacion'].forEach(id=>document.getElementById(id).value='');
+    document.getElementById('sol-elemento').innerHTML='<option value="">Selecciona elemento...</option>';
+  }
+
+  function enviarSolicitud() {
+    const lab      = document.getElementById('sol-lab').value;
+    const elemento = document.getElementById('sol-elemento').value;
+    const inicio   = document.getElementById('sol-fecha-inicio').value;
+    const fin      = document.getElementById('sol-fecha-fin').value;
+    if (!lab||!elemento||!inicio||!fin) { showToast('Completa todos los campos obligatorios.','error'); return; }
+    if (new Date(fin) < new Date(inicio)) { showToast('La fecha de fin no puede ser anterior a la de inicio.','error'); return; }
+    misSolicitudes.unshift({ id:nextSolId++, elemento, lab, fechaInicio:inicio, fechaFin:fin, estado:'Pendiente', justificacion:document.getElementById('sol-justificacion').value });
+    showToast('¡Solicitud enviada correctamente!','success');
+    mostrarVista('mis-solicitudes');
+    updateStats();
+  }
+
+  // ── ENTREGAS ──
+  function renderEntregas() {
+    const search = document.getElementById('searchEntrega').value.toLowerCase();
+    const est    = document.getElementById('filterEntregaEstado').value;
+    const filtered = misEntregas.filter(e => e.elemento.toLowerCase().includes(search) && (!est || e.estado === est));
+    const tbody = document.getElementById('tbodyEntregas');
+    tbody.innerHTML = filtered.length === 0
+      ? `<tr><td colspan="6"><div class="empty-state"><i class="fa-solid fa-box-open"></i><p>No tienes entregas registradas</p></div></td></tr>`
+      : filtered.map(e => `<tr>
+          <td><strong>${e.elemento}</strong></td>
+          <td><span class="chip">${e.lab}</span></td>
+          <td>${e.fechaEntrega}</td>
+          <td>${e.fechaDevolucion}</td>
+          <td>${badgeEntrega(e.estado)}</td>
+          <td><div class="action-btns">
+            <button class="btn-icon" onclick="verDetalleEntrega(${e.id})"><i class="fa-solid fa-eye"></i></button>
+          </div></td>
+        </tr>`).join('');
+    document.getElementById('entregas-count').textContent = `Mostrando ${filtered.length} entrega${filtered.length!==1?'s':''}`;
+  }
+
+  function verDetalleEntrega(id) {
+    const e = misEntregas.find(x=>x.id===id); if(!e) return;
+    document.getElementById('detalleEntregaBody').innerHTML = `
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div class="detalle-row"><div class="detalle-label">Elemento</div><div class="detalle-value">${e.elemento}</div></div>
+        <div class="detalle-row"><div class="detalle-label">Laboratorio</div><div class="detalle-value">${e.lab}</div></div>
+        <div class="detalle-row"><div class="detalle-label">Fecha Entrega</div><div class="detalle-value">${e.fechaEntrega}</div></div>
+        <div class="detalle-row"><div class="detalle-label">Fecha Devolución</div><div class="detalle-value">${e.fechaDevolucion}</div></div>
+        <div class="detalle-row"><div class="detalle-label">Estado</div><div class="detalle-value">${badgeEntrega(e.estado)}</div></div>
+        <div class="detalle-row"><div class="detalle-label">Nota</div><div class="detalle-value">${e.nota||'—'}</div></div>
+      </div>`;
+    abrirModal('modalDetalleEntrega');
+  }
+
+  // ── CALENDARIO ──
+  let calYear = new Date().getFullYear();
+  let calMonth = new Date().getMonth();
+  const noHabiles = [];
+  const meses = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+
+  function renderCalendario() {
+    const primerDia = new Date(calYear, calMonth, 1).getDay();
+    const diasMes   = new Date(calYear, calMonth+1, 0).getDate();
+    const hoy       = new Date();
+    document.getElementById('cal-titulo').textContent = `${meses[calMonth]} ${calYear}`;
+    document.getElementById('cal-total').textContent  = diasMes;
+    document.getElementById('cal-nohabiles').textContent   = noHabiles.filter(d=>d.startsWith(`${calYear}-${String(calMonth+1).padStart(2,'0')}`)).length;
+    document.getElementById('cal-disponibles').textContent = diasMes - parseInt(document.getElementById('cal-nohabiles').textContent);
+
+    const grid = document.getElementById('calGrid');
+    grid.innerHTML = '';
+    ['DOM','LUN','MAR','MIÉ','JUE','VIE','SÁB'].forEach(d => {
+      const h = document.createElement('div'); h.className='cal-header'; h.textContent=d; grid.appendChild(h);
+    });
+    for (let i=0;i<primerDia;i++) { const e=document.createElement('div'); e.className='cal-day empty'; grid.appendChild(e); }
+    for (let d=1;d<=diasMes;d++) {
+      const key = `${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+      const isNoHabil = noHabiles.includes(key);
+      const isHoy = hoy.getFullYear()===calYear && hoy.getMonth()===calMonth && hoy.getDate()===d;
+      const cell = document.createElement('div');
+      cell.className = `cal-day ${isNoHabil?'no-habil':'disponible'}${isHoy?' today':''}`;
+      cell.textContent = d;
+      grid.appendChild(cell);
+    }
+  }
+
+  function cambiarMes(dir) {
+    calMonth += dir;
+    if (calMonth < 0)  { calMonth=11; calYear--; }
+    if (calMonth > 11) { calMonth=0;  calYear++; }
+    renderCalendario();
+  }
+
+  // ── NOTIFICACIONES ──
+  function renderNotificaciones(soloInicio) {
+    const iconMap = { orange:'fa-triangle-exclamation', green:'fa-circle-check', purple:'fa-calendar', red:'fa-circle-xmark' };
+    const html = misNotificaciones.map(n=>`
+      <div class="notif-item">
+        <div class="notif-icon ${n.tipo}"><i class="fa-solid ${n.icon}"></i></div>
+        <div><div class="notif-title">${n.titulo}</div><div class="notif-sub">${n.sub}</div></div>
+      </div>`).join('');
+    if (soloInicio !== false) document.getElementById('notif-inicio').innerHTML = html;
+    else document.getElementById('notif-full').innerHTML = html;
+  }
+
+  // ── PERFIL ──
+  function guardarPerfil() {
+    const nombre = document.getElementById('edit-p-nombre').value.trim();
+    const pass   = document.getElementById('edit-p-pass').value;
+    const pass2  = document.getElementById('edit-p-pass2').value;
+    if (!nombre) { showToast('El nombre no puede estar vacío.','error'); return; }
+    if (pass && pass !== pass2) { showToast('Las contraseñas no coinciden.','error'); return; }
+    if (pass && pass.length < 6) { showToast('La contraseña debe tener mínimo 6 caracteres.','error'); return; }
+    usr.nombre = nombre;
+    sessionStorage.setItem('usuario', JSON.stringify(usr));
+    document.getElementById('nav-nombre').textContent = nombre.toUpperCase();
+    document.getElementById('bienvenida-nombre').textContent = nombre;
+    document.getElementById('perfil-nombre-display').textContent = nombre;
+    document.getElementById('pd-nombre').textContent = nombre;
+    document.getElementById('sidebar-nombre').textContent = nombre;
+    document.getElementById('perfilInitials').textContent = nombre.split(' ').map(w=>w[0]).join('').substring(0,2).toUpperCase();
+    document.getElementById('edit-p-pass').value  = '';
+    document.getElementById('edit-p-pass2').value = '';
+    showToast('Perfil actualizado correctamente.','success');
+  }
+
+  function cambiarFotoPerfil(e) {
+    const file = e.target.files[0]; if(!file) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      const img = document.getElementById('perfilImg');
+      img.src = ev.target.result;
+      img.style.display = 'block';
+      document.getElementById('perfilInitials').style.display = 'none';
+      document.getElementById('nav-avatar-img').src = ev.target.result;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  // ── MODALES ──
+  function abrirModal(id)  { document.getElementById(id).classList.add('open'); }
+  function cerrarModal(id) { document.getElementById(id).classList.remove('open'); }
+  document.querySelectorAll('.modal-overlay').forEach(o => {
+    o.addEventListener('click', function(e) { if(e.target===this) this.classList.remove('open'); });
+  });
+
+  // ── TOAST ──
+  function showToast(msg, type='success') {
+    const icons = { success:'fa-circle-check', error:'fa-circle-exclamation', warning:'fa-triangle-exclamation' };
+    const t = document.createElement('div');
+    t.className = `toast ${type}`;
+    t.innerHTML = `<i class="fa-solid ${icons[type]}"></i><span>${msg}</span>`;
+    document.getElementById('toastContainer').appendChild(t);
+    setTimeout(()=>{ t.style.opacity='0'; t.style.transition='opacity .3s'; setTimeout(()=>t.remove(),300); },3000);
+  }
+
+  // ── INIT ──
+  updateStats();
+  renderNotificaciones(true);
+  renderCalendario();
+</script>
+</body>
+</html>

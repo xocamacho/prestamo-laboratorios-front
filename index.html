@@ -376,7 +376,8 @@
 </div>
 
 <script>
-  // ── CAMBIO 1: lab agregado a cada usuario ──
+   sessionStorage.clear();
+
   const usuarios = [
     { email:'admin@upb.edu.co',    password:'1234', nombre:'Jairo Peña Fuentes', rol:'admin',    lab:'Super Admin',         modulo:null },
     { email:'profesor@upb.edu.co', password:'1234', nombre:'Oscar Santoya',      rol:'profesor', lab:'Lab. Electrónica',    modulo:null },
@@ -398,13 +399,15 @@
     document.getElementById('error-msg').style.display='none';
     if(!email||!password){ mostrarError('Por favor completa todos los campos.'); return; }
     const usuario = usuarios.find(u=>u.email===email && u.password===password);
-    if(usuario){
-      sessionStorage.setItem('usuario', JSON.stringify(usuario));
-      
-      window.location.href = 'seleccion-modulo.html';
-    } else {
-      mostrarError('Correo o contraseña incorrectos.');
-    }
+
+    if (usuario) {
+  sessionStorage.setItem('usuario', JSON.stringify(usuario));
+  if (usuario.rol === 'admin' || usuario.rol === 'mod') {
+    window.location.href = 'dashboard.html';
+  } else {
+    window.location.href = 'dashboard-usuario.html';
+  }
+}
   }
 
   function mostrarError(msg){
