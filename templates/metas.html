@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>🎯 Metas de Ahorro</h2>
+
+<form action="{{ url_for('crear_meta') }}" method="POST">
+    <input name="nombre" placeholder="Nombre de la meta" class="form-control mb-2">
+    <input name="objetivo" placeholder="Monto objetivo" class="form-control mb-2">
+    <button class="btn btn-success">Crear Meta</button>
+</form>
+
+<hr>
+
+{% for m in metas %}
+<div class="meta-card mb-3">
+
+    <h5>{{ m[2] }}</h5>
+    <p>${{ m[4]|money }} / ${{ m[3]|money }}</p>
+
+    <!-- 🔥 BARRA PROGRESO -->
+    <div class="progress mb-2" style="height: 20px;">
+        <div class="progress-bar bg-success"
+             style="width: {{ (m[4] / m[3] * 100) if m[3] > 0 else 0 }}%;">
+        </div>
+    </div>
+
+    <form action="{{ url_for('ahorrar') }}" method="POST">
+        <input type="hidden" name="meta_id" value="{{ m[0] }}">
+        <input name="monto" placeholder="Cantidad a ahorrar" class="form-control mb-2">
+        <button class="btn btn-primary">Ahorrar</button>
+    </form>
+
+</div>
+{% endfor %}
+
+{% endblock %}

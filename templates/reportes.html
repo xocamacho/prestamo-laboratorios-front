@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>Generar Reporte PDF</h2>
+
+<form action="{{ url_for('exportar_pdf') }}" method="POST">
+    <input type="date" name="inicio" class="form-control mb-2">
+    <input type="date" name="fin" class="form-control mb-2">
+    <button type="submit" class="btn btn-warning">Generar PDF</button>
+</form>
+
+{% endblock %}

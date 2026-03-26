@@ -1,0 +1,407 @@
+{
+  "_type": "Project",
+  "_id": "proj-001",
+  "name": "Finanzas Personales",
+  "ownedElements": [
+    {
+      "_type": "UMLModel",
+      "_id": "model-001",
+      "_parent": {"$ref": "proj-001"},
+      "name": "Finanzas Personales",
+      "ownedElements": [
+
+        {
+          "_type": "UMLPackage",
+          "_id": "pkg-clases",
+          "_parent": {"$ref": "model-001"},
+          "name": "1. Diagrama de Clases",
+          "ownedElements": [
+            {
+              "_type": "UMLClass",
+              "_id": "cls-usuario",
+              "_parent": {"$ref": "pkg-clases"},
+              "name": "Usuario",
+              "visibility": "public",
+              "attributes": [
+                {"_type": "UMLAttribute", "_id": "attr-u1", "_parent": {"$ref": "cls-usuario"}, "name": "id", "type": "Integer", "visibility": "private"},
+                {"_type": "UMLAttribute", "_id": "attr-u2", "_parent": {"$ref": "cls-usuario"}, "name": "nombre", "type": "String", "visibility": "private"},
+                {"_type": "UMLAttribute", "_id": "attr-u3", "_parent": {"$ref": "cls-usuario"}, "name": "email", "type": "String", "visibility": "private"},
+                {"_type": "UMLAttribute", "_id": "attr-u4", "_parent": {"$ref": "cls-usuario"}, "name": "password_hash", "type": "String", "visibility": "private"},
+                {"_type": "UMLAttribute", "_id": "attr-u5", "_parent": {"$ref": "cls-usuario"}, "name": "fecha_registro", "type": "DateTime", "visibility": "private"}
+              ],
+              "operations": [
+                {"_type": "UMLOperation", "_id": "op-u1", "_parent": {"$ref": "cls-usuario"}, "name": "login", "visibility": "public"},
+                {"_type": "UMLOperation", "_id": "op-u2", "_parent": {"$ref": "cls-usuario"}, "name": "logout", "visibility": "public"},
+                {"_type": "UMLOperation", "_id": "op-u3", "_parent": {"$ref": "cls-usuario"}, "name": "registrar", "visibility": "public"}
+              ]
+            },
+            {
+              "_type": "UMLClass",
+              "_id": "cls-ingreso",
+              "_parent": {"$ref": "pkg-clases"},
+              "name": "Ingreso",
+              "visibility": "public",
+              "attributes": [
+                {"_type": "UMLAttribute", "_id": "attr-i1", "_parent": {"$ref": "cls-ingreso"}, "name": "id", "type": "Integer", "visibility": "private"},
+                {"_type": "UMLAttribute", "_id": "attr-i2", "_parent": {"$ref": "cls-ingreso"}, "name": "monto", "type": "Float", "visibility": "private"},
+                {"_type": "UMLAttribute", "_id": "attr-i3", "_parent": {"$ref": "cls-ingreso"}, "name": "descripcion", "type": "String", "visibility": "private"},
+                {"_type": "UMLAttribute", "_id": "attr-i4", "_parent": {"$ref": "cls-ingreso"}, "name": "fuente", "type": "String", "visibility": "private"},
+                {"_type": "UMLAttribute", "_id": "attr-i5", "_parent": {"$ref": "cls-ingreso"}, "name": "fecha", "type": "Date", "visibility": "private"},
+                {"_type": "UMLAttribute", "_id": "attr-i6", "_parent": {"$ref": "cls-ingreso"}, "name": "usuario_id", "type": "Integer", "visibility": "private"}
+              ],
+              "operations": [
+                {"_type": "UMLOperation", "_id": "op-i1", "_parent": {"$ref": "cls-ingreso"}, "name": "registrar", "visibility": "public"},
+                {"_type": "UMLOperation", "_id": "op-i2", "_parent": {"$ref": "cls-ingreso"}, "name": "editar", "visibility": "public"},
+                {"_type": "UMLOperation", "_id": "op-i3", "_parent": {"$ref": "cls-ingreso"}, "name": "eliminar", "visibility": "public"}
+              ]
+            },
+            {
+              "_type": "UMLClass",
+              "_id": "cls-gasto",
+              "_parent": {"$ref": "pkg-clases"},
+              "name": "Gasto",
+              "visibility": "public",
+              "attributes": [
+                {"_type": "UMLAttribute", "_id": "attr-g1", "_parent": {"$ref": "cls-gasto"}, "name": "id", "type": "Integer", "visibility": "private"},
+                {"_type": "UMLAttribute", "_id": "attr-g2", "_parent": {"$ref": "cls-gasto"}, "name": "monto", "type": "Float", "visibility": "private"},
+                {"_type": "UMLAttribute", "_id": "attr-g3", "_parent": {"$ref": "cls-gasto"}, "name": "descripcion", "type": "String", "visibility": "private"},
+                {"_type": "UMLAttribute", "_id": "attr-g4", "_parent": {"$ref": "cls-gasto"}, "name": "fecha", "type": "Date", "visibility": "private"},
+                {"_type": "UMLAttribute", "_id": "attr-g5", "_parent": {"$ref": "cls-gasto"}, "name": "categoria_id", "type": "Integer", "visibility": "private"},
+                {"_type": "UMLAttribute", "_id": "attr-g6", "_parent": {"$ref": "cls-gasto"}, "name": "usuario_id", "type": "Integer", "visibility": "private"}
+              ],
+              "operations": [
+                {"_type": "UMLOperation", "_id": "op-g1", "_parent": {"$ref": "cls-gasto"}, "name": "registrar", "visibility": "public"},
+                {"_type": "UMLOperation", "_id": "op-g2", "_parent": {"$ref": "cls-gasto"}, "name": "editar", "visibility": "public"},
+                {"_type": "UMLOperation", "_id": "op-g3", "_parent": {"$ref": "cls-gasto"}, "name": "eliminar", "visibility": "public"}
+              ]
+            },
+            {
+              "_type": "UMLClass",
+              "_id": "cls-categoria",
+              "_parent": {"$ref": "pkg-clases"},
+              "name": "Categoria",
+              "visibility": "public",
+              "attributes": [
+                {"_type": "UMLAttribute", "_id": "attr-c1", "_parent": {"$ref": "cls-categoria"}, "name": "id", "type": "Integer", "visibility": "private"},
+                {"_type": "UMLAttribute", "_id": "attr-c2", "_parent": {"$ref": "cls-categoria"}, "name": "nombre", "type": "String", "visibility": "private"},
+                {"_type": "UMLAttribute", "_id": "attr-c3", "_parent": {"$ref": "cls-categoria"}, "name": "color", "type": "String", "visibility": "private"},
+                {"_type": "UMLAttribute", "_id": "attr-c4", "_parent": {"$ref": "cls-categoria"}, "name": "icono", "type": "String", "visibility": "private"},
+                {"_type": "UMLAttribute", "_id": "attr-c5", "_parent": {"$ref": "cls-categoria"}, "name": "presupuesto_mensual", "type": "Float", "visibility": "private"},
+                {"_type": "UMLAttribute", "_id": "attr-c6", "_parent": {"$ref": "cls-categoria"}, "name": "usuario_id", "type": "Integer", "visibility": "private"}
+              ],
+              "operations": [
+                {"_type": "UMLOperation", "_id": "op-c1", "_parent": {"$ref": "cls-categoria"}, "name": "crear", "visibility": "public"},
+                {"_type": "UMLOperation", "_id": "op-c2", "_parent": {"$ref": "cls-categoria"}, "name": "editar", "visibility": "public"},
+                {"_type": "UMLOperation", "_id": "op-c3", "_parent": {"$ref": "cls-categoria"}, "name": "eliminar", "visibility": "public"}
+              ]
+            },
+            {
+              "_type": "UMLClass",
+              "_id": "cls-ahorro",
+              "_parent": {"$ref": "pkg-clases"},
+              "name": "Ahorro",
+              "visibility": "public",
+              "attributes": [
+                {"_type": "UMLAttribute", "_id": "attr-a1", "_parent": {"$ref": "cls-ahorro"}, "name": "id", "type": "Integer", "visibility": "private"},
+                {"_type": "UMLAttribute", "_id": "attr-a2", "_parent": {"$ref": "cls-ahorro"}, "name": "monto", "type": "Float", "visibility": "private"},
+                {"_type": "UMLAttribute", "_id": "attr-a3", "_parent": {"$ref": "cls-ahorro"}, "name": "descripcion", "type": "String", "visibility": "private"},
+                {"_type": "UMLAttribute", "_id": "attr-a4", "_parent": {"$ref": "cls-ahorro"}, "name": "objetivo", "type": "String", "visibility": "private"},
+                {"_type": "UMLAttribute", "_id": "attr-a5", "_parent": {"$ref": "cls-ahorro"}, "name": "fecha", "type": "Date", "visibility": "private"},
+                {"_type": "UMLAttribute", "_id": "attr-a6", "_parent": {"$ref": "cls-ahorro"}, "name": "usuario_id", "type": "Integer", "visibility": "private"}
+              ],
+              "operations": [
+                {"_type": "UMLOperation", "_id": "op-a1", "_parent": {"$ref": "cls-ahorro"}, "name": "registrar", "visibility": "public"},
+                {"_type": "UMLOperation", "_id": "op-a2", "_parent": {"$ref": "cls-ahorro"}, "name": "editar", "visibility": "public"},
+                {"_type": "UMLOperation", "_id": "op-a3", "_parent": {"$ref": "cls-ahorro"}, "name": "eliminar", "visibility": "public"}
+              ]
+            },
+            {
+              "_type": "UMLAssociation",
+              "_id": "assoc-u-i",
+              "_parent": {"$ref": "pkg-clases"},
+              "name": "registra",
+              "end1": {"_type": "UMLAssociationEnd", "_id": "ae-ui1", "reference": {"$ref": "cls-usuario"}, "multiplicity": "1", "navigable": false},
+              "end2": {"_type": "UMLAssociationEnd", "_id": "ae-ui2", "reference": {"$ref": "cls-ingreso"}, "multiplicity": "0..*", "navigable": true}
+            },
+            {
+              "_type": "UMLAssociation",
+              "_id": "assoc-u-g",
+              "_parent": {"$ref": "pkg-clases"},
+              "name": "registra",
+              "end1": {"_type": "UMLAssociationEnd", "_id": "ae-ug1", "reference": {"$ref": "cls-usuario"}, "multiplicity": "1", "navigable": false},
+              "end2": {"_type": "UMLAssociationEnd", "_id": "ae-ug2", "reference": {"$ref": "cls-gasto"}, "multiplicity": "0..*", "navigable": true}
+            },
+            {
+              "_type": "UMLAssociation",
+              "_id": "assoc-u-c",
+              "_parent": {"$ref": "pkg-clases"},
+              "name": "define",
+              "end1": {"_type": "UMLAssociationEnd", "_id": "ae-uc1", "reference": {"$ref": "cls-usuario"}, "multiplicity": "1", "navigable": false},
+              "end2": {"_type": "UMLAssociationEnd", "_id": "ae-uc2", "reference": {"$ref": "cls-categoria"}, "multiplicity": "0..*", "navigable": true}
+            },
+            {
+              "_type": "UMLAssociation",
+              "_id": "assoc-u-a",
+              "_parent": {"$ref": "pkg-clases"},
+              "name": "registra",
+              "end1": {"_type": "UMLAssociationEnd", "_id": "ae-ua1", "reference": {"$ref": "cls-usuario"}, "multiplicity": "1", "navigable": false},
+              "end2": {"_type": "UMLAssociationEnd", "_id": "ae-ua2", "reference": {"$ref": "cls-ahorro"}, "multiplicity": "0..*", "navigable": true}
+            },
+            {
+              "_type": "UMLAssociation",
+              "_id": "assoc-c-g",
+              "_parent": {"$ref": "pkg-clases"},
+              "name": "clasifica",
+              "end1": {"_type": "UMLAssociationEnd", "_id": "ae-cg1", "reference": {"$ref": "cls-categoria"}, "multiplicity": "1", "navigable": false},
+              "end2": {"_type": "UMLAssociationEnd", "_id": "ae-cg2", "reference": {"$ref": "cls-gasto"}, "multiplicity": "0..*", "navigable": true}
+            },
+            {
+              "_type": "UMLClassDiagram",
+              "_id": "diag-clases",
+              "_parent": {"$ref": "pkg-clases"},
+              "name": "Diagrama de Clases - Finanzas Personales",
+              "ownedViews": [
+                {"_type": "UMLClassView", "_id": "vcls-u", "_parent": {"$ref": "diag-clases"}, "model": {"$ref": "cls-usuario"},   "left": 280, "top": 40,  "width": 200, "height": 140},
+                {"_type": "UMLClassView", "_id": "vcls-i", "_parent": {"$ref": "diag-clases"}, "model": {"$ref": "cls-ingreso"},   "left": 30,  "top": 290, "width": 200, "height": 150},
+                {"_type": "UMLClassView", "_id": "vcls-g", "_parent": {"$ref": "diag-clases"}, "model": {"$ref": "cls-gasto"},     "left": 260, "top": 290, "width": 200, "height": 165},
+                {"_type": "UMLClassView", "_id": "vcls-c", "_parent": {"$ref": "diag-clases"}, "model": {"$ref": "cls-categoria"}, "left": 490, "top": 290, "width": 200, "height": 150},
+                {"_type": "UMLClassView", "_id": "vcls-a", "_parent": {"$ref": "diag-clases"}, "model": {"$ref": "cls-ahorro"},    "left": 30,  "top": 510, "width": 200, "height": 150}
+              ]
+            }
+          ]
+        },
+
+        {
+          "_type": "UMLPackage",
+          "_id": "pkg-casos",
+          "_parent": {"$ref": "model-001"},
+          "name": "2. Diagrama de Casos de Uso",
+          "ownedElements": [
+            {"_type": "UMLActor",   "_id": "actor-u",    "_parent": {"$ref": "pkg-casos"}, "name": "Usuario"},
+            {"_type": "UMLUseCase", "_id": "uc-reg",     "_parent": {"$ref": "pkg-casos"}, "name": "Registrarse"},
+            {"_type": "UMLUseCase", "_id": "uc-login",   "_parent": {"$ref": "pkg-casos"}, "name": "Iniciar sesion"},
+            {"_type": "UMLUseCase", "_id": "uc-ing",     "_parent": {"$ref": "pkg-casos"}, "name": "Registrar ingresos"},
+            {"_type": "UMLUseCase", "_id": "uc-gas",     "_parent": {"$ref": "pkg-casos"}, "name": "Registrar gastos"},
+            {"_type": "UMLUseCase", "_id": "uc-aho",     "_parent": {"$ref": "pkg-casos"}, "name": "Registrar ahorros"},
+            {"_type": "UMLUseCase", "_id": "uc-dash",    "_parent": {"$ref": "pkg-casos"}, "name": "Ver dashboard"},
+            {"_type": "UMLUseCase", "_id": "uc-rep",     "_parent": {"$ref": "pkg-casos"}, "name": "Ver reportes"},
+            {
+              "_type": "UMLAssociation", "_id": "ca-1", "_parent": {"$ref": "pkg-casos"},
+              "end1": {"_type": "UMLAssociationEnd", "_id": "ca-1a", "reference": {"$ref": "actor-u"}},
+              "end2": {"_type": "UMLAssociationEnd", "_id": "ca-1b", "reference": {"$ref": "uc-reg"}}
+            },
+            {
+              "_type": "UMLAssociation", "_id": "ca-2", "_parent": {"$ref": "pkg-casos"},
+              "end1": {"_type": "UMLAssociationEnd", "_id": "ca-2a", "reference": {"$ref": "actor-u"}},
+              "end2": {"_type": "UMLAssociationEnd", "_id": "ca-2b", "reference": {"$ref": "uc-login"}}
+            },
+            {
+              "_type": "UMLAssociation", "_id": "ca-3", "_parent": {"$ref": "pkg-casos"},
+              "end1": {"_type": "UMLAssociationEnd", "_id": "ca-3a", "reference": {"$ref": "actor-u"}},
+              "end2": {"_type": "UMLAssociationEnd", "_id": "ca-3b", "reference": {"$ref": "uc-ing"}}
+            },
+            {
+              "_type": "UMLAssociation", "_id": "ca-4", "_parent": {"$ref": "pkg-casos"},
+              "end1": {"_type": "UMLAssociationEnd", "_id": "ca-4a", "reference": {"$ref": "actor-u"}},
+              "end2": {"_type": "UMLAssociationEnd", "_id": "ca-4b", "reference": {"$ref": "uc-gas"}}
+            },
+            {
+              "_type": "UMLAssociation", "_id": "ca-5", "_parent": {"$ref": "pkg-casos"},
+              "end1": {"_type": "UMLAssociationEnd", "_id": "ca-5a", "reference": {"$ref": "actor-u"}},
+              "end2": {"_type": "UMLAssociationEnd", "_id": "ca-5b", "reference": {"$ref": "uc-aho"}}
+            },
+            {
+              "_type": "UMLAssociation", "_id": "ca-6", "_parent": {"$ref": "pkg-casos"},
+              "end1": {"_type": "UMLAssociationEnd", "_id": "ca-6a", "reference": {"$ref": "actor-u"}},
+              "end2": {"_type": "UMLAssociationEnd", "_id": "ca-6b", "reference": {"$ref": "uc-dash"}}
+            },
+            {
+              "_type": "UMLAssociation", "_id": "ca-7", "_parent": {"$ref": "pkg-casos"},
+              "end1": {"_type": "UMLAssociationEnd", "_id": "ca-7a", "reference": {"$ref": "actor-u"}},
+              "end2": {"_type": "UMLAssociationEnd", "_id": "ca-7b", "reference": {"$ref": "uc-rep"}}
+            },
+            {
+              "_type": "UMLUseCaseDiagram",
+              "_id": "diag-casos",
+              "_parent": {"$ref": "pkg-casos"},
+              "name": "Casos de Uso - Finanzas Personales",
+              "ownedViews": [
+                {"_type": "UMLActorView",   "_id": "vact-u",  "_parent": {"$ref": "diag-casos"}, "model": {"$ref": "actor-u"},  "left": 40,  "top": 210, "width": 80,  "height": 100},
+                {"_type": "UMLUseCaseView", "_id": "vuc-reg", "_parent": {"$ref": "diag-casos"}, "model": {"$ref": "uc-reg"},   "left": 220, "top": 60,  "width": 170, "height": 50},
+                {"_type": "UMLUseCaseView", "_id": "vuc-log", "_parent": {"$ref": "diag-casos"}, "model": {"$ref": "uc-login"}, "left": 220, "top": 130, "width": 170, "height": 50},
+                {"_type": "UMLUseCaseView", "_id": "vuc-ing", "_parent": {"$ref": "diag-casos"}, "model": {"$ref": "uc-ing"},   "left": 220, "top": 200, "width": 170, "height": 50},
+                {"_type": "UMLUseCaseView", "_id": "vuc-gas", "_parent": {"$ref": "diag-casos"}, "model": {"$ref": "uc-gas"},   "left": 220, "top": 270, "width": 170, "height": 50},
+                {"_type": "UMLUseCaseView", "_id": "vuc-aho", "_parent": {"$ref": "diag-casos"}, "model": {"$ref": "uc-aho"},   "left": 220, "top": 340, "width": 170, "height": 50},
+                {"_type": "UMLUseCaseView", "_id": "vuc-das", "_parent": {"$ref": "diag-casos"}, "model": {"$ref": "uc-dash"},  "left": 220, "top": 410, "width": 170, "height": 50},
+                {"_type": "UMLUseCaseView", "_id": "vuc-rep", "_parent": {"$ref": "diag-casos"}, "model": {"$ref": "uc-rep"},   "left": 220, "top": 480, "width": 170, "height": 50}
+              ]
+            }
+          ]
+        },
+
+        {
+          "_type": "UMLPackage",
+          "_id": "pkg-seq",
+          "_parent": {"$ref": "model-001"},
+          "name": "3. Diagrama de Secuencia",
+          "ownedElements": [
+            {
+              "_type": "UMLCollaboration",
+              "_id": "collab-seq",
+              "_parent": {"$ref": "pkg-seq"},
+              "name": "Registrar Gasto",
+              "ownedElements": [
+                {"_type": "UMLLifeline", "_id": "ll-u",  "_parent": {"$ref": "collab-seq"}, "name": "usuario : Usuario"},
+                {"_type": "UMLLifeline", "_id": "ll-s",  "_parent": {"$ref": "collab-seq"}, "name": "sistema : Flask"},
+                {"_type": "UMLLifeline", "_id": "ll-bd", "_parent": {"$ref": "collab-seq"}, "name": "bd : BaseDatos"},
+                {
+                  "_type": "UMLMessage", "_id": "msg-1", "_parent": {"$ref": "collab-seq"},
+                  "name": "1. Abre formulario de gasto",
+                  "source": {"$ref": "ll-u"}, "target": {"$ref": "ll-s"},
+                  "messageSort": "synchCall"
+                },
+                {
+                  "_type": "UMLMessage", "_id": "msg-2", "_parent": {"$ref": "collab-seq"},
+                  "name": "2. Muestra formulario",
+                  "source": {"$ref": "ll-s"}, "target": {"$ref": "ll-u"},
+                  "messageSort": "reply"
+                },
+                {
+                  "_type": "UMLMessage", "_id": "msg-3", "_parent": {"$ref": "collab-seq"},
+                  "name": "3. Ingresa datos del gasto",
+                  "source": {"$ref": "ll-u"}, "target": {"$ref": "ll-s"},
+                  "messageSort": "synchCall"
+                },
+                {
+                  "_type": "UMLMessage", "_id": "msg-4", "_parent": {"$ref": "collab-seq"},
+                  "name": "4. Validar y guardar gasto",
+                  "source": {"$ref": "ll-s"}, "target": {"$ref": "ll-bd"},
+                  "messageSort": "synchCall"
+                },
+                {
+                  "_type": "UMLMessage", "_id": "msg-5", "_parent": {"$ref": "collab-seq"},
+                  "name": "5. Confirmacion OK",
+                  "source": {"$ref": "ll-bd"}, "target": {"$ref": "ll-s"},
+                  "messageSort": "reply"
+                },
+                {
+                  "_type": "UMLMessage", "_id": "msg-6", "_parent": {"$ref": "collab-seq"},
+                  "name": "6. Gasto registrado correctamente",
+                  "source": {"$ref": "ll-s"}, "target": {"$ref": "ll-u"},
+                  "messageSort": "reply"
+                },
+                {
+                  "_type": "UMLMessage", "_id": "msg-7", "_parent": {"$ref": "collab-seq"},
+                  "name": "[si excede] Alerta de presupuesto",
+                  "source": {"$ref": "ll-s"}, "target": {"$ref": "ll-u"},
+                  "messageSort": "reply"
+                }
+              ]
+            },
+            {
+              "_type": "UMLSequenceDiagram",
+              "_id": "diag-seq",
+              "_parent": {"$ref": "pkg-seq"},
+              "name": "Secuencia - Registrar Gasto",
+              "ownedViews": [
+                {"_type": "UMLLifelineView", "_id": "vll-u",  "_parent": {"$ref": "diag-seq"}, "model": {"$ref": "ll-u"},  "left": 80,  "top": 40, "width": 120, "height": 380},
+                {"_type": "UMLLifelineView", "_id": "vll-s",  "_parent": {"$ref": "diag-seq"}, "model": {"$ref": "ll-s"},  "left": 280, "top": 40, "width": 140, "height": 380},
+                {"_type": "UMLLifelineView", "_id": "vll-bd", "_parent": {"$ref": "diag-seq"}, "model": {"$ref": "ll-bd"}, "left": 500, "top": 40, "width": 140, "height": 380}
+              ]
+            }
+          ]
+        },
+
+        {
+          "_type": "UMLPackage",
+          "_id": "pkg-act",
+          "_parent": {"$ref": "model-001"},
+          "name": "4. Diagrama de Actividades",
+          "ownedElements": [
+            {
+              "_type": "UMLActivity",
+              "_id": "activity-main",
+              "_parent": {"$ref": "pkg-act"},
+              "name": "Registro de Transaccion",
+              "ownedElements": [
+                {"_type": "UMLInitialNode",       "_id": "an-inicio",   "_parent": {"$ref": "activity-main"}, "name": "Inicio"},
+                {"_type": "UMLAction",            "_id": "an-ingresar", "_parent": {"$ref": "activity-main"}, "name": "Ingresar datos"},
+                {"_type": "UMLAction",            "_id": "an-validar",  "_parent": {"$ref": "activity-main"}, "name": "Validar datos"},
+                {"_type": "UMLDecisionNode",      "_id": "an-dec1",     "_parent": {"$ref": "activity-main"}, "name": "Correcto?"},
+                {"_type": "UMLAction",            "_id": "an-error",    "_parent": {"$ref": "activity-main"}, "name": "Mostrar error"},
+                {"_type": "UMLAction",            "_id": "an-guardar",  "_parent": {"$ref": "activity-main"}, "name": "Guardar en base de datos"},
+                {"_type": "UMLAction",            "_id": "an-verif",    "_parent": {"$ref": "activity-main"}, "name": "Verificar presupuesto"},
+                {"_type": "UMLDecisionNode",      "_id": "an-dec2",     "_parent": {"$ref": "activity-main"}, "name": "Excedido?"},
+                {"_type": "UMLAction",            "_id": "an-alerta",   "_parent": {"$ref": "activity-main"}, "name": "Enviar alerta"},
+                {"_type": "UMLActivityFinalNode", "_id": "an-fin",      "_parent": {"$ref": "activity-main"}, "name": "Fin"},
+                {
+                  "_type": "UMLControlFlow", "_id": "cf-1", "_parent": {"$ref": "activity-main"},
+                  "source": {"$ref": "an-inicio"},   "target": {"$ref": "an-ingresar"}, "name": ""
+                },
+                {
+                  "_type": "UMLControlFlow", "_id": "cf-2", "_parent": {"$ref": "activity-main"},
+                  "source": {"$ref": "an-ingresar"}, "target": {"$ref": "an-validar"}, "name": ""
+                },
+                {
+                  "_type": "UMLControlFlow", "_id": "cf-3", "_parent": {"$ref": "activity-main"},
+                  "source": {"$ref": "an-validar"},  "target": {"$ref": "an-dec1"}, "name": ""
+                },
+                {
+                  "_type": "UMLControlFlow", "_id": "cf-4", "_parent": {"$ref": "activity-main"},
+                  "source": {"$ref": "an-dec1"},     "target": {"$ref": "an-error"}, "name": "No"
+                },
+                {
+                  "_type": "UMLControlFlow", "_id": "cf-5", "_parent": {"$ref": "activity-main"},
+                  "source": {"$ref": "an-error"},    "target": {"$ref": "an-ingresar"}, "name": "Volver"
+                },
+                {
+                  "_type": "UMLControlFlow", "_id": "cf-6", "_parent": {"$ref": "activity-main"},
+                  "source": {"$ref": "an-dec1"},     "target": {"$ref": "an-guardar"}, "name": "Si"
+                },
+                {
+                  "_type": "UMLControlFlow", "_id": "cf-7", "_parent": {"$ref": "activity-main"},
+                  "source": {"$ref": "an-guardar"},  "target": {"$ref": "an-verif"}, "name": ""
+                },
+                {
+                  "_type": "UMLControlFlow", "_id": "cf-8", "_parent": {"$ref": "activity-main"},
+                  "source": {"$ref": "an-verif"},    "target": {"$ref": "an-dec2"}, "name": ""
+                },
+                {
+                  "_type": "UMLControlFlow", "_id": "cf-9", "_parent": {"$ref": "activity-main"},
+                  "source": {"$ref": "an-dec2"},     "target": {"$ref": "an-alerta"}, "name": "Si"
+                },
+                {
+                  "_type": "UMLControlFlow", "_id": "cf-10", "_parent": {"$ref": "activity-main"},
+                  "source": {"$ref": "an-alerta"},   "target": {"$ref": "an-fin"}, "name": ""
+                },
+                {
+                  "_type": "UMLControlFlow", "_id": "cf-11", "_parent": {"$ref": "activity-main"},
+                  "source": {"$ref": "an-dec2"},     "target": {"$ref": "an-fin"}, "name": "No"
+                }
+              ]
+            },
+            {
+              "_type": "UMLActivityDiagram",
+              "_id": "diag-act",
+              "_parent": {"$ref": "pkg-act"},
+              "name": "Actividades - Registro de Transaccion",
+              "ownedViews": [
+                {"_type": "UMLInitialNodeView",       "_id": "van-inicio",   "_parent": {"$ref": "diag-act"}, "model": {"$ref": "an-inicio"},   "left": 300, "top": 40,  "width": 20,  "height": 20},
+                {"_type": "UMLActionView",            "_id": "van-ingresar", "_parent": {"$ref": "diag-act"}, "model": {"$ref": "an-ingresar"}, "left": 210, "top": 90,  "width": 200, "height": 44},
+                {"_type": "UMLActionView",            "_id": "van-validar",  "_parent": {"$ref": "diag-act"}, "model": {"$ref": "an-validar"},  "left": 210, "top": 170, "width": 200, "height": 44},
+                {"_type": "UMLDecisionNodeView",      "_id": "van-dec1",     "_parent": {"$ref": "diag-act"}, "model": {"$ref": "an-dec1"},     "left": 280, "top": 250, "width": 60,  "height": 60},
+                {"_type": "UMLActionView",            "_id": "van-error",    "_parent": {"$ref": "diag-act"}, "model": {"$ref": "an-error"},    "left": 460, "top": 258, "width": 170, "height": 44},
+                {"_type": "UMLActionView",            "_id": "van-guardar",  "_parent": {"$ref": "diag-act"}, "model": {"$ref": "an-guardar"},  "left": 210, "top": 350, "width": 200, "height": 44},
+                {"_type": "UMLActionView",            "_id": "van-verif",    "_parent": {"$ref": "diag-act"}, "model": {"$ref": "an-verif"},    "left": 210, "top": 430, "width": 200, "height": 44},
+                {"_type": "UMLDecisionNodeView",      "_id": "van-dec2",     "_parent": {"$ref": "diag-act"}, "model": {"$ref": "an-dec2"},     "left": 280, "top": 510, "width": 60,  "height": 60},
+                {"_type": "UMLActionView",            "_id": "van-alerta",   "_parent": {"$ref": "diag-act"}, "model": {"$ref": "an-alerta"},   "left": 460, "top": 518, "width": 160, "height": 44},
+                {"_type": "UMLActivityFinalNodeView", "_id": "van-fin",      "_parent": {"$ref": "diag-act"}, "model": {"$ref": "an-fin"},      "left": 300, "top": 610, "width": 20,  "height": 20}
+              ]
+            }
+          ]
+        }
+
+      ]
+    }
+  ]
+}

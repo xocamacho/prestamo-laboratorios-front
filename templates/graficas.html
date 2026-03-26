@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>📊 Análisis Financiero</h2>
+
+<div class="row">
+
+    <!-- 🔥 DONUT -->
+    <div class="col-md-6">
+        <div class="card p-3">
+            <h5 style="color:#22c55e;">💰 Distribución de Ingresos y Gastos</h5>
+            <canvas id="donut"></canvas>
+        </div>
+    </div>
+
+    <!-- 🔥 BARRAS -->
+    <div class="col-md-6">
+        <div class="card p-3">
+            <h5 style="color:#ef4444;">📊 Comparación General</h5>
+            <canvas id="barras"></canvas>
+        </div>
+    </div>
+
+</div>
+
+<div class="row mt-4">
+
+    <!-- 🔥 LÍNEA (simulada por ahora) -->
+    <div class="col-md-12">
+        <div class="card p-3">
+            <h5 style="color:#38bdf8;">📈 Evolución Financiera</h5>
+            <canvas id="linea"></canvas>
+        </div>
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+const ingresos = {{ ingresos|tojson }};
+const gastos = {{ gastos|tojson }};
+
+// 🔥 DONUT
+new Chart(document.getElementById('donut'), {
+    type: 'doughnut',
+    data: {
+        labels: ['Ingresos','Gastos'],
+        datasets: [{
+            data: [ingresos, gastos],
+            backgroundColor: ['#22c55e', '#ef4444']
+        }]
+    }
+});
+
+// 🔥 BARRAS
+new Chart(document.getElementById('barras'), {
+    type: 'bar',
+    data: {
+        labels: ['Ingresos','Gastos'],
+        datasets: [{
+            label: 'Monto',
+            data: [ingresos, gastos],
+            backgroundColor: ['#22c55e', '#ef4444']
+        }]
+    }
+});
+
+// 🔥 LÍNEA (DEMO)
+new Chart(document.getElementById('linea'), {
+    type: 'line',
+    data: {
+        labels: ['Ene','Feb','Mar','Abr','May'],
+        datasets: [{
+            label: 'Balance',
+            data: [500, 800, 600, 900, 1200],
+            borderColor: '#38bdf8',
+            tension: 0.4
+        }]
+    }
+});
+</script>
+
+{% endblock %}

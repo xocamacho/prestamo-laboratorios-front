@@ -1,0 +1,388 @@
+/* 🔥 RESET GENERAL */
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background: #0f172a;
+    color: #e2e8f0;
+    margin: 0;
+    padding: 0;
+}
+
+/* 🔥 SIDEBAR */
+.sidebar {
+    background: linear-gradient(180deg, #020617, #0f172a);
+    min-height: 100vh;
+    padding: 20px;
+    box-shadow: 5px 0 15px rgba(0,0,0,0.5);
+}
+
+.sidebar h4 {
+    color: #38bdf8;
+    margin-bottom: 20px;
+}
+
+.sidebar a {
+    display: block;
+    color: #94a3b8;
+    padding: 10px;
+    border-radius: 10px;
+    margin-bottom: 8px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.sidebar a:hover {
+    background: #1e293b;
+    color: #38bdf8;
+    transform: translateX(5px);
+}
+
+/* 🔥 CONTENIDO */
+.content {
+    background: linear-gradient(135deg, #1e293b, #020617);
+    min-height: 100vh;
+    padding: 20px;
+}
+
+/* 🔥 TEXTOS */
+h2, h4, h5 {
+    color: #f1f5f9;
+    font-weight: 600;
+}
+
+h5 {
+    margin-bottom: 10px;
+    color: #38bdf8;
+}
+
+p, label {
+    color: #cbd5f5;
+}
+
+/* 🔥 CARDS */
+.card {
+    border-radius: 20px;
+    border: none;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+    transition: all 0.3s ease;
+    background: #020617;
+}
+
+.card:hover {
+    transform: translateY(-5px) scale(1.02);
+}
+
+/* 🔥 COLORES FINTECH */
+.bg-success {
+    background: linear-gradient(135deg, #22c55e, #15803d) !important;
+}
+
+.bg-danger {
+    background: linear-gradient(135deg, #ef4444, #7f1d1d) !important;
+}
+
+.bg-primary {
+    background: linear-gradient(135deg, #3b82f6, #1e3a8a) !important;
+}
+
+/* 🔥 BOTONES */
+.btn {
+    border-radius: 12px;
+    padding: 10px;
+    transition: all 0.2s ease;
+    font-weight: 500;
+}
+
+.btn:hover {
+    transform: scale(1.05);
+}
+
+/* 🔥 INPUTS */
+.form-control {
+    border-radius: 12px;
+    border: 1px solid #334155;
+    background: #0f172a;
+    color: #f1f5f9;
+}
+
+.form-control::placeholder {
+    color: #94a3b8;
+}
+
+/* 🔥 TABLAS */
+table {
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.table-dark {
+    background: #020617;
+}
+
+.table th {
+    color: #38bdf8;
+}
+
+/* 🔥 PROGRESS BAR */
+.progress {
+    background: #1e293b;
+    border-radius: 10px;
+}
+
+.progress-bar {
+    font-weight: bold;
+}
+
+/* 🔥 SCROLL */
+::-webkit-scrollbar {
+    width: 6px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #38bdf8;
+    border-radius: 10px;
+}
+
+/* 🔥 GRÁFICAS */
+canvas {
+    max-height: 300px;
+}
+
+/* 🔥 RESPONSIVE */
+@media (max-width: 768px) {
+
+    .sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+    }
+
+    .d-flex {
+        flex-direction: column;
+    }
+
+    .content {
+        padding: 10px;
+    }
+
+    .card {
+        margin-bottom: 10px;
+    }
+}
+/* 🔥 MEJORAR VISIBILIDAD FUERTE */
+
+/* Inputs más claros */
+.form-control {
+    background: #020617 !important;
+    border: 2px solid #38bdf8 !important;
+    color: #ffffff !important;
+    font-weight: 500;
+}
+
+/* Placeholder más visible */
+.form-control::placeholder {
+    color: #cbd5f5 !important;
+}
+
+/* 🔥 CONTENEDORES DE FORMULARIOS */
+.form-box {
+    background: #020617;
+    padding: 15px;
+    border-radius: 15px;
+    border: 1px solid #38bdf8;
+}
+
+/* 🔥 TITULOS MÁS VISIBLES */
+h2 {
+    color: #ffffff;
+    font-weight: bold;
+}
+
+h5 {
+    color: #38bdf8;
+    font-weight: bold;
+}
+
+/* 🔥 TABLA MEJOR */
+.table td {
+    color: #e2e8f0;
+}
+
+/* 🔥 BOTONES MÁS VISIBLES */
+.btn-success {
+    background: #22c55e !important;
+    border: none;
+}
+
+.btn-danger {
+    background: #ef4444 !important;
+    border: none;
+}
+
+.btn-primary {
+    background: #3b82f6 !important;
+    border: none;
+}
+/* 🔥 FORZAR VISIBILIDAD DE TITULOS */
+.content h2 {
+    color: #ffffff !important;
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.content h4 {
+    color: #e2e8f0 !important;
+}
+
+.content h5 {
+    color: #cbd5f5 !important;
+}
+/* 🔥 TARJETAS DE METAS */
+.meta-card {
+    background: linear-gradient(135deg, #020617, #1e293b);
+    border: 1px solid #334155;
+    border-radius: 15px;
+    padding: 15px;
+    transition: 0.3s;
+}
+
+.meta-card:hover {
+    transform: scale(1.02);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.4);
+}
+
+/* TEXTO META */
+.meta-card h5 {
+    color: #38bdf8;
+}
+
+.meta-card p {
+    color: #e2e8f0;
+}
+/* 🔥 CAJA RESUMEN */
+.resumen-box {
+    background: linear-gradient(135deg, #020617, #1e293b);
+    border: 1px solid #38bdf8;
+    border-radius: 15px;
+}
+
+/* COLORES MÁS SUAVES */
+.text-success {
+    color: #22c55e !important;
+}
+
+.text-danger {
+    color: #ef4444 !important;
+}
+
+.text-warning {
+    color: #facc15 !important;
+}
+
+.text-info {
+    color: #38bdf8 !important;
+}
+/* 🔥 TITULOS DE GRAFICAS */
+.card h5 {
+    color: #e2e8f0;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+/* 🔥 TARJETAS ANALISIS (MÁS CLARAS Y ELEVADAS) */
+.analysis-card {
+    background: linear-gradient(135deg, #1e293b, #334155);
+    border-radius: 15px;
+    padding: 15px;
+    border: 1px solid #475569;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+    transition: 0.3s;
+}
+
+.analysis-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 25px rgba(0,0,0,0.6);
+}
+
+/* 🔥 TITULOS DENTRO */
+.analysis-card h5 {
+    color: #f1f5f9;
+}
+
+/* 🔥 TEXTO */
+.analysis-card p {
+    color: #e2e8f0;
+}
+/* INGRESOS */
+.card-ingreso {
+    background: linear-gradient(135deg, #14532d, #22c55e);
+}
+
+/* GASTOS */
+.card-gasto {
+    background: linear-gradient(135deg, #7f1d1d, #ef4444);
+}
+
+/* BALANCE */
+.card-balance {
+    background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+}
+/* 🔥 FONDO LOGIN */
+.login-body {
+    background: linear-gradient(135deg, #020617, #1e293b);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* CONTENEDOR */
+.login-container {
+    width: 100%;
+    max-width: 400px;
+}
+
+/* CAJA */
+.login-box {
+    background: #020617;
+    padding: 30px;
+    border-radius: 20px;
+    border: 1px solid #334155;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    text-align: center;
+}
+
+/* INPUTS */
+.login-box input {
+    background: #0f172a;
+    border: 1px solid #334155;
+    color: white;
+}
+
+/* LINKS */
+.login-box a {
+    color: #38bdf8;
+    text-decoration: none;
+}
+/* SCORE GRANDE */
+.display-4 {
+    font-weight: bold;
+    letter-spacing: 2px;
+}
+
+/* BARRA MÁS SUAVE */
+.progress {
+    height: 10px;
+    background: #0f172a;
+}
+/* ALERTAS MÁS BONITAS */
+.alert {
+    border-radius: 10px;
+    font-weight: bold;
+}
+
+/* FORM BOX */
+.form-box {
+    background: #020617;
+    padding: 15px;
+    border-radius: 15px;
+    border: 1px solid #334155;
+}
